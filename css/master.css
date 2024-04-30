@@ -1,0 +1,57 @@
+.gameover {
+    font: bold 100px sans-serif;
+}
+
+.hidden {
+    /*display: none !important;*/
+    display: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+div {
+    width: 640px;
+    height: 480px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+div.hidden {
+    /*avoids having to use the !important override on the .hidden selector above*/
+    display: none;
+}
+
+canvas {
+    border: 1px solid black;
+    /*background-color: grey;*/
+}
+
+h1 {
+    margin-bottom: 20px; /* Add some spacing between the heading and the canvas */
+}
+
+#loseDiv.gameover {
+    color: red;
+}
+
+#startButton {
+    font: bold 50px sans-serif;
+    color: blue;
+}
+
+#startButton:hover {
+    color: red;
+}
+
+#winDiv.gameover {
+    color: green;
+}
