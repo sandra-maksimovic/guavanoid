@@ -8,6 +8,7 @@ var Guavanoid = function() {
     let blocks = [];
     let ball, player;
     let playerStartPosX, playerStartPosY;
+    let ballStartPosX, ballStartPosY;
 
     let win = false;
     let lose = false;
@@ -18,6 +19,8 @@ var Guavanoid = function() {
         width = '';
         height = '';
         color = '';
+        lives = 3;
+        score = 0;
 
         constructor(x, y, width, height, color) {
             this.x = x;
@@ -156,10 +159,11 @@ var Guavanoid = function() {
         let ballRadius = 5;
         let ballColor = 'red';
 
-        let blockRows = 8;
-        let blockCols = 6;
-        let blockWidth = 50;
+        let blockRows = 6;
+        let blockCols = 10;
+        let blockWidth = 60;
         let blockHeight = 20;
+        let blockColor = 'grey';
 
         // get the canvas element from the page
         canvas = document.querySelector("#gameCanvas");
@@ -173,17 +177,17 @@ var Guavanoid = function() {
         playerStartPosX = (w / 2) - (playerWidth / 2);
         playerStartPosY = h - 50;
 
-        let ballStartX = w / 2;
-        let ballStartY = playerStartPosY - ballRadius;
+        ballStartPosX = w / 2;
+        ballStartPosY = playerStartPosY - ballRadius;
 
         // create player
         player = new Player(playerStartPosX, playerStartPosY, playerWidth, playerHeight, playerColor);
 
         // create ball
-        ball = new Ball(ballStartX, ballStartY, ballRadius, ballColor);
+        ball = new Ball(ballStartPosX, ballStartPosY, ballRadius, ballColor);
 
         // create blocks
-        blocks = createBlocks(blockRows, blockCols, blockWidth, blockHeight);
+        blocks = createBlocks(blockRows, blockCols, blockWidth, blockHeight, blockColor);
 
         // required to draw 2d shapes to the canvas object
         ctx = canvas.getContext("2d");
@@ -202,16 +206,13 @@ var Guavanoid = function() {
         // clear the canvas
         ctx.clearRect(0, 0, w, h);
         
-        // draw the player
         player.draw(ctx);
-        
-        // draw the ball
         ball.draw(ctx);
 
-        // draw all blocks
         drawAllBlocks(blocks);
+        displayLives(player.lives);
+        displayScore(player.score);
 
-        // move the ball
         if (!ball.isAttached) {
             moveBall(ball);
         }
@@ -226,52 +227,10 @@ var Guavanoid = function() {
             }
         }
 
-        if (!checkWinCondition() && !lose) {
+        if (!checkWinCondition() && !checkLoseCondition()) {
             // ask for a new animation frame
             requestAnimationFrame(mainLoop);
         }
-    }
-
-    function createBlocks(rows, cols, width, height) {
-        let blockArray = [];
-        let blockColor = 'grey';
-        
-        for (let r=0; r < rows; r++) {
-            let blockY = 25;
-            blockY += r*blockY;
-            //let blockY = 75 + r * height;
-
-            for (let c=0; c < cols; c++) {
-                // get the left-most point (x) from the middle a column
-                const colWidth = (w) / cols;
-                let blockX = (colWidth / 2) - (width / 2);
-                blockX += c*colWidth;
-
-                let b = new Block(blockX, blockY, width, height, blockColor);
-                blockArray.push(b);
-            }
-        }
-
-        // returns the array of blocks
-        return blockArray;
-    }
-
-    function drawAllBlocks(blockArray) {
-        blockArray.forEach(function(b) {
-            b.draw(ctx);
-        });
-    }
-
-    function checkWinCondition() {
-        if (blocks.length === 0) {
-            win = true;
-
-            // display win screen
-            canvas.classList.add("hidden");
-            winDiv.classList.remove("hidden");
-        }
-
-        return win;
     }
 
     function processClick(evt) {
@@ -291,11 +250,91 @@ var Guavanoid = function() {
         return { x: evt.clientX - rect.left }
     }
 
+    function createBlocks(rows, cols, width, height, color) {
+        let blockArray = [];
+        let blockGap = 3;
+        
+        for (let r=0; r < rows; r++) {
+            let blockY;
+            let blockYSpacing = height + blockGap;
+            let topGapY = 50;
+
+            if (r === 0) {
+                blockY = topGapY; 
+            } else {
+                blockY = topGapY + r*blockYSpacing;
+            }
+
+            for (let c=0; c < cols; c++) {
+                let blockX;
+                let blockXSpacing = width + blockGap;
+                let leftGapX = (w - blockXSpacing*cols) / 2;
+
+                if (c === 0) {
+                    blockX = leftGapX;
+                } else {
+                    blockX = leftGapX + c*blockXSpacing;
+                }
+
+                let b = new Block(blockX, blockY, width, height, color);
+                blockArray.push(b);
+            }
+        }
+
+        // returns the array of blocks
+        return blockArray;
+    }
+
+    function drawAllBlocks(blockArray) {
+        blockArray.forEach(function(b) {
+            b.draw(ctx);
+        });
+    }
+
     function moveBall(b) {
         b.move();    
         testCollisionBallWithWalls(b);
         testCollisionBallWithPlayer(b);
         testCollisionBallWithBlocks(b);
+    }
+
+    function displayLives(lives) {
+        ctx.fillText(`Lives: ${lives}`, 10, 10);
+    }
+
+    function displayScore(score) {
+        ctx.fillText(`Score: ${score}`, 75, 10);
+    }
+
+    function checkWinCondition() {
+        if (blocks.length === 0) {
+            win = true;
+
+            // display win screen
+            canvas.classList.add("hidden");
+            winDiv.classList.remove("hidden");
+        }
+
+        return win;
+    }
+
+    function checkLoseCondition() {
+        if (player.lives === 0) {
+            lose = true;
+
+            // display lose screen
+            canvas.classList.add("hidden");
+            loseDiv.classList.remove("hidden");
+        }
+
+        return lose;
+    }
+
+    function playerFail() {
+        player.lives -= 1;
+        ball.isAttached = true;
+        ball.x = ballStartPosX;
+        ball.y = ballStartPosY;
     }
 
     function testCollisionBallWithWalls(b) {
@@ -322,18 +361,12 @@ var Guavanoid = function() {
         if ((b.y + b.radius) > h) {
             // the ball hit the bottom wall
             // change vertical direction
-            b.speedY = -b.speedY;
+            ////b.speedY = -b.speedY;
             
             // put the ball at the collision point
-            b.y = h - b.radius;
+            ////b.y = h - b.radius;
 
-            // set lose condition
-            lose = true;
-
-            // display lose screen
-            canvas.classList.add("hidden");
-            loseDiv.classList.remove("hidden");
-
+            playerFail();
         } else if ((b.y - b.radius) < 0) {
             // the ball hit the top wall
             // change vertical direction
@@ -471,9 +504,6 @@ var Guavanoid = function() {
                         // update the horizontal ball bounds
                         ballLeftSide = b.x - b.radius;
                         ballRightSide = b.x + b.radius;
-
-                        // remove the block from the array
-                        blocks.splice(index, 1);
                     }
                 
                 // otherwise check if the ball hit the RIGHT side of the block
@@ -492,9 +522,6 @@ var Guavanoid = function() {
                         // update the horizontal ball bounds
                         ballRightSide = b.x + b.radius;
                         ballLeftSide = b.x - b.radius;
-
-                        // remove the block from the array
-                        blocks.splice(index, 1);
                     }
                 }
                 
@@ -514,9 +541,6 @@ var Guavanoid = function() {
                         // update the vertical ball bounds
                         ballTopSide = b.y - b.radius;
                         ballBottomSide = b.y + b.radius;
-
-                        // remove the block from the array
-                        blocks.splice(index, 1);
                     }
                 
                 // otherwise check if the ball hit the BOTTOM side of the block
@@ -535,11 +559,14 @@ var Guavanoid = function() {
                         // update the vertical ball bounds
                         ballBottomSide = b.y + b.radius;
                         ballTopSide = b.y - b.radius;
-
-                        // remove the block from the array
-                        blocks.splice(index, 1);
                     }
                 }
+
+                // remove the block from the array
+                blocks.splice(index, 1);
+
+                // increment the score
+                player.score += 1;
             }
         });
     }
