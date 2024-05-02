@@ -1,5 +1,6 @@
-.gameover {
+.gamescreen {
     font: bold 100px sans-serif;
+    color: black;
 }
 
 .hidden {
@@ -13,6 +14,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 90vh;
+    position: relative; /* ensure the canvas is a positioned ancestor for the pauseDiv */
 }
 
 div {
@@ -26,8 +28,7 @@ div {
 }
 
 div.hidden {
-    /*avoids having to use the !important override on the .hidden selector above*/
-    display: none;
+    display: none; /* this selector is higher in the css hierarchy, avoids having to use the !important override on the .hidden selector above */
 }
 
 canvas {
@@ -36,11 +37,25 @@ canvas {
 }
 
 h1 {
-    margin-bottom: 20px; /* Add some spacing between the heading and the canvas */
+    margin-bottom: 20px; /* add some spacing between the heading and the canvas */
 }
 
-#loseDiv.gameover {
+#loseDiv.gamescreen {
     color: red;
+}
+
+#pauseDiv.gamescreen {
+    border: none;
+    background-color: white;
+    opacity: 0.5;
+    position: absolute; /* position the pauseDiv relative to the nearest positioned ancestor */
+    top: calc(50% - 200px); /* adjusted top position to accommodate the heading and its margin */
+    left: calc(50% - 320px); /* adjusted left position to be centred */
+    z-index: 2; /* ensure the pauseDiv appears on top */
+}
+
+#pauseSpan {
+    text-align: center;
 }
 
 #startButton {
@@ -52,6 +67,6 @@ h1 {
     color: red;
 }
 
-#winDiv.gameover {
+#winDiv.gamescreen {
     color: green;
 }

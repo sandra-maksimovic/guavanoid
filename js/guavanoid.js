@@ -2,16 +2,17 @@
 
 var Guavanoid = function() {
     let canvas, ctx, w, h;
-    let winDiv, loseDiv;
+    let winDiv, loseDiv, pauseDiv;
     let mousePos;
 
     let blocks = [];
     let ball, player;
     let playerStartPosX, playerStartPosY;
-    let ballStartPosX, ballStartPosY;
+    let ballStartPosX, ballStartPosY, ballStartSpeedX, ballStartSpeedY;
 
     let win = false;
     let lose = false;
+    let paused = false;
 
     class Player {
         x = '';
@@ -65,15 +66,17 @@ var Guavanoid = function() {
         y = '';
         radius = '';
         color = '';
-        speedX = 5;
-        speedY = -5;
+        speedX;
+        speedY;
         isAttached = true;
 
-        constructor(x, y, radius, color) {
+        constructor(x, y, radius, color, speedX, speedY) {
             this.x = x;
             this.y = y;
             this.radius = radius;
             this.color = color;
+            this.speedX = speedX;
+            this.speedY = speedY;
         }
 
         set attached(isAttached) {
@@ -165,10 +168,11 @@ var Guavanoid = function() {
         let blockHeight = 20;
         let blockColor = 'grey';
 
-        // get the canvas element from the page
+        // get the canvas elements from the page
         canvas = document.querySelector("#gameCanvas");
         winDiv = document.querySelector("#winDiv");
         loseDiv = document.querySelector("#loseDiv");
+        pauseDiv = document.querySelector("#pauseDiv");
 
         // get the width and height of the canvas
         w = canvas.width;
@@ -176,15 +180,17 @@ var Guavanoid = function() {
 
         playerStartPosX = (w / 2) - (playerWidth / 2);
         playerStartPosY = h - 50;
-
-        ballStartPosX = w / 2;
-        ballStartPosY = playerStartPosY - ballRadius;
-
+        
         // create player
         player = new Player(playerStartPosX, playerStartPosY, playerWidth, playerHeight, playerColor);
 
+        ballStartPosX = w / 2;
+        ballStartPosY = playerStartPosY - ballRadius;
+        ballStartSpeedX = 5;
+        ballStartSpeedY = -5;
+
         // create ball
-        ball = new Ball(ballStartPosX, ballStartPosY, ballRadius, ballColor);
+        ball = new Ball(ballStartPosX, ballStartPosY, ballRadius, ballColor, ballStartSpeedX, ballStartSpeedY);
 
         // create blocks
         blocks = createBlocks(blockRows, blockCols, blockWidth, blockHeight, blockColor);
@@ -198,32 +204,37 @@ var Guavanoid = function() {
         // add a mouseclick event listener to the canvas to move the ball
         canvas.addEventListener('click', processClick);
 
+        // add a keydown event listener to the window to pause the game
+        document.addEventListener('keydown', processKeyDown);
+
         // start the animation
         mainLoop();
     }
 
     function mainLoop() {
-        // clear the canvas
-        ctx.clearRect(0, 0, w, h);
-        
-        player.draw(ctx);
-        ball.draw(ctx);
+        if (!paused) {
+            // clear the canvas
+            ctx.clearRect(0, 0, w, h);
+            
+            player.draw(ctx);
+            ball.draw(ctx);
 
-        drawAllBlocks(blocks);
-        displayLives(player.lives);
-        displayScore(player.score);
+            drawAllBlocks(blocks);
+            displayLives(player.lives);
+            displayScore(player.score);
 
-        if (!ball.isAttached) {
-            moveBall(ball);
-        }
+            if (!ball.isAttached) {
+                moveBall(ball);
+            }
 
-        // make the player follow the mouse
-        // test if the mouse is positioned over the canvas first
-        if(mousePos !== undefined) {
-            //player.move(mousePos.x, mousePos.y);
-            player.move(mousePos.x);
-            if (ball.isAttached) {
-                ball.followPlayer(mousePos.x);
+            // make the player follow the mouse
+            // test if the mouse is positioned over the canvas first
+            if(mousePos !== undefined) {
+                //player.move(mousePos.x, mousePos.y);
+                player.move(mousePos.x);
+                if (ball.isAttached) {
+                    ball.followPlayer(mousePos.x);
+                }
             }
         }
 
@@ -235,6 +246,20 @@ var Guavanoid = function() {
 
     function processClick(evt) {
         ball.isAttached = false;
+    }
+
+    function processKeyDown(evt) {
+        if (!checkWinCondition() && !checkLoseCondition()) {
+            if (evt.key === "Escape") {
+                if (paused === false) {
+                    paused = true;
+                    pauseDiv.classList.remove("hidden");
+                } else {
+                    paused = false;
+                    pauseDiv.classList.add("hidden");
+                }
+            }
+        }
     }
 
     // called when the user moves the mouse
@@ -436,6 +461,34 @@ var Guavanoid = function() {
 
                 // also check if the ball centre is within the LEFT & RIGHT bounds of the block
                 if (b.x > playerLeftSide && b.x < playerRightSide) {
+                    let segment1 = player.x + (player.width / 5);
+                    let segment2 = player.x + (player.width / 5)*2;
+                    let segment3 = player.x + (player.width / 5)*3;
+                    let segment4 = player.x + (player.width / 5)*4;
+                    let segment5 = playerRightSide;
+                    let fullSpeedX = ballStartSpeedX;
+                    let medSpeedX = fullSpeedX*0.6;
+                    let lowSpeedX = fullSpeedX*0.2;
+
+                    // change horiztonal direction by different amount
+                    // to simulate a change of angle
+                    if (b.x > playerLeftSide  && b.x < segment1) {
+                        if (b.speedX > 0) { b.speedX = fullSpeedX; }
+                        else if (b.speedX < 0) { b.speedX = -fullSpeedX; }
+                    } else if (b.x > segment1 && b.x < segment2) {
+                        if (b.speedX > 0) { b.speedX = medSpeedX; }
+                        else if (b.speedX < 0) { b.speedX = -medSpeedX; }
+                    } else if (b.x > segment2 && b.x < segment3) {
+                        if (b.speedX > 0) { b.speedX = lowSpeedX; }
+                        else if (b.speedX < 0) { b.speedX = -lowSpeedX; }
+                    } else if (b.x > segment3 && b.x < segment4) {
+                        if (b.speedX > 0) { b.speedX = medSpeedX; }
+                        else if (b.speedX < 0) { b.speedX = -medSpeedX; }
+                    } else if (b.x > segment4 && b.x < segment5) {
+                        if (b.speedX > 0) { b.speedX = medSpeedX; }
+                        else if (b.speedX < 0) { b.speedX = -medSpeedX; }
+                    }
+
                     // change vertical direction
                     b.speedY = -b.speedY;
                     ballGoingDown = false;
@@ -580,7 +633,7 @@ var Guavanoid = function() {
         if (testX > (x0+w0)) testX=(x0+w0); // test right
         if (testY < y0) testY=y0; // test top
         if (testY > (y0+h0)) testY=(y0+h0); // test bottom
-        return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY))< r*r);
+        return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
     }
 
     return {
