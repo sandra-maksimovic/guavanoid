@@ -8,6 +8,11 @@
     display: none;
 }
 
+.scoreSpan {
+    color: black;
+    font: 30px sans-serif;
+}
+
 body {
     display: flex;
     flex-direction: column;

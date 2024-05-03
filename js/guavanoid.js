@@ -2,8 +2,10 @@
 
 var Guavanoid = function() {
     let canvas, ctx, w, h;
-    let winDiv, loseDiv, pauseDiv;
+    let winDiv, winSpan, loseDiv, loseSpan, pauseDiv;
     let mousePos;
+    let totalScore = 0;
+    let level = 1;
 
     let blocks = [];
     let ball, player;
@@ -21,7 +23,6 @@ var Guavanoid = function() {
         height = '';
         color = '';
         lives = 3;
-        score = 0;
 
         constructor(x, y, width, height, color) {
             this.x = x;
@@ -171,7 +172,9 @@ var Guavanoid = function() {
         // get the canvas elements from the page
         canvas = document.querySelector("#gameCanvas");
         winDiv = document.querySelector("#winDiv");
+        winSpan = document.querySelector("#winSpan");
         loseDiv = document.querySelector("#loseDiv");
+        loseSpan = document.querySelector("#loseSpan");
         pauseDiv = document.querySelector("#pauseDiv");
 
         // get the width and height of the canvas
@@ -220,8 +223,7 @@ var Guavanoid = function() {
             ball.draw(ctx);
 
             drawAllBlocks(blocks);
-            displayLives(player.lives);
-            displayScore(player.score);
+            displayHUD(level, totalScore, player.lives);
 
             if (!ball.isAttached) {
                 moveBall(ball);
@@ -323,12 +325,19 @@ var Guavanoid = function() {
         testCollisionBallWithBlocks(b);
     }
 
-    function displayLives(lives) {
-        ctx.fillText(`Lives: ${lives}`, 10, 10);
-    }
+    function displayHUD(lvl, score, lives) {
+        let hudXLeftAlign = 40;
+        let hudXCenterAlign = w / 2;
+        let huxXRightAlign = w - 40;
+        let hudYTopAlign = 5;
 
-    function displayScore(score) {
-        ctx.fillText(`Score: ${score}`, 75, 10);
+        ctx.textBaseline = "top";
+        ctx.textAlign = "left";
+        ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
+        ctx.textAlign = "center";
+        ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
+        ctx.textAlign = "right";
+        ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
     }
 
     function checkWinCondition() {
@@ -338,18 +347,20 @@ var Guavanoid = function() {
             // display win screen
             canvas.classList.add("hidden");
             winDiv.classList.remove("hidden");
+            winSpan.textContent = "Score: " + totalScore;
         }
 
         return win;
     }
 
     function checkLoseCondition() {
-        if (player.lives === 0) {
+        if (player.lives < 0) {
             lose = true;
 
             // display lose screen
             canvas.classList.add("hidden");
             loseDiv.classList.remove("hidden");
+            loseSpan.textContent = "Score: " + totalScore;
         }
 
         return lose;
@@ -619,7 +630,7 @@ var Guavanoid = function() {
                 blocks.splice(index, 1);
 
                 // increment the score
-                player.score += 1;
+                totalScore += 1;
             }
         });
     }
