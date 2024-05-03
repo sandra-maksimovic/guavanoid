@@ -17,6 +17,9 @@ var Guavanoid = function() {
     let lose = false;
     let paused = false;
 
+    // for time based animation
+    var delta, then;
+
     class Player {
         x = '';
         y = '';
@@ -70,6 +73,8 @@ var Guavanoid = function() {
         color = '';
         speedX;
         speedY;
+        incrementX;
+        incrementY;
         isAttached = true;
 
         constructor(x, y, radius, color, speedX, speedY) {
@@ -83,6 +88,14 @@ var Guavanoid = function() {
 
         set attached(isAttached) {
             this.isAttached = isAttached;
+        }
+
+        set incX(incrementX) {
+            this.incrementX = incrementX;
+        }
+
+        set incY(incrementY) {
+            this.incrementY = incrementY;
         }
         
         draw(ctx) {
@@ -105,8 +118,10 @@ var Guavanoid = function() {
         }
 
         move() {
-            this.x += this.speedX;
-            this.y += this.speedY;
+            //this.x += this.speedX;
+            this.x += this.incrementX;
+            //this.y += this.speedY;
+            this.y += this.incrementY;
         }
 
         followPlayer(x) {
@@ -190,8 +205,10 @@ var Guavanoid = function() {
 
         ballStartPosX = w / 2;
         ballStartPosY = playerStartPosY - ballRadius;
-        ballStartSpeedX = 5;
-        ballStartSpeedY = -5;
+        //ballStartSpeedX = 5;
+        ballStartSpeedX = 300; // 60 fps * 5 px = 300 px/s (time based animation)
+        //ballStartSpeedY = -5;
+        ballStartSpeedY = -300; // 60 fps * 5 px = 300 px/s (time based animation)
 
         // create ball
         ball = new Ball(ballStartPosX, ballStartPosY, ballRadius, ballColor, ballStartSpeedX, ballStartSpeedY);
@@ -224,8 +241,15 @@ var Guavanoid = function() {
         mainLoop();
     }
 
-    function mainLoop() {
+    //function mainLoop() {
+    function mainLoop(now) {
         if (!paused) {
+            // get the time between frames
+            delta = now - then;
+
+            ball.incrementX = calcIncrement(ball.speedX, delta);
+            ball.incrementY = calcIncrement(ball.speedY, delta);
+
             // clear the canvas
             ctx.clearRect(0, 0, w, h);
             
@@ -251,9 +275,15 @@ var Guavanoid = function() {
         }
 
         if (!checkWinCondition() && !checkLoseCondition()) {
+            // copy the current time to the old time
+            then = now;
             // ask for a new animation frame
             requestAnimationFrame(mainLoop);
         }
+    }
+
+    function calcIncrement(speed, del) {
+        return (speed*del) / 1000;
     }
 
     function processClick(evt) {
