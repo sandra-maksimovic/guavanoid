@@ -18,8 +18,11 @@
             YOU LOSE
             <span id="loseSpan" class="scoreSpan"></span>
         </div>
-        <div id="pauseDiv" class="gamescreen hidden"><span id="pauseSpan">GAME PAUSED</span></div>
-        <canvas id="gameCanvas" class="hidden" width="640" height="480"></canvas>
+        <div id="gameContainer" class="hidden">
+            <div id="pauseDiv" class="gamescreen hidden"><span id="pauseSpan">GAME PAUSED</span></div>
+            <canvas id="gameCanvas" class="hidden" width="640" height="480"></canvas>
+        </div>
+        <button type="button" id="sfxToggleBtn">SFX ON</button>
     </body>
     <script src="js/guavanoid.js"></script>
 </html>
