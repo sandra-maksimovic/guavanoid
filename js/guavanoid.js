@@ -2,10 +2,12 @@
 
 var Guavanoid = function() {
     let canvas, ctx, w, h;
-    let winDiv, winSpan, loseDiv, loseSpan, pauseDiv;
     let mousePos;
     let totalScore = 0;
     let level = 1;
+
+    // HTML elements
+    let winDiv, winSpan, loseDiv, loseSpan, pauseDiv, gameContainer;
 
     let blocks = [];
     let ball, player;
@@ -16,6 +18,7 @@ var Guavanoid = function() {
     let win = false;
     let lose = false;
     let paused = false;
+    let sfx = true;
 
     // for time based animation
     var delta, then;
@@ -185,13 +188,16 @@ var Guavanoid = function() {
         let blockHeight = 20;
         let blockColor = 'grey';
 
-        // get the canvas elements from the page
+        // get canvas element
         canvas = document.querySelector("#gameCanvas");
+
+        // get HTML elements
         winDiv = document.querySelector("#winDiv");
         winSpan = document.querySelector("#winSpan");
         loseDiv = document.querySelector("#loseDiv");
         loseSpan = document.querySelector("#loseSpan");
         pauseDiv = document.querySelector("#pauseDiv");
+        gameContainer = document.querySelector("#gameContainer");
 
         // get the width and height of the canvas
         w = canvas.width;
@@ -388,6 +394,7 @@ var Guavanoid = function() {
 
             // display win screen
             canvas.classList.add("hidden");
+            gameContainer.classList.add("hidden");
             winDiv.classList.remove("hidden");
             winSpan.textContent = "Score: " + totalScore;
         }
@@ -401,6 +408,7 @@ var Guavanoid = function() {
 
             // display lose screen
             canvas.classList.add("hidden");
+            gameContainer.classList.add("hidden");
             loseDiv.classList.remove("hidden");
             loseSpan.textContent = "Score: " + totalScore;
         }
@@ -444,7 +452,7 @@ var Guavanoid = function() {
             // put the ball at the collision point
             ////b.y = h - b.radius;
 
-            failCollisionSound.play();
+            if (sfx) { failCollisionSound.play(); }
             playerFail();
         } else if ((b.y - b.radius) < 0) {
             // the ball hit the top wall
@@ -473,7 +481,7 @@ var Guavanoid = function() {
             let ballGoingUp = b.speedY < 0;
             let ballGoingDown = b.speedY > 0;
 
-            playerCollisionSound.play();
+            if (sfx) { playerCollisionSound.play(); }
 
             // check if the ball hit the LEFT side of the player
             if (ballRightSide > playerLeftSide && ballGoingRight) {
@@ -597,7 +605,7 @@ var Guavanoid = function() {
                 let ballGoingUp = b.speedY < 0;
                 let ballGoingDown = b.speedY > 0;
 
-                blockCollisionSound.play();
+                if (sfx) { blockCollisionSound.play(); }
 
                 // check if the ball hit the LEFT side of the block
                 if (ballRightSide > blockLeftSide && ballGoingRight) {
@@ -694,22 +702,47 @@ var Guavanoid = function() {
         return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
     }
 
+    var toggleSFX = function() {
+        if (sfx === true) {
+            sfx = false;
+        } else {
+            sfx = true;
+        }
+    }
+
+    var getSFX = function() {
+        return sfx;
+    }
+
     return {
-        start: start
+        start: start,
+        toggleSFX: toggleSFX,
+        getSFX: getSFX
     };
 }
 
 window.onload = function init() {
     let startButton = document.querySelector("#startButton");
+    let sfxToggleBtn = document.querySelector("#sfxToggleBtn");
     let startDiv = document.querySelector("#startDiv");
+    let gameContainer = document.querySelector("#gameContainer");
     let gameCanvas = document.querySelector("#gameCanvas");
+    var game = new Guavanoid();
 
     startButton.addEventListener('click', function(evt) {
         startButton.classList.add("hidden");
         startDiv.classList.add("hidden");
+        gameContainer.classList.remove("hidden");
         gameCanvas.classList.remove("hidden");
-        
-        var game = new Guavanoid();
         game.start();
+    });
+
+    sfxToggleBtn.addEventListener('click', function(evt) {
+        game.toggleSFX();
+        if (game.getSFX()) {
+            sfxToggleBtn.textContent = "SFX ON";
+        } else {
+            sfxToggleBtn.textContent = "SFX OFF";
+        }
     });
 }
