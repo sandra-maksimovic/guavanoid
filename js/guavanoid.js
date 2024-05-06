@@ -1,24 +1,41 @@
 "use strict";
 
 var Guavanoid = function() {
+    // canvas
     let canvas, ctx, w, h;
+
+    // mouse
     let mousePos;
-    let totalScore = 0;
-    let level = 1;
 
     // HTML elements
     let winDiv, winSpan, loseDiv, loseSpan, pauseDiv, gameContainer;
 
-    let blocks = [];
-    let ball, player;
+    // player
+    let player;
+    let playerWidth = 50;
+    let playerHeight = 10;
+    let playerColor = 'black';
     let playerStartPosX, playerStartPosY;
+    
+    // ball
+    let ball;
+    let ballRadius = 5;
+    let ballColor = 'red';
     let ballStartPosX, ballStartPosY, ballStartSpeedX, ballStartSpeedY;
-    let blockCollisionSound, playerCollisionSound, failCollisionSound;
 
+    // blocks
+    let blocks = [];
+
+    // game state
     let win = false;
     let lose = false;
     let paused = false;
+    let totalScore = 0;
+    let level = 1;
+
+    // audio
     let sfx = true;
+    let blockCollisionSound, playerCollisionSound, failCollisionSound;
 
     // for time based animation
     var delta, then;
@@ -74,10 +91,10 @@ var Guavanoid = function() {
         y = '';
         radius = '';
         color = '';
-        speedX;
-        speedY;
-        incrementX;
-        incrementY;
+        speedX = '';
+        speedY = '';
+        incrementX = '';
+        incrementY = '';
         isAttached = true;
 
         constructor(x, y, radius, color, speedX, speedY) {
@@ -121,9 +138,7 @@ var Guavanoid = function() {
         }
 
         move() {
-            //this.x += this.speedX;
             this.x += this.incrementX;
-            //this.y += this.speedY;
             this.y += this.incrementY;
         }
 
@@ -173,23 +188,13 @@ var Guavanoid = function() {
         }
     }
 
-    //window.onload = function init() {
     var start = function() {
-        let playerWidth = 50;
-        let playerHeight = 10;
-        let playerColor = 'black';
-
-        let ballRadius = 5;
-        let ballColor = 'red';
-
-        let blockRows = 6;
-        let blockCols = 10;
-        let blockWidth = 60;
-        let blockHeight = 20;
-        let blockColor = 'grey';
-
         // get canvas element
         canvas = document.querySelector("#gameCanvas");
+
+        // get the width and height of the canvas
+        w = canvas.width;
+        h = canvas.height;
 
         // get HTML elements
         winDiv = document.querySelector("#winDiv");
@@ -199,28 +204,20 @@ var Guavanoid = function() {
         pauseDiv = document.querySelector("#pauseDiv");
         gameContainer = document.querySelector("#gameContainer");
 
-        // get the width and height of the canvas
-        w = canvas.width;
-        h = canvas.height;
-
+        // create player
         playerStartPosX = (w / 2) - (playerWidth / 2);
         playerStartPosY = h - 50;
-        
-        // create player
         player = new Player(playerStartPosX, playerStartPosY, playerWidth, playerHeight, playerColor);
 
+        // create ball
         ballStartPosX = w / 2;
         ballStartPosY = playerStartPosY - ballRadius;
-        //ballStartSpeedX = 5;
-        ballStartSpeedX = 300; // 60 fps * 5 px = 300 px/s (time based animation)
-        //ballStartSpeedY = -5;
-        ballStartSpeedY = -300; // 60 fps * 5 px = 300 px/s (time based animation)
-
-        // create ball
+        ballStartSpeedX = 300; // 60 fps * 5 px = 300 px/s
+        ballStartSpeedY = -300; // 60 fps * 5 px = 300 px/s
         ball = new Ball(ballStartPosX, ballStartPosY, ballRadius, ballColor, ballStartSpeedX, ballStartSpeedY);
 
         // create blocks
-        blocks = createBlocks(blockRows, blockCols, blockWidth, blockHeight, blockColor);
+        blocks = createBlocks();
 
         // required to draw 2d shapes to the canvas object
         ctx = canvas.getContext("2d");
@@ -234,7 +231,7 @@ var Guavanoid = function() {
         // add a keydown event listener to the window to pause the game
         document.addEventListener('keydown', processKeyDown);
 
-        // Load embedded sounds
+        // load embedded sounds
         blockCollisionSound = new Howl({
             src: ['data:audio/wav;base64,UklGRpMGAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YW8GAACko6Ojo6KioqGhoaGgoKCgn5+fn56enp6dnZ2dnJycnJybm5ubmpqampqZmZmZmZiYmJiYl5eXl5eWlpaWlpZxTU1OTk9PT1BQUVFRUlJSU1NUVFRVVVVWVlZXV1dYWFhYWVlZWlpaW1tbW1xcXF1dXV1eXl5fX19fYGBgYGFhYWFiYmJiYmNjY2NkZGRkZGVlZWVmZmZmZmdnZ2dnaGhoaGhoaWlpaWlqampqampra2tra2u0tLOzsrKysbGwsLCvr66urq2traysq6urqqqqqampqKiop6enp6ampqWlpaSkpKSjo6OioqKioaGhoKCgoJ+EV1dXWFhYWVlZWlpaWltbW1xcXF1dXV1eXl5eX19fX2BgYGBhYWFhYmJiYmNjY2NkZGRkZGVlZWVlZmZmZmdnZ2dnZ2hoaGhoaWlpaWlqampqampra2tra2tsbGxsbGxsbW1tbW1tbW5ubm5ubm5vb29vb2+vt7e3tra1tbS0tLOzsrKxsbGwsLCvr66urq2traysq6urqqqqqampqKiop6enp6ampqWlpaSkpKSjo6OioqKPWVlaWlpbW1tbXFxcXV1dXV5eXl5fX19fYGBgYWFhYWFiYmJiY2NjY2RkZGRkZWVlZWZmZmZmZ2dnZ2doaGhoaGhpaWlpaWpqampqamtra2tra2xsbGxsbGxtbW1tbW1ubm5ubm5ubm9vb29vb29wcHBwcHCnuLi3t7e2trW1tLS0s7OysrKxsbCwsK+vrq6ura2trKysq6uqqqqpqamoqKinp6enpqampaWlpKSkpKOjo6KZWlpaWltbW1xcXFxdXV1eXl5eX19fX2BgYGBhYWFhYmJiYmNjY2NjZGRkZGVlZWVlZmZmZmZnZ2dnZ2hoaGhoaWlpaWlpampqampra2tra2trbGxsbGxsbW1tbW1tbW5ubm5ubm5vb29vb29vcHBwcHBwcHCeubi4t7e2tra1tbS0s7OzsrKxsbGwsK+vr66urq2trKysq6urqqqqqampqKiop6enpqampaWlpaSkpKOjo6OiWlpaW1tbW1xcXF1dXV1eXl5eX19fX2BgYGBhYWFhYmJiYmNjY2NkZGRkZGVlZWVmZmZmZmdnZ2dnaGhoaGhoaWlpaWlqampqampra2tra2tsbGxsbGxsbW1tbW1tbm5ubm5ubm5vb29vb29vcHBwcHBwcHCVubi4t7e3tra1tbS0tLOzsrKxsbGwsLCvr66urq2traysq6urqqqqqampqKiop6enpqampqWlpaSkpKOjo6OiY1paW1tbW1xcXF1dXV1eXl5eX19fX2BgYGBhYWFhYmJiYmNjY2NkZGRkZGVlZWVlZmZmZmdnZ2dnZ2hoaGhoaWlpaWlqampqampra2tra2tsbGxsbGxsbW1tbW1tbm5ubm5ubm5vb29vb29vcHBwcHBwcHCMubi4t7e3tra1tbS0tLOzsrKysbGwsLCvr66urq2traysrKurqqqqqampqKiop6enp6ampqWlpaSkpKSjo6OibFpaWltbW1xcXF1dXV1eXl5eX19fX2BgYGBhYWFhYmJiYmNjY2NkZGRkZGVlZWVlZmZmZmZnZ2dnZ2hoaGhoaWlpaWlqampqampra2tra2tsbGxsbGxsbW1tbW1tbW5ubm5ubm5vb29vb29vcHBwcHBwcHCDubi4uLe3tra1tbS0tLOzsrKysbGwsLCvr66urq2traysrKurq6qqqampqKioqKenp6ampqWlpaSkpKSjo6OidVpaWltbW1xcXFxdXV1eXl9fX2BgYGFhYWJiYmNjY2RkZGVlZWZmZmZnZ2doaGhoaWlpaWpqampra2trbGxsbG1tbW1tbm5ubm9vb29vcHBwcHBwcXFxcXFycnJycnJzc3Nzc3NzdHR0dHR0dHV1dXV1dXV8paWlpKSjo6KioaGgoKCfn56enZ2dnJycm5uampqZmZmYmJiXl5eWlpaVlZWUlJSUk5OTkpKSkpGRkZGQkJCQf25vb29vcHBwcHFxcXFxcnJycnNzc3NzdHR0dHR1dXV1dXV2dnZ2dnZ3d3d3d3d4eHh4eHh4eXl5eXl5eXl6enp6enp6enp7e3t7e3t7e3t7fHx8fHx8fHx8fHx9fX19fX19fX19fX19fn5+fn5+fn5+fn5+hISEg4ODg4OCgoKCgoKBgYGBgYCAgICAgIA=']
         });
@@ -246,10 +243,23 @@ var Guavanoid = function() {
         });
 
         // start the animation
-        mainLoop();
+        titleLoop();
     }
 
-    //function mainLoop() {
+    function titleLoop() {
+        const titleX = w / 2;
+        const titleY = h / 2;
+
+        ctx.font = "bold 100px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(`Level ${level}`, titleX, titleY);
+
+        // display title for duration of timeout
+        setTimeout(mainLoop, 1000);
+    }
+
     function mainLoop(now) {
         if (!paused) {
             // get the time between frames
@@ -325,13 +335,27 @@ var Guavanoid = function() {
         return { x: evt.clientX - rect.left }
     }
 
-    function createBlocks(rows, cols, width, height, color) {
+    function createBlocks() {
         let blockArray = [];
         let blockGap = 3;
+        let blockWidth = 60;
+        let blockHeight = 20;
+
+        if (level === 1) {
+            blockArray = createLevel1(blockArray, blockGap, blockWidth, blockHeight);
+        }
+
+        return blockArray;
+    }
+
+    function createLevel1(array, gap, width, height) {
+        let rows = 6;
+        let cols = 10;
+        let color = 'grey';
         
         for (let r=0; r < rows; r++) {
             let blockY;
-            let blockYSpacing = height + blockGap;
+            let blockYSpacing = height + gap;
             let topGapY = 50;
 
             if (r === 0) {
@@ -342,7 +366,7 @@ var Guavanoid = function() {
 
             for (let c=0; c < cols; c++) {
                 let blockX;
-                let blockXSpacing = width + blockGap;
+                let blockXSpacing = width + gap;
                 let leftGapX = (w - blockXSpacing*cols) / 2;
 
                 if (c === 0) {
@@ -352,12 +376,11 @@ var Guavanoid = function() {
                 }
 
                 let b = new Block(blockX, blockY, width, height, color);
-                blockArray.push(b);
+                array.push(b);
             }
         }
 
-        // returns the array of blocks
-        return blockArray;
+        return array;
     }
 
     function drawAllBlocks(blockArray) {
@@ -379,6 +402,7 @@ var Guavanoid = function() {
         let huxXRightAlign = w - 40;
         let hudYTopAlign = 5;
 
+        ctx.font = "10px sans-serif";
         ctx.textBaseline = "top";
         ctx.textAlign = "left";
         ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
