@@ -28,10 +28,15 @@ var Guavanoid = function() {
 
     // game state
     let win = false;
+    let levelWin = false;
     let lose = false;
     let paused = false;
+    let currentScore = 0;
     let totalScore = 0;
     let level = 1;
+    let totalLevels = 2;
+    let displayTitle, displayTitleStartTime;
+    let displayTitleTimer = 1500; //ms
 
     // audio
     let sfx = true;
@@ -189,6 +194,10 @@ var Guavanoid = function() {
     }
 
     var start = function() {
+        // reset game conditions
+        levelWin = false;
+        currentScore = 0;
+
         // get canvas element
         canvas = document.querySelector("#gameCanvas");
 
@@ -230,6 +239,9 @@ var Guavanoid = function() {
 
         // add a keydown event listener to the window to pause the game
         document.addEventListener('keydown', processKeyDown);
+        
+        // for testing
+        //document.addEventListener('keydown', clearBlocks);
 
         // load embedded sounds
         blockCollisionSound = new Howl({
@@ -242,60 +254,66 @@ var Guavanoid = function() {
             src: ['data:audio/wav;base64,UklGRpMGAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YW8GAACko6Ojo6KioqGhoaGgoKCgn5+fn56enp6dnZ2dnJycnJybm5ubmpqampqZmZmZmZiYmJiYl5eXl5eWlpaWlpaVlZWVlZWUlJSUlJSTk5OTk5OSkpKSkpKSkZGRkZGRkZCQkJCQkJCPj4+Pj4+Pj4+Ojo6Ojo6Ojo2NjY2NjY2NjYyMjIyMjIyMjIyLi4JDQ0RERUVGRkdHSEhISUlKSktLS0xMTU1NTk5PT09QUFFRUVJSUlNTU1RUVVVVVlZWV1dXWFhYWFlZWVpaWltbW1tcXFxdXV1dXl5eX19fX2BgYGBhYWFhYmJiYmJjY2NjZGRkZGRlZWVlZmZmZmZnZ2dnZ2hoaGhoaGlpaWlpampqampqa2tra2trbGxsbGxsbW1tbW1tbW5ubm5ubm5vb29vb29vb3BwcHBwcHBwcXFxcXFxcXFxcnJycnJycnJyc3Nzc3Nzc3Nzc3R0dHR0dHR0dHR0dXV1dXV1dXV1dXV1dnZ2dnZ2dnZ2dnZ2dnd3d3d3d3d3d3d3d3d3eHh4eHicwL+/vr69vby8u7u7urq5ubi4t7e2tra1tbS0s7OzsrKxsbGwsK+vr66urq2trKysq6urqqqqqampqKiop6enpqampqWlpaSkpKOjo6OioqKhoaGhoKCgoJ+fn5+enp6enZ2dnZycnJycm5ubm5qampqamZmZmZmYmJiYmJeXl5eXlpaWlpaWlZWVlZVwTE1NTU5OT09PUFBRUVFSUlJTU1NUVFVVVVZWVldXV1hYWFhZWVlaWlpbW1tbXFxcXV1dXV5eXl9fX19gYGBgYWFhYWJiYmJiY2NjY2RkZGRkZWVlZWZmZmZmZ2dnZ2doaGhoaGhpaWlpaWpqampqamtra2tra2xsbGxsbG1tbW1tbW1ubm5ubm5ub29vb29vb29wcHBwcHBwcHFxcXFxcXFxcXJycnJycnJycnNzc3Nzc3Nzc3N0dHR0dHR0dHR0dHV1dXV1dXV1dXV1dXZ2dnZ2dnZ2dnZ2dnZ3d3d3d3d3d3d3d3d3d3d4eHh4eHh4eHh4eHh4eHh4eXl5eXl5eXl5uMHAwL+/vr69vby8u7u6urq5ubi4t7e2trW1tbS0s7OzsrKxsbGwsK+vr66urq2trKysq6urqqqqqampqKiop6enpqampaWlpaSkpKOjo6OioqKhoaGhoKCgoJ+fn5+enp6enZ2dnZycnJycm5ubm5qampqamZmZmZmYmJiYmJeXl5eXlpaWlpaWlZWVVU1NTk5OT09QUFBRUVFSUlNTU1RUVFVVVVZWVldXV1hYWFlZWVlaWlpbW1tcXFxcXV1dXl5eXl9fX19gYGBgYWFhYWJiYmJjY2NjY2RkZGRlZWVlZWZmZmZmZ2dnZ2doaGhoaGlpaWlpaWpqampqamtra2tra2xsbGxsbG1tbW1tbW1ubm5ubm5ub29vb29vb29wcHBwcHBwcHFxcXFxcXFxcnJycnJycnJycnNzc3Nzc3Nzc3N0dHR0dHR0dHR0dXV1dXV1dXV1dXV1dnZ2dnZ2dnZ2dnZ2dnZ3d3d3d3d3d3d3d3d3d3h4eHh4eHh4eHh4eHh4eHh4eXl5eXl5eXl5i8HBwMC/v76+vb28vLu7urq5ubi4uLe3tra1tbW0tLOzsrKysbGwsLCvr6+urq2traysrKurq6qqqqmpqaioqKenp6ampqWlpaSkpKSjo6OioqKioaGhoaCgoKCfn5+fnp6enp2dnZ2cnJycm5ubm5uampqampmZmZmYmJiYmJiXl5eXl5aWlpaWlZWVg01OTk9PUFFRUlJTU1RUVVVWVldXV1hYWVlaWltbW1xcXV1dXl5fX19gYGBhYWJiYmNjY2RkZGVlZWZmZmZnZ2doaGhpaWlpampqamtra2tsbGxsbW1tbW5ubm5ub29vb29wcHBwcHFxcXFxcnJycnJyc3Nzc3NzdHR0dHR0dXV1dXV1dXZ2dnZ2dnZ2d3d3d3d3d3d4eHh4eHh4eHh5eXl5eXl5eXl5eXp6enp6enp6enp6e3t7e3t7e3t7e3t7e3t8fHx8fHx8fHx8fHx8fHx8fX19fX19fX19fX19fX19fX19fX19fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+foaJiYmJiIiIiIeHh4aGhoaGhYWFhYSEhISEg4ODg4OCgoKCgoGBgYGBgYCAgICAgIA=']
         });
 
-        // start the animation
-        titleLoop();
+        // start the game
+        displayTitle = true;
+        displayTitleStartTime = performance.now();
+        mainLoop();
     }
 
-    function titleLoop() {
+    function displayTitleScreen() {
         const titleX = w / 2;
         const titleY = h / 2;
 
+        ctx.clearRect(0, 0, w, h);
         ctx.font = "bold 100px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-
         ctx.fillText(`Level ${level}`, titleX, titleY);
-
-        // display title for duration of timeout
-        setTimeout(mainLoop, 1000);
     }
 
     function mainLoop(now) {
-        if (!paused) {
-            // get the time between frames
-            delta = now - then;
+        if (now - displayTitleStartTime > displayTitleTimer) {
+            displayTitle = false;
 
-            ball.incrementX = calcIncrement(ball.speedX, delta);
-            ball.incrementY = calcIncrement(ball.speedY, delta);
+            if (!paused) {
+                // get the time between frames
+                delta = now - then;
 
-            // clear the canvas
-            ctx.clearRect(0, 0, w, h);
-            
-            player.draw(ctx);
-            ball.draw(ctx);
+                ball.incrementX = calcIncrement(ball.speedX, delta);
+                ball.incrementY = calcIncrement(ball.speedY, delta);
 
-            drawAllBlocks(blocks);
-            displayHUD(level, totalScore, player.lives);
+                // clear the canvas
+                ctx.clearRect(0, 0, w, h);
+                
+                player.draw(ctx);
+                ball.draw(ctx);
 
-            if (!ball.isAttached) {
-                moveBall(ball);
-            }
+                drawAllBlocks(blocks);
+                displayHUD(level, currentScore, player.lives);
 
-            // make the player follow the mouse
-            // test if the mouse is positioned over the canvas first
-            if(mousePos !== undefined) {
-                //player.move(mousePos.x, mousePos.y);
-                player.move(mousePos.x);
-                if (ball.isAttached) {
-                    ball.followPlayer(mousePos.x);
+                if (!ball.isAttached) {
+                    moveBall(ball);
+                }
+
+                // make the player follow the mouse
+                // test if the mouse is positioned over the canvas first
+                if(mousePos !== undefined) {
+                    //player.move(mousePos.x, mousePos.y);
+                    player.move(mousePos.x);
+                    if (ball.isAttached) {
+                        ball.followPlayer(mousePos.x);
+                    }
                 }
             }
-        }
-
-        if (!checkWinCondition() && !checkLoseCondition()) {
-            // copy the current time to the old time
-            then = now;
-            // ask for a new animation frame
+    
+            if (!checkWinCondition() && !checkLoseCondition()) {
+                // copy the current time to the old time
+                then = now;
+                // ask for a new animation frame
+                requestAnimationFrame(mainLoop);
+            }
+        } else if (displayTitle) {
+            displayTitleScreen();
             requestAnimationFrame(mainLoop);
         }
     }
@@ -343,16 +361,26 @@ var Guavanoid = function() {
 
         if (level === 1) {
             blockArray = createLevel1(blockArray, blockGap, blockWidth, blockHeight);
+        } else if (level === 2) {
+            blockArray = createLevel2(blockArray, blockGap, blockWidth, blockHeight);
         }
 
         return blockArray;
     }
+
+    // for testing
+    /*function clearBlocks(evt) {
+        if (evt.key === "b") {
+            blocks.splice(0, blocks.length);
+        }
+    }*/
 
     function createLevel1(array, gap, width, height) {
         let rows = 6;
         let cols = 10;
         let color = 'grey';
         
+        // create rect of blocks
         for (let r=0; r < rows; r++) {
             let blockY;
             let blockYSpacing = height + gap;
@@ -375,11 +403,62 @@ var Guavanoid = function() {
                     blockX = leftGapX + c*blockXSpacing;
                 }
 
-                let b = new Block(blockX, blockY, width, height, color);
-                array.push(b);
+                let block = new Block(blockX, blockY, width, height, color);
+                array.push(block);
             }
         }
 
+        return array;
+    }
+
+    function createLevel2(array, gap, width, height) {
+        let rows = 9;
+        let cols = 1;
+        let colsMax = 9;
+        let color = 'blue';
+        let canvasCenter = w / 2;
+        let blockCenter = width / 2;
+
+        // create diamond of blocks
+        for (let r=0; r < rows; r++) {
+            let blockY;
+            let blockYSpacing = height + gap;
+            let topGapY = 50;
+
+            if (r === 0) {
+                blockY = topGapY;
+            } else {
+                blockY = topGapY + r*blockYSpacing;
+            }
+
+            for (let c=0; c < cols; c++) {
+                let blockX = canvasCenter - blockCenter;
+                let blockXSpacing = width + gap;
+
+                // use row num as basis for spacing top horizontally
+                if (r !== 0 && colsMax === rows) {
+                    blockX = (blockX - blockXSpacing*r) + c*blockXSpacing;
+                // halve max cols then use whole portion as basis for spacing bottom horizontally
+                } else if (colsMax < rows) {
+                    blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
+                }
+
+                let block = new Block(blockX, blockY, width, height, color);
+                array.push(block);
+            }
+
+            // grow the num of cols while under max
+            // to make the top of the diamond
+            if (cols !== colsMax) {
+                cols += 2;
+            // shrink the num of cols when it reaches max
+            // to make the bottom of the diamond
+            } else if (cols > 0 && cols === colsMax) {
+                cols -= 2;
+                colsMax = cols;
+            }
+        }
+        
         return array;
     }
 
@@ -414,13 +493,21 @@ var Guavanoid = function() {
 
     function checkWinCondition() {
         if (blocks.length === 0) {
-            win = true;
+            levelWin = true;
+            totalScore += currentScore;
 
-            // display win screen
-            canvas.classList.add("hidden");
-            gameContainer.classList.add("hidden");
-            winDiv.classList.remove("hidden");
-            winSpan.textContent = "Score: " + totalScore;
+            if (level === totalLevels) {
+                win = true;
+
+                // display win screen
+                canvas.classList.add("hidden");
+                gameContainer.classList.add("hidden");
+                winDiv.classList.remove("hidden");
+                winSpan.textContent = "Score: " + totalScore;
+            } else {
+                level++;
+                start();
+            }
         }
 
         return win;
@@ -709,7 +796,7 @@ var Guavanoid = function() {
                 blocks.splice(index, 1);
 
                 // increment the score
-                totalScore += 1;
+                currentScore += 1;
             }
         });
     }
