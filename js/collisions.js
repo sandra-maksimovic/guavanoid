@@ -1,4 +1,4 @@
-function testCollisionBallWithWalls(b, sfx, failSound, h, w) {
+function testCollisionBallWithWalls(b, audio, h, w) {
     // COLLISION WITH VERTICAL WALLS
     if ((b.x + b.radius) > w) {
         // the ball hit the right wall
@@ -27,7 +27,7 @@ function testCollisionBallWithWalls(b, sfx, failSound, h, w) {
         // put the ball at the collision point
         ////b.y = h - b.radius;
 
-        if (sfx) { failSound.play(); }
+        if (audio.sfx) { audio.failCollisionSound.play(); }
         game.playerFail();
     } else if ((b.y - b.radius) < 0) {
         // the ball hit the top wall
@@ -39,7 +39,7 @@ function testCollisionBallWithWalls(b, sfx, failSound, h, w) {
     }
 }
 
-function testCollisionBallWithPlayer(b, sfx, playerSound, player, ballStartSpeedX) {
+function testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX) {
     if(circRectsOverlap(player.x, player.y, player.width, player.height, b.x, b.y, b.radius)) {
         let ballRightSide = b.x + b.radius;
         let ballLeftSide = b.x - b.radius;
@@ -56,7 +56,7 @@ function testCollisionBallWithPlayer(b, sfx, playerSound, player, ballStartSpeed
         let ballGoingUp = b.speedY < 0;
         let ballGoingDown = b.speedY > 0;
 
-        if (sfx) { playerSound.play(); }
+        if (audio.sfx) { audio.playerCollisionSound.play(); }
 
         // check if the ball hit the LEFT side of the player
         if (ballRightSide > playerLeftSide && ballGoingRight) {
@@ -162,7 +162,7 @@ function testCollisionBallWithPlayer(b, sfx, playerSound, player, ballStartSpeed
     }
 }
 
-function testCollisionBallWithBlocks(b, sfx, blockSound, blocks, gameState) {
+function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
     blocks.forEach(function(block, index) {
         if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
             let ballRightSide = b.x + b.radius;
@@ -180,7 +180,7 @@ function testCollisionBallWithBlocks(b, sfx, blockSound, blocks, gameState) {
             let ballGoingUp = b.speedY < 0;
             let ballGoingDown = b.speedY > 0;
 
-            if (sfx) { blockSound.play(); }
+            if (audio.sfx) { audio.blockCollisionSound.play(); }
 
             // check if the ball hit the LEFT side of the block
             if (ballRightSide > blockLeftSide && ballGoingRight) {
