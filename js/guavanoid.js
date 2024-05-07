@@ -3,44 +3,40 @@
 var game;
 
 var Guavanoid = function() {
-    // canvas
     let canvas, ctx, w, h;
 
-    // mouse
-    let mousePos;
+    // i.e. mousePos.x
+    let inputState = {};
 
     // HTML elements
     let winDiv, winSpan, loseDiv, loseSpan, pauseDiv, gameContainer;
 
-    // player
     let player;
     let playerWidth = 50;
     let playerHeight = 10;
     let playerColor = 'black';
     let playerStartPosX, playerStartPosY;
     
-    // ball
     let ball;
     let ballRadius = 5;
     let ballColor = 'red';
     let ballStartPosX, ballStartPosY, ballStartSpeedX, ballStartSpeedY;
 
-    // blocks
     let blocks = [];
 
-    // game state
-    let win = false;
-    let levelWin = false;
-    let lose = false;
-    let paused = false;
-    let currentScore = 0;
-    let totalScore = 0;
-    let currentLevel = 1;
-    let totalLevels = 2;
-    let displayTitle, displayTitleStartTime;
-    let displayTitleTimer = 1500; //ms
+    let gameState = {
+        currentLevel: 1,
+        currentScore: 0,
+        displayTitle: true,
+        displayTitleStartTime: 0,
+        displayTitleTimer: 1500, //ms
+        lose: false,
+        paused: false,
+        totalLevels: 2,
+        totalScore: 0,
+        win: false
+    };
 
-    // audio
     let sfx = true;
     let blockCollisionSound, playerCollisionSound, failCollisionSound;
 
@@ -65,9 +61,8 @@ var Guavanoid = function() {
     };
 
     var start = function() {
-        // reset game conditions
-        levelWin = false;
-        currentScore = 0;
+        // reset game state
+        gameState.currentScore = 0;
 
         // get canvas element
         canvas = document.querySelector("#gameCanvas");
@@ -102,24 +97,15 @@ var Guavanoid = function() {
         // required to draw 2d shapes to the canvas object
         ctx = canvas.getContext("2d");
 
-        // add a mousemove event listener to the canvas to track user mouse movement
-        canvas.addEventListener('mousemove', mouseMoved);
-
-        // add a mouseclick event listener to the canvas to move the ball
-        canvas.addEventListener('click', processClick);
-
-        // add a keydown event listener to the window to pause the game
-        document.addEventListener('keydown', processKeyDown);
-        
-        // for testing
-        //document.addEventListener('keydown', clearBlocks);
+        // add event listeners to the canvas object
+        addListeners(canvas, ball, blocks, inputState, gameState, pauseDiv);
 
         // Load sounds and images, then when this is done, start the mainLoop
         loadAssets(function() {
             // We enter here only when all assets have been loaded
             // start the game
-            displayTitle = true;
-            displayTitleStartTime = performance.now();
+            gameState.displayTitle = true;
+            gameState.displayTitleStartTime = performance.now();
             mainLoop();
         });
     };
@@ -132,14 +118,14 @@ var Guavanoid = function() {
         ctx.font = "bold 100px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(`Level ${currentLevel}`, titleX, titleY);
+        ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
     }
 
     function mainLoop(now) {
-        if (now - displayTitleStartTime > displayTitleTimer) {
-            displayTitle = false;
+        if (now - gameState.displayTitleStartTime > gameState.displayTitleTimer) {
+            gameState.displayTitle = false;
 
-            if (!paused) {
+            if (!gameState.paused) {
                 // get the time between frames
                 delta = now - then;
 
@@ -153,7 +139,7 @@ var Guavanoid = function() {
                 ball.draw(ctx);
 
                 drawAllBlocks(blocks);
-                displayHUD(currentLevel, currentScore, player.lives);
+                displayHUD(gameState.currentLevel, gameState.currentScore, player.lives);
 
                 if (!ball.isAttached) {
                     moveBall(ball);
@@ -161,11 +147,11 @@ var Guavanoid = function() {
 
                 // make the player follow the mouse
                 // test if the mouse is positioned over the canvas first
-                if(mousePos !== undefined) {
+                if(inputState.mousePos !== undefined) {
                     //player.move(mousePos.x, mousePos.y);
-                    player.move(mousePos.x, w);
+                    player.move(inputState.mousePos.x, w);
                     if (ball.isAttached) {
-                        ball.followPlayer(mousePos.x, player, w);
+                        ball.followPlayer(inputState.mousePos.x, player, w);
                     }
                 }
             }
@@ -176,7 +162,7 @@ var Guavanoid = function() {
                 // ask for a new animation frame
                 requestAnimationFrame(mainLoop);
             }
-        } else if (displayTitle) {
+        } else if (gameState.displayTitle) {
             displayTitleScreen();
             requestAnimationFrame(mainLoop);
         }
@@ -186,58 +172,20 @@ var Guavanoid = function() {
         return (speed*del) / 1000;
     }
 
-    function processClick(evt) {
-        ball.isAttached = false;
-    }
-
-    function processKeyDown(evt) {
-        if (!checkWinCondition() && !checkLoseCondition()) {
-            if (evt.key === "Escape") {
-                if (paused === false) {
-                    paused = true;
-                    pauseDiv.classList.remove("hidden");
-                } else {
-                    paused = false;
-                    pauseDiv.classList.add("hidden");
-                }
-            }
-        }
-    }
-
-    // called when the user moves the mouse
-    function mouseMoved(evt) {
-        mousePos = getMousePos(canvas, evt);
-    }
-
-    function getMousePos(canvas, evt) {
-        // necessary to work in the local canvas coordinate system
-        let rect = canvas.getBoundingClientRect();
-        
-        // we can return the mouse coords as a simple object in JS
-        return { x: evt.clientX - rect.left }
-    }
-
     function createBlocks() {
         let blockArray = [];
         let blockGap = 3;
         let blockWidth = 60;
         let blockHeight = 20;
 
-        if (currentLevel === 1) {
+        if (gameState.currentLevel === 1) {
             blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, w);
-        } else if (currentLevel === 2) {
+        } else if (gameState.currentLevel === 2) {
             blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, w);
         }
 
         return blockArray;
     }
-
-    // for testing
-    /*function clearBlocks(evt) {
-        if (evt.key === "b") {
-            blocks.splice(0, blocks.length);
-        }
-    }*/
 
     function drawAllBlocks(blockArray) {
         blockArray.forEach(function(b) {
@@ -249,7 +197,7 @@ var Guavanoid = function() {
         b.move();    
         testCollisionBallWithWalls(b, sfx, failCollisionSound, h, w);
         testCollisionBallWithPlayer(b, sfx, playerCollisionSound, player, ballStartSpeedX);
-        testCollisionBallWithBlocks(b, sfx, blockCollisionSound, blocks, currentScore);
+        testCollisionBallWithBlocks(b, sfx, blockCollisionSound, blocks, gameState);
     }
 
     function displayHUD(lvl, score, lives) {
@@ -268,40 +216,40 @@ var Guavanoid = function() {
         ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
     }
 
-    function checkWinCondition() {
+    var checkWinCondition = function() {
         if (blocks.length === 0) {
-            levelWin = true;
-            totalScore += currentScore;
+            gameState.totalScore += gameState.currentScore;
 
-            if (currentLevel === totalLevels) {
-                win = true;
+            if (gameState.currentLevel === gameState.totalLevels) {
+                gameState.win = true;
 
                 // display win screen
                 canvas.classList.add("hidden");
                 gameContainer.classList.add("hidden");
                 winDiv.classList.remove("hidden");
-                winSpan.textContent = "Score: " + totalScore;
+                winSpan.textContent = "Score: " + gameState.totalScore;
             } else {
-                currentLevel++;
+                gameState.currentLevel++;
                 start();
             }
         }
 
-        return win;
+        return gameState.win;
     }
 
-    function checkLoseCondition() {
+    var checkLoseCondition = function() {
         if (player.lives < 0) {
-            lose = true;
+            gameState.lose = true;
+            gameState.totalScore += gameState.currentScore;
 
             // display lose screen
             canvas.classList.add("hidden");
             gameContainer.classList.add("hidden");
             loseDiv.classList.remove("hidden");
-            loseSpan.textContent = "Score: " + totalScore;
+            loseSpan.textContent = "Score: " + gameState.totalScore;
         }
 
-        return lose;
+        return gameState.lose;
     }
 
     var playerFail = function() {
@@ -325,6 +273,8 @@ var Guavanoid = function() {
 
     return {
         start: start,
+        checkWinCondition: checkWinCondition,
+        checkLoseCondition: checkLoseCondition,
         playerFail: playerFail,
         toggleSFX: toggleSFX,
         getSFX: getSFX

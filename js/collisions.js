@@ -162,7 +162,7 @@ function testCollisionBallWithPlayer(b, sfx, playerSound, player, ballStartSpeed
     }
 }
 
-function testCollisionBallWithBlocks(b, sfx, blockSound, blocks, currentScore) {
+function testCollisionBallWithBlocks(b, sfx, blockSound, blocks, gameState) {
     blocks.forEach(function(block, index) {
         if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
             let ballRightSide = b.x + b.radius;
@@ -260,7 +260,7 @@ function testCollisionBallWithBlocks(b, sfx, blockSound, blocks, currentScore) {
             blocks.splice(index, 1);
 
             // increment the score
-            currentScore += 1;
+            gameState.currentScore += 1;
         }
     });
 }
