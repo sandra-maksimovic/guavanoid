@@ -33,7 +33,7 @@ var Guavanoid = function() {
     let paused = false;
     let currentScore = 0;
     let totalScore = 0;
-    let level = 1;
+    let currentLevel = 1;
     let totalLevels = 2;
     let displayTitle, displayTitleStartTime;
     let displayTitleTimer = 1500; //ms
@@ -44,7 +44,7 @@ var Guavanoid = function() {
 
     // for time based animation
     var delta, then;
-    
+
     var loadAssets = function(callback) {
         // load embedded sounds
         blockCollisionSound = new Howl({
@@ -130,7 +130,7 @@ var Guavanoid = function() {
         ctx.font = "bold 100px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(`Level ${level}`, titleX, titleY);
+        ctx.fillText(`Level ${currentLevel}`, titleX, titleY);
     }
 
     function mainLoop(now) {
@@ -151,7 +151,7 @@ var Guavanoid = function() {
                 ball.draw(ctx);
 
                 drawAllBlocks(blocks);
-                displayHUD(level, currentScore, player.lives);
+                displayHUD(currentLevel, currentScore, player.lives);
 
                 if (!ball.isAttached) {
                     moveBall(ball);
@@ -221,10 +221,10 @@ var Guavanoid = function() {
         let blockWidth = 60;
         let blockHeight = 20;
 
-        if (level === 1) {
-            blockArray = createLevel1(blockArray, blockGap, blockWidth, blockHeight);
-        } else if (level === 2) {
-            blockArray = createLevel2(blockArray, blockGap, blockWidth, blockHeight);
+        if (currentLevel === 1) {
+            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, w);
+        } else if (currentLevel === 2) {
+            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, w);
         }
 
         return blockArray;
@@ -236,93 +236,6 @@ var Guavanoid = function() {
             blocks.splice(0, blocks.length);
         }
     }*/
-
-    function createLevel1(array, gap, width, height) {
-        let rows = 6;
-        let cols = 10;
-        let color = 'grey';
-        
-        // create rect of blocks
-        for (let r=0; r < rows; r++) {
-            let blockY;
-            let blockYSpacing = height + gap;
-            let topGapY = 50;
-
-            if (r === 0) {
-                blockY = topGapY; 
-            } else {
-                blockY = topGapY + r*blockYSpacing;
-            }
-
-            for (let c=0; c < cols; c++) {
-                let blockX;
-                let blockXSpacing = width + gap;
-                let leftGapX = (w - blockXSpacing*cols) / 2;
-
-                if (c === 0) {
-                    blockX = leftGapX;
-                } else {
-                    blockX = leftGapX + c*blockXSpacing;
-                }
-
-                let block = new Block(blockX, blockY, width, height, color);
-                array.push(block);
-            }
-        }
-
-        return array;
-    }
-
-    function createLevel2(array, gap, width, height) {
-        let rows = 9;
-        let cols = 1;
-        let colsMax = 9;
-        let color = 'blue';
-        let canvasCenter = w / 2;
-        let blockCenter = width / 2;
-
-        // create diamond of blocks
-        for (let r=0; r < rows; r++) {
-            let blockY;
-            let blockYSpacing = height + gap;
-            let topGapY = 50;
-
-            if (r === 0) {
-                blockY = topGapY;
-            } else {
-                blockY = topGapY + r*blockYSpacing;
-            }
-
-            for (let c=0; c < cols; c++) {
-                let blockX = canvasCenter - blockCenter;
-                let blockXSpacing = width + gap;
-
-                // use row num as basis for spacing top horizontally
-                if (r !== 0 && colsMax === rows) {
-                    blockX = (blockX - blockXSpacing*r) + c*blockXSpacing;
-                // halve max cols then use whole portion as basis for spacing bottom horizontally
-                } else if (colsMax < rows) {
-                    blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
-                }
-
-                let block = new Block(blockX, blockY, width, height, color);
-                array.push(block);
-            }
-
-            // grow the num of cols while under max
-            // to make the top of the diamond
-            if (cols !== colsMax) {
-                cols += 2;
-            // shrink the num of cols when it reaches max
-            // to make the bottom of the diamond
-            } else if (cols > 0 && cols === colsMax) {
-                cols -= 2;
-                colsMax = cols;
-            }
-        }
-        
-        return array;
-    }
 
     function drawAllBlocks(blockArray) {
         blockArray.forEach(function(b) {
@@ -358,7 +271,7 @@ var Guavanoid = function() {
             levelWin = true;
             totalScore += currentScore;
 
-            if (level === totalLevels) {
+            if (currentLevel === totalLevels) {
                 win = true;
 
                 // display win screen
@@ -367,7 +280,7 @@ var Guavanoid = function() {
                 winDiv.classList.remove("hidden");
                 winSpan.textContent = "Score: " + totalScore;
             } else {
-                level++;
+                currentLevel++;
                 start();
             }
         }
