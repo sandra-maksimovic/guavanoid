@@ -1,21 +1,32 @@
 "use strict";
 
-var game;
+var game, gameCanvas, gameContainerDiv;
 
 var Guavanoid = function() {
-    let canvas, ctx, w, h;
+    let canvas = {
+        ctx: gameCanvas.getContext("2d"),
+        h: gameCanvas.height,
+        w: gameCanvas.width
+    };
 
     // i.e. mousePos.x
     let inputState = {};
 
-    // HTML elements
-    let winDiv, winSpan, loseDiv, loseSpan, pauseDiv, gameContainer;
+    let htmlElements = {
+        loseDiv: document.querySelector("#loseDiv"),
+        loseSpan: document.querySelector("#loseSpan"),
+        pauseDiv: document.querySelector("#pauseDiv"),
+        winDiv: document.querySelector("#winDiv"),
+        winSpan: document.querySelector("#winSpan")
+    };
 
     let player;
-    let playerWidth = 50;
-    let playerHeight = 10;
-    let playerColor = 'black';
-    let playerStartPosX, playerStartPosY;
+
+    let playerInit = {
+        playerColor: 'black',
+        playerHeight: 10,
+        playerWidth: 50
+    };
     
     let ball;
     let ballRadius = 5;
@@ -32,6 +43,7 @@ var Guavanoid = function() {
         displayTitleTimer: 1500, //ms
         lose: false,
         paused: false,
+        pauseListener: false,
         totalLevels: 2,
         totalScore: 0,
         win: false
@@ -67,29 +79,15 @@ var Guavanoid = function() {
     var start = function() {
         // reset game state
         gameState.currentScore = 0;
-
-        // get canvas element
-        canvas = document.querySelector("#gameCanvas");
-
-        // get the width and height of the canvas
-        w = canvas.width;
-        h = canvas.height;
-
-        // get HTML elements
-        winDiv = document.querySelector("#winDiv");
-        winSpan = document.querySelector("#winSpan");
-        loseDiv = document.querySelector("#loseDiv");
-        loseSpan = document.querySelector("#loseSpan");
-        pauseDiv = document.querySelector("#pauseDiv");
-        gameContainer = document.querySelector("#gameContainer");
+        gameState.pauseListener = false;
 
         // create player
-        playerStartPosX = (w / 2) - (playerWidth / 2);
-        playerStartPosY = h - 50;
-        player = new Player(playerStartPosX, playerStartPosY, playerWidth, playerHeight, playerColor);
+        let playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
+        let playerStartPosY = canvas.h - 50;
+        player = new Player(playerStartPosX, playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor);
 
         // create ball
-        ballStartPosX = w / 2;
+        ballStartPosX = canvas.w / 2;
         ballStartPosY = playerStartPosY - ballRadius;
         ballStartSpeedX = 300; // 60 fps * 5 px = 300 px/s
         ballStartSpeedY = -300; // 60 fps * 5 px = 300 px/s
@@ -98,11 +96,9 @@ var Guavanoid = function() {
         // create blocks
         blocks = createBlocks();
 
-        // required to draw 2d shapes to the canvas object
-        ctx = canvas.getContext("2d");
-
-        // add event listeners to the canvas object
-        addListeners(canvas, ball, blocks, inputState, gameState, pauseDiv);
+        // add event listeners
+        addMouseListeners(gameCanvas, ball, inputState);
+        addTestListener(blocks);
 
         // Load sounds and images, then when this is done, start the mainLoop
         loadAssets(function() {
@@ -115,20 +111,32 @@ var Guavanoid = function() {
     };
 
     function displayTitleScreen() {
-        const titleX = w / 2;
-        const titleY = h / 2;
+        const titleX = canvas.w / 2;
+        const titleY = canvas.h / 2;
 
-        ctx.clearRect(0, 0, w, h);
-        ctx.font = "bold 100px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
+        // remove the pause listener during the title screen
+        removePauseListener(gameCanvas);
+        gameState.pauseListener = false;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
     }
 
     function mainLoop(now) {
+        // check whether the title screen has finished
         if (now - gameState.displayTitleStartTime > gameState.displayTitleTimer) {
             gameState.displayTitle = false;
+            
+            // add the pause listener during gameplay
+            if (!gameState.pauseListener) {
+                addPauseListener(gameState, htmlElements);
+                gameState.pauseListener = true;
+            }
 
+            // main gameplay loop
             if (!gameState.paused) {
                 // get the time between frames
                 delta = now - then;
@@ -137,10 +145,10 @@ var Guavanoid = function() {
                 ball.incrementY = calcIncrement(ball.speedY, delta);
 
                 // clear the canvas
-                ctx.clearRect(0, 0, w, h);
+                canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
                 
-                player.draw(ctx);
-                ball.draw(ctx);
+                player.draw(canvas.ctx);
+                ball.draw(canvas.ctx);
 
                 drawAllBlocks(blocks);
                 displayHUD(gameState.currentLevel, gameState.currentScore, player.lives);
@@ -153,19 +161,22 @@ var Guavanoid = function() {
                 // test if the mouse is positioned over the canvas first
                 if(inputState.mousePos !== undefined) {
                     //player.move(mousePos.x, mousePos.y);
-                    player.move(inputState.mousePos.x, w);
+                    player.move(inputState.mousePos.x, canvas.w);
                     if (ball.isAttached) {
-                        ball.followPlayer(inputState.mousePos.x, player, w);
+                        ball.followPlayer(inputState.mousePos.x, player, canvas.w);
                     }
                 }
             }
     
+            // if the game is still going ask for a new frame
             if (!checkWinCondition() && !checkLoseCondition()) {
                 // copy the current time to the old time
                 then = now;
                 // ask for a new animation frame
                 requestAnimationFrame(mainLoop);
             }
+
+        // check whether we should display the title screen
         } else if (gameState.displayTitle) {
             displayTitleScreen();
             requestAnimationFrame(mainLoop);
@@ -183,9 +194,9 @@ var Guavanoid = function() {
         let blockHeight = 20;
 
         if (gameState.currentLevel === 1) {
-            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, w);
+            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
         } else if (gameState.currentLevel === 2) {
-            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, w);
+            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
         }
 
         return blockArray;
@@ -193,45 +204,50 @@ var Guavanoid = function() {
 
     function drawAllBlocks(blockArray) {
         blockArray.forEach(function(b) {
-            b.draw(ctx);
+            b.draw(canvas.ctx);
         });
     }
 
     function moveBall(b) {
         b.move();    
-        testCollisionBallWithWalls(b, audio, h, w);
+        testCollisionBallWithWalls(b, audio, canvas);
         testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX);
         testCollisionBallWithBlocks(b, audio, blocks, gameState);
     }
 
     function displayHUD(lvl, score, lives) {
         let hudXLeftAlign = 40;
-        let hudXCenterAlign = w / 2;
-        let huxXRightAlign = w - 40;
+        let hudXCenterAlign = canvas.w / 2;
+        let huxXRightAlign = canvas.w - 40;
         let hudYTopAlign = 5;
 
-        ctx.font = "10px sans-serif";
-        ctx.textBaseline = "top";
-        ctx.textAlign = "left";
-        ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
-        ctx.textAlign = "center";
-        ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
-        ctx.textAlign = "right";
-        ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
+        canvas.ctx.font = "10px sans-serif";
+        canvas.ctx.textBaseline = "top";
+        canvas.ctx.textAlign = "left";
+        canvas.ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
+        canvas.ctx.textAlign = "right";
+        canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
     }
 
     var checkWinCondition = function() {
         if (blocks.length === 0) {
             gameState.totalScore += gameState.currentScore;
 
+            // we've won so remove all listeners
+            removeMouseListeners(gameCanvas);
+            removePauseListener();
+            removeTestListener();
+
             if (gameState.currentLevel === gameState.totalLevels) {
                 gameState.win = true;
 
                 // display win screen
-                canvas.classList.add("hidden");
-                gameContainer.classList.add("hidden");
-                winDiv.classList.remove("hidden");
-                winSpan.textContent = "Score: " + gameState.totalScore;
+                gameCanvas.classList.add("hidden");
+                gameContainerDiv.classList.add("hidden");
+                htmlElements.winDiv.classList.remove("hidden");
+                htmlElements.winSpan.textContent = "Score: " + gameState.totalScore;
             } else {
                 gameState.currentLevel++;
                 start();
@@ -246,11 +262,16 @@ var Guavanoid = function() {
             gameState.lose = true;
             gameState.totalScore += gameState.currentScore;
 
+            // we've lost so remove all listeners
+            removeMouseListeners(gameCanvas);
+            removePauseListener();
+            removeTestListener();
+
             // display lose screen
-            canvas.classList.add("hidden");
-            gameContainer.classList.add("hidden");
-            loseDiv.classList.remove("hidden");
-            loseSpan.textContent = "Score: " + gameState.totalScore;
+            gameCanvas.classList.add("hidden");
+            gameContainerDiv.classList.add("hidden");
+            htmlElements.loseDiv.classList.remove("hidden");
+            htmlElements.loseSpan.textContent = "Score: " + gameState.totalScore;
         }
 
         return gameState.lose;
@@ -289,14 +310,14 @@ window.onload = function init() {
     let startButton = document.querySelector("#startButton");
     let sfxToggleBtn = document.querySelector("#sfxToggleBtn");
     let startDiv = document.querySelector("#startDiv");
-    let gameContainer = document.querySelector("#gameContainer");
-    let gameCanvas = document.querySelector("#gameCanvas");
+    gameContainerDiv = document.querySelector("#gameContainerDiv");
+    gameCanvas = document.querySelector("#gameCanvas");
     game = new Guavanoid();
 
     startButton.addEventListener('click', function(evt) {
         startButton.classList.add("hidden");
         startDiv.classList.add("hidden");
-        gameContainer.classList.remove("hidden");
+        gameContainerDiv.classList.remove("hidden");
         gameCanvas.classList.remove("hidden");
         game.start();
     });

@@ -1,4 +1,4 @@
-function createLevel1Layout(array, gap, width, height, w) {
+function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
     let rows = 6;
     let cols = 10;
     let color = 'grey';
@@ -6,7 +6,7 @@ function createLevel1Layout(array, gap, width, height, w) {
     // create rect of blocks
     for (let r=0; r < rows; r++) {
         let blockY;
-        let blockYSpacing = height + gap;
+        let blockYSpacing = blockHeight + blockGap;
         let topGapY = 50;
 
         if (r === 0) {
@@ -17,8 +17,8 @@ function createLevel1Layout(array, gap, width, height, w) {
 
         for (let c=0; c < cols; c++) {
             let blockX;
-            let blockXSpacing = width + gap;
-            let leftGapX = (w - blockXSpacing*cols) / 2;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (canvas.w - blockXSpacing*cols) / 2;
 
             if (c === 0) {
                 blockX = leftGapX;
@@ -26,26 +26,26 @@ function createLevel1Layout(array, gap, width, height, w) {
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, width, height, color);
-            array.push(block);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            blockArray.push(block);
         }
     }
 
-    return array;
+    return blockArray;
 }
 
-function createLevel2Layout(array, gap, width, height, w) {
+function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
     let color = 'blue';
-    let canvasCenter = w / 2;
-    let blockCenter = width / 2;
+    let canvasCenter = canvas.w / 2;
+    let blockCenter = blockWidth / 2;
 
     // create diamond of blocks
     for (let r=0; r < rows; r++) {
         let blockY;
-        let blockYSpacing = height + gap;
+        let blockYSpacing = blockHeight + blockGap;
         let topGapY = 50;
 
         if (r === 0) {
@@ -56,7 +56,7 @@ function createLevel2Layout(array, gap, width, height, w) {
 
         for (let c=0; c < cols; c++) {
             let blockX = canvasCenter - blockCenter;
-            let blockXSpacing = width + gap;
+            let blockXSpacing = blockWidth + blockGap;
 
             // use row num as basis for spacing top horizontally
             if (r !== 0 && colsMax === rows) {
@@ -66,8 +66,8 @@ function createLevel2Layout(array, gap, width, height, w) {
                 blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, width, height, color);
-            array.push(block);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            blockArray.push(block);
         }
 
         // grow the num of cols while under max
@@ -82,5 +82,5 @@ function createLevel2Layout(array, gap, width, height, w) {
         }
     }
     
-    return array;
+    return blockArray;
 }

@@ -1,12 +1,12 @@
-function testCollisionBallWithWalls(b, audio, h, w) {
+function testCollisionBallWithWalls(b, audio, canvas) {
     // COLLISION WITH VERTICAL WALLS
-    if ((b.x + b.radius) > w) {
+    if ((b.x + b.radius) > canvas.w) {
         // the ball hit the right wall
         // change horizontal direction
         b.speedX = -b.speedX;
         
         // put the ball at the collision point
-        b.x = w - b.radius;
+        b.x = canvas.w - b.radius;
     } else if ((b.x - b.radius) < 0) {
         // the ball hit the left wall
         // change horizontal direction
@@ -19,13 +19,13 @@ function testCollisionBallWithWalls(b, audio, h, w) {
     // COLLISIONS WTH HORIZONTAL WALLS
     // Not in the else as the ball can touch both
     // vertical and horizontal walls in corners
-    if ((b.y + b.radius) > h) {
+    if ((b.y + b.radius) > canvas.h) {
         // the ball hit the bottom wall
         // change vertical direction
         ////b.speedY = -b.speedY;
         
         // put the ball at the collision point
-        ////b.y = h - b.radius;
+        ////b.y = canvas.h - b.radius;
 
         if (audio.sfx) { audio.failCollisionSound.play(); }
         game.playerFail();
