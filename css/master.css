@@ -44,7 +44,7 @@ h1 {
     /*background-color: grey;*/
 }
 
-#gameContainer {
+#gameContainerDiv {
     position: relative; /* ensure the container is a positioned ancestor for the pauseDiv */
 }
 

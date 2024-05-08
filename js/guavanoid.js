@@ -1,15 +1,21 @@
 "use strict";
 
-var game;
+var game, gameCanvas, gameContainerDiv;
 
 var Guavanoid = function() {
-    let canvas, ctx, w, h;
+    // canvas
+    let ctx, w, h;
 
     // i.e. mousePos.x
     let inputState = {};
 
-    // HTML elements
-    let winDiv, winSpan, loseDiv, loseSpan, pauseDiv, gameContainer;
+    let htmlElement = {
+        loseDiv: undefined,
+        loseSpan: undefined,
+        pauseDiv: undefined,
+        winDiv: undefined,
+        winSpan: undefined
+    };
 
     let player;
     let playerWidth = 50;
@@ -69,19 +75,18 @@ var Guavanoid = function() {
         gameState.currentScore = 0;
 
         // get canvas element
-        canvas = document.querySelector("#gameCanvas");
+        gameCanvas = document.querySelector("#gameCanvas");
 
         // get the width and height of the canvas
-        w = canvas.width;
-        h = canvas.height;
+        w = gameCanvas.width;
+        h = gameCanvas.height;
 
         // get HTML elements
-        winDiv = document.querySelector("#winDiv");
-        winSpan = document.querySelector("#winSpan");
-        loseDiv = document.querySelector("#loseDiv");
-        loseSpan = document.querySelector("#loseSpan");
-        pauseDiv = document.querySelector("#pauseDiv");
-        gameContainer = document.querySelector("#gameContainer");
+        htmlElement.winDiv = document.querySelector("#winDiv");
+        htmlElement.winSpan = document.querySelector("#winSpan");
+        htmlElement.loseDiv = document.querySelector("#loseDiv");
+        htmlElement.loseSpan = document.querySelector("#loseSpan");
+        htmlElement.pauseDiv = document.querySelector("#pauseDiv");
 
         // create player
         playerStartPosX = (w / 2) - (playerWidth / 2);
@@ -99,10 +104,10 @@ var Guavanoid = function() {
         blocks = createBlocks();
 
         // required to draw 2d shapes to the canvas object
-        ctx = canvas.getContext("2d");
+        ctx = gameCanvas.getContext("2d");
 
         // add event listeners to the canvas object
-        addListeners(canvas, ball, blocks, inputState, gameState, pauseDiv);
+        addListeners(gameCanvas, ball, blocks, inputState, gameState, htmlElement);
 
         // Load sounds and images, then when this is done, start the mainLoop
         loadAssets(function() {
@@ -228,10 +233,10 @@ var Guavanoid = function() {
                 gameState.win = true;
 
                 // display win screen
-                canvas.classList.add("hidden");
-                gameContainer.classList.add("hidden");
-                winDiv.classList.remove("hidden");
-                winSpan.textContent = "Score: " + gameState.totalScore;
+                gameCanvas.classList.add("hidden");
+                gameContainerDiv.classList.add("hidden");
+                htmlElement.winDiv.classList.remove("hidden");
+                htmlElement.winSpan.textContent = "Score: " + gameState.totalScore;
             } else {
                 gameState.currentLevel++;
                 start();
@@ -247,10 +252,10 @@ var Guavanoid = function() {
             gameState.totalScore += gameState.currentScore;
 
             // display lose screen
-            canvas.classList.add("hidden");
-            gameContainer.classList.add("hidden");
-            loseDiv.classList.remove("hidden");
-            loseSpan.textContent = "Score: " + gameState.totalScore;
+            gameCanvas.classList.add("hidden");
+            gameContainerDiv.classList.add("hidden");
+            htmlElement.loseDiv.classList.remove("hidden");
+            htmlElement.loseSpan.textContent = "Score: " + gameState.totalScore;
         }
 
         return gameState.lose;
@@ -289,14 +294,14 @@ window.onload = function init() {
     let startButton = document.querySelector("#startButton");
     let sfxToggleBtn = document.querySelector("#sfxToggleBtn");
     let startDiv = document.querySelector("#startDiv");
-    let gameContainer = document.querySelector("#gameContainer");
-    let gameCanvas = document.querySelector("#gameCanvas");
+    gameContainerDiv = document.querySelector("#gameContainerDiv");
+    gameCanvas = document.querySelector("#gameCanvas");
     game = new Guavanoid();
 
     startButton.addEventListener('click', function(evt) {
         startButton.classList.add("hidden");
         startDiv.classList.add("hidden");
-        gameContainer.classList.remove("hidden");
+        gameContainerDiv.classList.remove("hidden");
         gameCanvas.classList.remove("hidden");
         game.start();
     });
