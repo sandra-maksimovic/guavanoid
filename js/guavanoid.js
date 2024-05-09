@@ -3,43 +3,31 @@
 var game, gameCanvas, gameContainerDiv;
 
 var Guavanoid = function() {
-    let canvas = {
-        ctx: gameCanvas.getContext("2d"),
-        h: gameCanvas.height,
-        w: gameCanvas.width
+    let audio = {
+        blockCollisionSound: undefined,
+        failCollisionSound: undefined,
+        playerCollisionSound: undefined,
+        sfx: true
     };
 
-    // i.e. mousePos.x
-    let inputState = {};
-
-    let htmlElements = {
-        loseDiv: document.querySelector("#loseDiv"),
-        loseSpan: document.querySelector("#loseSpan"),
-        pauseDiv: document.querySelector("#pauseDiv"),
-        winDiv: document.querySelector("#winDiv"),
-        winSpan: document.querySelector("#winSpan")
-    };
-
-    let player;
-
-    let playerInit = {
-        playerColor: 'black',
-        playerHeight: 10,
-        playerWidth: 50
-    };
-    
     let ball;
 
     let ballInit = {
         ballColor: 'red',
         ballRadius: 5,
-        ballStartPosX: undefined,
-        ballStartPosY: undefined,
+        ballStartPosX: canvas.w / 2,
+        ballStartPosY: undefined, // set later in start(), requires ballInit.ballRadius value for init
         ballStartSpeedX: 300, // 60 fps * 5 px = 300 px/s
         ballStartSpeedY: -300 // 60 fps * 5 px = 300 px/s
     };
 
     let blocks = [];
+
+    let canvas = {
+        ctx: gameCanvas.getContext("2d"),
+        h: gameCanvas.height,
+        w: gameCanvas.width
+    };
 
     let gameState = {
         currentLevel: 1,
@@ -55,13 +43,27 @@ var Guavanoid = function() {
         win: false
     };
 
-    let audio = {
-        blockCollisionSound: undefined,
-        failCollisionSound: undefined,
-        playerCollisionSound: undefined,
-        sfx: true
+    let htmlElements = {
+        loseDiv: document.querySelector("#loseDiv"),
+        loseSpan: document.querySelector("#loseSpan"),
+        pauseDiv: document.querySelector("#pauseDiv"),
+        winDiv: document.querySelector("#winDiv"),
+        winSpan: document.querySelector("#winSpan")
     };
 
+    // i.e. mousePos.x
+    let inputState = {};
+
+    let player;
+
+    let playerInit = {
+        playerColor: 'black',
+        playerHeight: 10,
+        playerWidth: 50,
+        playerStartPosX: undefined, // set later in start(), requires playerInit.playerWidth value for init
+        playerStartPosY: canvas.h - 50
+    };
+    
     // for time based animation
     var delta, then;
 
@@ -88,13 +90,11 @@ var Guavanoid = function() {
         gameState.pauseListener = false;
 
         // create player
-        let playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
-        let playerStartPosY = canvas.h - 50;
-        player = new Player(playerStartPosX, playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor);
+        playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
+        player = new Player(playerInit.playerStartPosX, playerInit.playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor);
 
         // create ball
-        ballInit.ballStartPosX = canvas.w / 2;
-        ballInit.ballStartPosY = playerStartPosY - ballInit.ballRadius;
+        ballInit.ballStartPosY = playerInit.playerStartPosY - ballInit.ballRadius;
         ball = new Ball(ballInit.ballStartPosX, ballInit.ballStartPosY, ballInit.ballRadius, ballInit.ballColor, ballInit.ballStartSpeedX, ballInit.ballStartSpeedY);
 
         // create blocks
@@ -104,12 +104,12 @@ var Guavanoid = function() {
         addMouseListeners(gameCanvas, ball, inputState);
         addTestListener(blocks);
 
-        // Load sounds and images, then when this is done, start the mainLoop
+        // load assets, then when this is done, start the mainLoop
         loadAssets(function() {
-            // We enter here only when all assets have been loaded
-            // start the game
+            // we enter here only when all assets have been loaded
             gameState.displayTitle = true;
             gameState.displayTitleStartTime = performance.now();
+            // start the game
             mainLoop();
         });
     };
@@ -314,6 +314,7 @@ window.onload = function init() {
     let startButton = document.querySelector("#startButton");
     let sfxToggleBtn = document.querySelector("#sfxToggleBtn");
     let startDiv = document.querySelector("#startDiv");
+
     gameContainerDiv = document.querySelector("#gameContainerDiv");
     gameCanvas = document.querySelector("#gameCanvas");
     game = new Guavanoid();
