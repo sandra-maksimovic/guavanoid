@@ -2,7 +2,13 @@
 
 var game, gameCanvas, gameContainerDiv;
 
-var Guavanoid = function() {
+var Guavanoid = function() {    
+    let canvas = {
+        ctx: gameCanvas.getContext("2d"),
+        h: gameCanvas.height,
+        w: gameCanvas.width
+    };
+
     let audio = {
         blockCollisionSound: undefined,
         failCollisionSound: undefined,
@@ -22,12 +28,6 @@ var Guavanoid = function() {
     };
 
     let blocks = [];
-
-    let canvas = {
-        ctx: gameCanvas.getContext("2d"),
-        h: gameCanvas.height,
-        w: gameCanvas.width
-    };
 
     let gameState = {
         currentLevel: 1,
