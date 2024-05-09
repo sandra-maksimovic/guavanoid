@@ -1,7 +1,9 @@
 function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
+    let color = 'grey';
+    let health = 1;
+    
     let rows = 6;
     let cols = 10;
-    let color = 'grey';
     
     // create rect of blocks
     for (let r=0; r < rows; r++) {
@@ -26,7 +28,7 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
             blockArray.push(block);
         }
     }
@@ -35,10 +37,13 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
 }
 
 function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
+    let color = 'blue';
+    let health = 1;
+    
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
-    let color = 'blue';
+    
     let canvasCenter = canvas.w / 2;
     let blockCenter = blockWidth / 2;
 
@@ -66,7 +71,7 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
                 blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
             blockArray.push(block);
         }
 
@@ -86,9 +91,11 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
 }
 
 function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall) {
+    let color = 'green';
+    let health = 1;
+
     let rows = 10;
     let cols = 4;
-    let color = 'green';
 
     // populate blocks left of wall
     for (let r=0; r < rows; r++) {
@@ -113,7 +120,7 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall)
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
             blockArray.push(block);
         }
     }
@@ -141,10 +148,68 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall)
                 blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
             blockArray.push(block);
         }
     }
     
+    return blockArray;
+}
+
+function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
+    let color = 'purple';
+    let health = 1;
+    let rows = 9;
+    let cols = 1;
+    let colsMax = 9;
+    
+    let colorBreakableDark = 'rgb(51, 26, 0)'; // dark brown
+    //let colorBreakableMed = 'rgb(102, 53, 0)'; // brown
+    //let colorBreakableLight = 'rgb(153, 79, 0)'; // light brown
+    let healthBreakable = 3;
+    let rowsBreakable = 1;
+    let colsBreakable = 10;
+
+    // create right-angled triangle of blocks (stacked left)
+    for (let r=0; r < rows; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        //let topGapY = 50;
+
+        if (r === 0) {
+            blockY = blockYSpacing;
+        } else {
+            blockY = blockYSpacing + r*blockYSpacing;
+        }
+
+        for (let c=0; c < cols; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (canvas.w - blockXSpacing*(colsMax+1)) / 2;
+
+            blockX = leftGapX + c*blockXSpacing;
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            blockArray.push(block);
+        }
+
+        if (cols !== colsMax) { cols++; }
+    }
+
+    // create row of breakable blocks
+    for (let r=0; r < rowsBreakable; r++) {
+        let blockYSpacing = blockHeight + blockGap;
+        let blockY = blockYSpacing + blockYSpacing*rows;
+
+        for (let c=0; c < colsBreakable; c++) {
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (canvas.w - blockXSpacing*colsBreakable) / 2;
+            let blockX = leftGapX + c*blockXSpacing;
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorBreakableDark, healthBreakable);
+            blockArray.push(block);
+        }
+    }
+
     return blockArray;
 }

@@ -4,12 +4,18 @@ class Block {
     width = '';
     height = '';
     color = '';
+    health = '';
 
-    constructor(x, y, width, height, color) {
+    constructor(x, y, width, height, color, health) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.color = color;
+        this.health = health;
+    }
+
+    set color(color) {
         this.color = color;
     }
 
