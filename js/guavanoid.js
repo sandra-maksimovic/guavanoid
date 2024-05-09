@@ -39,7 +39,7 @@ var Guavanoid = function() {
         lose: false,
         paused: false,
         pauseListener: false,
-        totalLevels: 3,
+        totalLevels: 4,
         totalScore: 0,
         win: false
     };
@@ -75,9 +75,6 @@ var Guavanoid = function() {
         wallY: undefined
     };
     
-    // for time based animation
-    var delta, then;
-
     var loadAssets = function(callback) {
         // load embedded sounds
         audio.blockCollisionSound = new Howl({
@@ -214,10 +211,6 @@ var Guavanoid = function() {
         }
     }
 
-    function calcIncrement(speed, del) {
-        return (speed*del) / 1000;
-    }
-
     function createBlocks() {
         let blockArray = [];
         let blockGap = 3;
@@ -230,6 +223,8 @@ var Guavanoid = function() {
             blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
         } else if (gameState.currentLevel === 3) {
             blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall);
+        } else if (gameState.currentLevel === 4) {
+            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
         }
 
         return blockArray;

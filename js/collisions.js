@@ -182,6 +182,9 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
 
             if (audio.sfx) { audio.blockCollisionSound.play(); }
 
+            // remove health point
+            block.health -= 1;
+
             // check if the ball hit the LEFT side of the block
             if (ballRightSide > blockLeftSide && ballGoingRight) {
                 
@@ -256,8 +259,14 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
                 }
             }
 
-            // remove the block from the array
-            blocks.splice(index, 1);
+            if (block.health === 0) {
+                // remove the block from the array
+                blocks.splice(index, 1);
+            } else if (block.health === 2) {
+                block.color = 'rgb(102, 53, 0)'; // brown
+            } else if (block.health === 1) {
+                block.color = 'rgb(153, 79, 0)'; // light brown
+            }
 
             // increment the score
             gameState.currentScore += 1;
@@ -356,16 +365,4 @@ function testCollisionBallWithInnerWalls(b, wall) {
             }
         }
     }
-}
-
-// UTILITY FUNCTION
-// test collisions between rectangle and circle
-function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
-    let testX=cx;
-    let testY=cy;
-    if (testX < x0) testX=x0; // test left
-    if (testX > (x0+w0)) testX=(x0+w0); // test right
-    if (testY < y0) testY=y0; // test top
-    if (testY > (y0+h0)) testY=(y0+h0); // test bottom
-    return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
 }
