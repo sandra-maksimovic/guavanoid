@@ -39,7 +39,7 @@ function testCollisionBallWithWalls(b, audio, canvas) {
     }
 }
 
-function testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX) {
+function testCollisionBallWithPlayer(b, audio, player, ballInit) {
     if(circRectsOverlap(player.x, player.y, player.width, player.height, b.x, b.y, b.radius)) {
         let ballRightSide = b.x + b.radius;
         let ballLeftSide = b.x - b.radius;
@@ -105,7 +105,7 @@ function testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX) {
                 let segment3 = player.x + (player.width / 5)*3;
                 let segment4 = player.x + (player.width / 5)*4;
                 let segment5 = playerRightSide;
-                let fullSpeedX = ballStartSpeedX;
+                let fullSpeedX = ballInit.ballStartSpeedX;
                 let medSpeedX = fullSpeedX*0.6;
                 let lowSpeedX = fullSpeedX*0.2;
 

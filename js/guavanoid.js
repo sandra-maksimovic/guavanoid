@@ -29,9 +29,15 @@ var Guavanoid = function() {
     };
     
     let ball;
-    let ballRadius = 5;
-    let ballColor = 'red';
-    let ballStartPosX, ballStartPosY, ballStartSpeedX, ballStartSpeedY;
+
+    let ballInit = {
+        ballColor: 'red',
+        ballRadius: 5,
+        ballStartPosX: undefined,
+        ballStartPosY: undefined,
+        ballStartSpeedX: 300, // 60 fps * 5 px = 300 px/s
+        ballStartSpeedY: -300 // 60 fps * 5 px = 300 px/s
+    };
 
     let blocks = [];
 
@@ -87,11 +93,9 @@ var Guavanoid = function() {
         player = new Player(playerStartPosX, playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor);
 
         // create ball
-        ballStartPosX = canvas.w / 2;
-        ballStartPosY = playerStartPosY - ballRadius;
-        ballStartSpeedX = 300; // 60 fps * 5 px = 300 px/s
-        ballStartSpeedY = -300; // 60 fps * 5 px = 300 px/s
-        ball = new Ball(ballStartPosX, ballStartPosY, ballRadius, ballColor, ballStartSpeedX, ballStartSpeedY);
+        ballInit.ballStartPosX = canvas.w / 2;
+        ballInit.ballStartPosY = playerStartPosY - ballInit.ballRadius;
+        ball = new Ball(ballInit.ballStartPosX, ballInit.ballStartPosY, ballInit.ballRadius, ballInit.ballColor, ballInit.ballStartSpeedX, ballInit.ballStartSpeedY);
 
         // create blocks
         blocks = createBlocks();
@@ -211,7 +215,7 @@ var Guavanoid = function() {
     function moveBall(b) {
         b.move();    
         testCollisionBallWithWalls(b, audio, canvas);
-        testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX);
+        testCollisionBallWithPlayer(b, audio, player, ballInit);
         testCollisionBallWithBlocks(b, audio, blocks, gameState);
     }
 
@@ -280,8 +284,8 @@ var Guavanoid = function() {
     var playerFail = function() {
         player.lives -= 1;
         ball.isAttached = true;
-        ball.x = ballStartPosX;
-        ball.y = ballStartPosY;
+        ball.x = ballInit.ballStartPosX;
+        ball.y = ballInit.ballStartPosY;
     }
 
     var toggleSFX = function() {
