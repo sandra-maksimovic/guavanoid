@@ -39,7 +39,7 @@ function testCollisionBallWithWalls(b, audio, canvas) {
     }
 }
 
-function testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX) {
+function testCollisionBallWithPlayer(b, audio, player, ballInit) {
     if(circRectsOverlap(player.x, player.y, player.width, player.height, b.x, b.y, b.radius)) {
         let ballRightSide = b.x + b.radius;
         let ballLeftSide = b.x - b.radius;
@@ -105,7 +105,7 @@ function testCollisionBallWithPlayer(b, audio, player, ballStartSpeedX) {
                 let segment3 = player.x + (player.width / 5)*3;
                 let segment4 = player.x + (player.width / 5)*4;
                 let segment5 = playerRightSide;
-                let fullSpeedX = ballStartSpeedX;
+                let fullSpeedX = ballInit.ballStartSpeedX;
                 let medSpeedX = fullSpeedX*0.6;
                 let lowSpeedX = fullSpeedX*0.2;
 
@@ -263,6 +263,99 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
             gameState.currentScore += 1;
         }
     });
+}
+
+function testCollisionBallWithInnerWalls(b, wall) {
+    if(circRectsOverlap(wall.x, wall.y, wall.width, wall.height, b.x, b.y, b.radius)) {
+        let ballRightSide = b.x + b.radius;
+        let ballLeftSide = b.x - b.radius;
+        let wallRightSide = wall.x + wall.width;
+        let wallLeftSide = wall.x;
+
+        let ballTopSide = b.y - b.radius;
+        let ballBottomSide = b.y + b.radius;
+        let wallTopSide = wall.y;
+        let wallBottomSide = wall.y + wall.height;
+
+        let ballGoingRight = b.speedX > 0;
+        let ballGoingLeft = b.speedX < 0;
+        let ballGoingUp = b.speedY < 0;
+        let ballGoingDown = b.speedY > 0;
+
+        // check if the ball hit the LEFT side of the wall
+        if (ballRightSide > wallLeftSide && ballGoingRight) {
+            
+            // also check if the ball centre is within the TOP & BOTTOM bounds of the wall
+            if (b.y > wallTopSide && b.y < wallBottomSide) {
+                // change horizontal direction
+                b.speedX = -b.speedX;
+                ballGoingRight = false;
+                ballGoingLeft = true;
+                
+                // put the ball at the collision point
+                b.x = ballLeftSide - b.radius;
+                
+                // update the horizontal ball bounds
+                ballLeftSide = b.x - b.radius;
+                ballRightSide = b.x + b.radius;
+            }
+        
+        // otherwise check if the ball hit the RIGHT side of the wall
+        } else if (ballLeftSide < wallRightSide && ballGoingLeft) {
+            
+            // also check if the ball centre is within the TOP & BOTTOM bounds of the wall
+            if (b.y > wallTopSide && b.y < wallBottomSide) {
+                // change horizontal direction
+                b.speedX = -b.speedX;
+                ballGoingLeft = false;
+                ballGoingRight = true;
+                
+                // put the ball at the collision point
+                b.x = wallRightSide + b.radius;
+
+                // update the horizontal ball bounds
+                ballRightSide = b.x + b.radius;
+                ballLeftSide = b.x - b.radius;
+            }
+        }
+        
+        // check if the ball hit the TOP side of the wall
+        if (ballBottomSide > wallTopSide && ballGoingDown) {
+
+            // also check if the ball centre is within the LEFT & RIGHT bounds of the wall
+            if (b.x > wallLeftSide && b.x < wallRightSide) {
+                // change vertical direction
+                b.speedY = -b.speedY;
+                ballGoingDown = false;
+                ballGoingUp = true;
+                
+                // put the ball at the collision point
+                b.y = wallTopSide - b.radius;
+
+                // update the vertical ball bounds
+                ballTopSide = b.y - b.radius;
+                ballBottomSide = b.y + b.radius;
+            }
+        
+        // otherwise check if the ball hit the BOTTOM side of the wall
+        } else if (ballTopSide < wallBottomSide && ballGoingUp) {
+
+            // also check if the ball centre is within the LEFT & RIGHT bounds of the wall
+            if (b.x > wallLeftSide && b.x < wallRightSide) {
+                // change vertical direction
+                b.speedY = -b.speedY;
+                ballGoingUp = false;
+                ballGoingDown = true;
+                
+                // put the ball at the collision point
+                b.y = wallBottomSide + b.radius;
+
+                // update the vertical ball bounds
+                ballBottomSide = b.y + b.radius;
+                ballTopSide = b.y - b.radius;
+            }
+        }
+    }
 }
 
 // UTILITY FUNCTION

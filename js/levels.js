@@ -84,3 +84,67 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     
     return blockArray;
 }
+
+function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall) {
+    let rows = 10;
+    let cols = 4;
+    let color = 'green';
+
+    // populate blocks left of wall
+    for (let r=0; r < rows; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        let topGapY = 50;
+
+        if (r === 0) {
+            blockY = topGapY; 
+        } else {
+            blockY = topGapY + r*blockYSpacing;
+        }
+
+        for (let c=0; c < cols; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+
+            if (c === 0) {
+                blockX = leftGapX;
+            } else {
+                blockX = leftGapX + c*blockXSpacing;
+            }
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            blockArray.push(block);
+        }
+    }
+
+    // populate blocks right of wall
+    for (let r=0; r < rows; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        let topGapY = 50;
+
+        if (r === 0) {
+            blockY = topGapY; 
+        } else {
+            blockY = topGapY + r*blockYSpacing;
+        }
+
+        for (let c=0; c < cols; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+
+            if (c === 0) {
+                blockX = (wall.x + wall.width) + leftGapX;
+            } else {
+                blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
+            }
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color);
+            blockArray.push(block);
+        }
+    }
+    
+    return blockArray;
+}
