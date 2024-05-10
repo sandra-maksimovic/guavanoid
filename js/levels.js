@@ -63,10 +63,10 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             let blockX = canvasCenter - blockCenter;
             let blockXSpacing = blockWidth + blockGap;
 
-            // use row num as basis for spacing top horizontally
+            // use row num as basis for spacing top of diamond horizontally
             if (r !== 0 && colsMax === rows) {
                 blockX = (blockX - blockXSpacing*r) + c*blockXSpacing;
-            // halve max cols then use whole portion as basis for spacing bottom horizontally
+            // halve max cols then use whole portion as basis for spacing bottom of diamond horizontally
             } else if (colsMax < rows) {
                 blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
             }
