@@ -1,17 +1,14 @@
-class Ball {
-    x = '';
-    y = '';
-    radius = '';
-    color = '';
-    speedX = '';
-    speedY = '';
-    incrementX = '';
-    incrementY = '';
+class Ball extends Entity {
+    radius;
+    color;
+    speedX;
+    speedY;
+    incrementX;
+    incrementY;
     isAttached = true;
 
     constructor(x, y, radius, color, speedX, speedY) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.radius = radius;
         this.color = color;
         this.speedX = speedX;
