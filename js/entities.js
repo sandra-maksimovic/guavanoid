@@ -28,21 +28,12 @@ class Ball extends Entity {
     }
     
     draw(ctx) {
-        // GOOD practice: save the context, use 2D trasnformations
         ctx.save();
-    
-        // translate the coordinate system, draw relative to it
         ctx.translate(this.x, this.y);
-        
-        // draw the ball with its current color
         ctx.fillStyle = this.color;
-        
-        // draw the ball at its current position
         ctx.beginPath();
         ctx.arc(0, 0, this.radius, 0, 2*Math.PI);
         ctx.fill();
-    
-        // GOOD practice: restore the context
         ctx.restore();    
     }
 
