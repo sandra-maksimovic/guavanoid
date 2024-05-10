@@ -57,10 +57,12 @@ class Ball extends Entity {
 
 class Block extends Entity {
     health;
+    colorArray; // for breakable blocks
     
-    constructor(x, y, width, height, color, health) {
+    constructor(x, y, width, height, color, health, colorArray) {
         super(x, y, width, height, color);
         this.health = health;
+        this.colorArray = colorArray;
     }
 
     set color(color) {

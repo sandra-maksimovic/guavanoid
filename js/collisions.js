@@ -182,7 +182,6 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
 
             if (audio.sfx) { audio.blockCollisionSound.play(); }
 
-            // remove health point
             block.health -= 1;
 
             // check if the ball hit the LEFT side of the block
@@ -259,16 +258,14 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
                 }
             }
 
-            if (block.health === 0) {
+            if (block.health > 0) {
+                // update the color of breakable block with health left
+                block.color = block.colorArray[block.health-1];
+            } else {
                 // remove the block from the array
                 blocks.splice(index, 1);
-            } else if (block.health === 2) {
-                block.color = 'rgb(102, 53, 0)'; // brown
-            } else if (block.health === 1) {
-                block.color = 'rgb(153, 79, 0)'; // light brown
             }
 
-            // increment the score
             gameState.currentScore += 1;
         }
     });

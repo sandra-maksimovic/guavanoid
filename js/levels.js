@@ -163,18 +163,24 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     let cols = 1;
     let colsMax = 9;
     
-    let colorBreakableDark = 'rgb(51, 26, 0)'; // dark brown
-    //let colorBreakableMed = 'rgb(102, 53, 0)'; // brown
-    //let colorBreakableLight = 'rgb(153, 79, 0)'; // light brown
-    let healthBreakable = 3;
     let rowsBreakable = 1;
     let colsBreakable = 10;
+    let healthBreakable = 3;
+
+    let colorLightBrown = 'rgb(153, 79, 0)';
+    let colorMedBrown = 'rgb(102, 53, 0)';
+    let colorDarkBrown = 'rgb(51, 26, 0)';
+    
+    let colorArrayBreakable = [ 
+        colorLightBrown,
+        colorMedBrown,
+        colorDarkBrown
+    ];
 
     // create right-angled triangle of blocks (stacked left)
     for (let r=0; r < rows; r++) {
         let blockY;
         let blockYSpacing = blockHeight + blockGap;
-        //let topGapY = 50;
 
         if (r === 0) {
             blockY = blockYSpacing;
@@ -185,7 +191,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
         for (let c=0; c < cols; c++) {
             let blockX;
             let blockXSpacing = blockWidth + blockGap;
-            let leftGapX = (canvas.w - blockXSpacing*(colsMax+1)) / 2;
+            let leftGapX = (canvas.w - blockXSpacing*(colsMax+1)) / 2; // 10 cols fit across the canvas width with these block dimensions
 
             blockX = leftGapX + c*blockXSpacing;
 
@@ -193,6 +199,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             blockArray.push(block);
         }
 
+        // increment max columns per row to create triangle shape
         if (cols !== colsMax) { cols++; }
     }
 
@@ -206,7 +213,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             let leftGapX = (canvas.w - blockXSpacing*colsBreakable) / 2;
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorBreakableDark, healthBreakable);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
             blockArray.push(block);
         }
     }
