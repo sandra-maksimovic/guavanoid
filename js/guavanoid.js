@@ -135,21 +135,6 @@ var Guavanoid = function() {
         });
     };
 
-    function displayTitleScreen() {
-        const titleX = canvas.w / 2;
-        const titleY = canvas.h / 2;
-
-        // remove the pause listener during the title screen
-        removePauseListener(gameCanvas);
-        gameState.pauseListener = false;
-
-        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
-        canvas.ctx.font = "bold 100px sans-serif";
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
-    }
-
     function mainLoop(now) {
         // check whether the title screen has finished
         if (now - gameState.displayTitleStartTime > gameState.displayTitleTimer) {
@@ -211,6 +196,37 @@ var Guavanoid = function() {
         }
     }
 
+    function displayHUD(lvl, score, lives) {
+        let hudXLeftAlign = 40;
+        let hudXCenterAlign = canvas.w / 2;
+        let huxXRightAlign = canvas.w - 40;
+        let hudYTopAlign = 5;
+
+        canvas.ctx.font = "10px sans-serif";
+        canvas.ctx.textBaseline = "top";
+        canvas.ctx.textAlign = "left";
+        canvas.ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
+        canvas.ctx.textAlign = "right";
+        canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
+    }
+    
+    function displayTitleScreen() {
+        const titleX = canvas.w / 2;
+        const titleY = canvas.h / 2;
+
+        // remove the pause listener during the title screen
+        removePauseListener(gameCanvas);
+        gameState.pauseListener = false;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
+    }
+
     function createBlocks() {
         let blockArray = [];
         let blockGap = 3;
@@ -242,22 +258,6 @@ var Guavanoid = function() {
         testCollisionBallWithPlayer(b, audio, player, ballInit);
         testCollisionBallWithBlocks(b, audio, blocks, gameState);
         if (gameState.currentLevel === 3) { testCollisionBallWithInnerWalls(b, wall); }
-    }
-
-    function displayHUD(lvl, score, lives) {
-        let hudXLeftAlign = 40;
-        let hudXCenterAlign = canvas.w / 2;
-        let huxXRightAlign = canvas.w - 40;
-        let hudYTopAlign = 5;
-
-        canvas.ctx.font = "10px sans-serif";
-        canvas.ctx.textBaseline = "top";
-        canvas.ctx.textAlign = "left";
-        canvas.ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
-        canvas.ctx.textAlign = "right";
-        canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
     }
 
     var checkWinCondition = function() {
