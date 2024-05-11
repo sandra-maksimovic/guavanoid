@@ -318,6 +318,7 @@ var Game = function() {
         ball.isAttached = true;
         ball.x = ballInit.ballStartPosX;
         ball.y = ballInit.ballStartPosY;
+        ball.speedY = -ball.speedY;
     }
 
     var toggleSFX = function() {
