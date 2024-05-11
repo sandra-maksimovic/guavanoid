@@ -36,6 +36,7 @@ var Game = function() {
         displayTitle: true,
         displayTitleStartTime: 0,
         displayTitleTimer: 1500, //ms
+        hasWall: false,
         lose: false,
         paused: false,
         pauseListener: false,
@@ -99,6 +100,7 @@ var Game = function() {
         // reset game state
         gameState.currentScore = 0;
         gameState.pauseListener = false;
+        gameState.hasWall = false;
 
         // create player
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
@@ -108,8 +110,11 @@ var Game = function() {
         ballInit.ballStartPosY = playerInit.playerStartPosY - ballInit.ballRadius;
         ball = new Ball(ballInit.ballStartPosX, ballInit.ballStartPosY, ballInit.ballRadius, ballInit.ballColor, ballInit.ballStartSpeedX, ballInit.ballStartSpeedY);
 
-        // create wall
-        if (gameState.currentLevel === 3) {
+        // flag which levels have walls
+        if (gameState.currentLevel === 3) { gameState.hasWall = true; }
+
+        // create wall if required
+        if (gameState.hasWall === true) {
             wallInit.wallColor = 'black';
             wallInit.wallHeight = (canvas.h / 2);
             wallInit.wallWidth = 10;
@@ -159,7 +164,7 @@ var Game = function() {
                 
                 player.draw(canvas.ctx);
                 ball.draw(canvas.ctx);
-                if (gameState.currentLevel === 3) {
+                if (gameState.hasWall === true) {
                     wall.draw(canvas.ctx);
                 }
 
@@ -257,7 +262,7 @@ var Game = function() {
         testCollisionBallWithWalls(b, audio, canvas);
         testCollisionBallWithPlayer(b, audio, player, ballInit);
         testCollisionBallWithBlocks(b, audio, blocks, gameState);
-        if (gameState.currentLevel === 3) { testCollisionBallWithInnerWalls(b, wall); }
+        if (gameState.hasWall === true) { testCollisionBallWithInnerWalls(b, wall); }
     }
 
     var checkWinCondition = function() {
