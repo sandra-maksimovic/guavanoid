@@ -2,7 +2,7 @@
 
 var game, gameCanvas, gameContainerDiv;
 
-var Guavanoid = function() {    
+var Game = function() {    
     let canvas = {
         ctx: gameCanvas.getContext("2d"),
         h: gameCanvas.height,
@@ -342,7 +342,7 @@ window.onload = function init() {
 
     gameContainerDiv = document.querySelector("#gameContainerDiv");
     gameCanvas = document.querySelector("#gameCanvas");
-    game = new Guavanoid();
+    game = new Game();
 
     startButton.addEventListener('click', function(evt) {
         startButton.classList.add("hidden");
