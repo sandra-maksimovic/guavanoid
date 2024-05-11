@@ -40,7 +40,7 @@ var Game = function() {
         lose: false,
         paused: false,
         pauseListener: false,
-        totalLevels: 4,
+        totalLevels: 5,
         totalScore: 0,
         win: false
     };
@@ -111,9 +111,9 @@ var Game = function() {
         ball = new Ball(ballInit.ballStartPosX, ballInit.ballStartPosY, ballInit.ballRadius, ballInit.ballColor, ballInit.ballStartSpeedX, ballInit.ballStartSpeedY);
 
         // flag which levels have walls
-        if (gameState.currentLevel === 3) { gameState.hasWall = true; }
+        if (gameState.currentLevel === 3 || gameState.currentLevel === 5) { gameState.hasWall = true; }
 
-        // create wall if required
+        // create vertical wall
         if (gameState.hasWall === true) {
             wallInit.wallColor = 'black';
             wallInit.wallHeight = (canvas.h / 2);
@@ -246,6 +246,8 @@ var Game = function() {
             blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall);
         } else if (gameState.currentLevel === 4) {
             blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
+        } else if (gameState.currentLevel === 5) {
+            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall);
         }
 
         return blockArray;

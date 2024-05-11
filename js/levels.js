@@ -220,3 +220,139 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
 
     return blockArray;
 }
+
+function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall) {
+    let color = 'teal';
+    let health = 1;
+
+    let rows = 8;
+    let cols = 4;
+
+    let rowsBreakable = 2;
+    let colsBreakable = 4;
+    let healthBreakable = 3;
+
+    let colorLightBrown = 'rgb(153, 79, 0)';
+    let colorMedBrown = 'rgb(102, 53, 0)';
+    let colorDarkBrown = 'rgb(51, 26, 0)';
+    
+    let colorArrayBreakable = [ 
+        colorLightBrown,
+        colorMedBrown,
+        colorDarkBrown
+    ];
+
+    // populate blocks left of wall
+    for (let r=0; r < rows; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        let topGapY = 50 + blockYSpacing;
+
+        if (r === 0) {
+            blockY = topGapY;
+        } else {
+            blockY = topGapY + r*blockYSpacing;
+        }
+
+        for (let c=0; c < cols; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+
+            if (c === 0) {
+                blockX = leftGapX;
+            } else {
+                blockX = leftGapX + c*blockXSpacing;
+            }
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            blockArray.push(block);
+        }
+    }
+
+    // create 2 rows of breakable blocks left of wall
+    for (let r=0; r < rowsBreakable; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        let topGapY = 50;
+
+        if (r === 0) {
+            blockY = topGapY;
+        } else {
+            blockY = topGapY + (rows+1)*blockYSpacing;
+        }
+
+        for (let c=0; c < colsBreakable; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+
+            if (c === 0) {
+                blockX = leftGapX;
+            } else {
+                blockX = leftGapX + c*blockXSpacing;
+            }
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+            blockArray.push(block);
+        }
+    }
+
+    // populate blocks right of wall
+    for (let r=0; r < rows; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        let topGapY = 50 + blockYSpacing;
+
+        if (r === 0) {
+            blockY = topGapY;
+        } else {
+            blockY = topGapY + r*blockYSpacing;
+        }
+
+        for (let c=0; c < cols; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+
+            if (c === 0) {
+                blockX = (wall.x + wall.width) + leftGapX;
+            } else {
+                blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
+            }
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            blockArray.push(block);
+        }
+    }
+
+    // create 2 rows of breakable blocks right of wall
+    for (let r=0; r < rowsBreakable; r++) {
+        let blockY;
+        let blockYSpacing = blockHeight + blockGap;
+        let topGapY = 50;
+
+        if (r === 0) {
+            blockY = topGapY;
+        } else {
+            blockY = topGapY + (rows+1)*blockYSpacing;
+        }
+
+        for (let c=0; c < colsBreakable; c++) {
+            let blockX;
+            let blockXSpacing = blockWidth + blockGap;
+            let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+
+            if (c === 0) {
+                blockX = (wall.x + wall.width) + leftGapX;
+            } else {
+                blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
+            }
+
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+            blockArray.push(block);
+        }
+    }
+    
+    return blockArray;
+}
