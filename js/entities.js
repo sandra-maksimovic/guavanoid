@@ -70,6 +70,16 @@ class Block extends Entity {
     }
 }
 
+class Pickup extends Ball {
+    constructor(x, y, radius, color, speedY) {
+        super(x, y, radius, color, speedY);
+    }
+
+    move() {
+        this.y += this.incrementY;
+    }
+}
+
 class Player extends Entity {
     lives = 3;
 
