@@ -4,6 +4,8 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     
     let rows = 6;
     let cols = 10;
+
+    let numPickups = 3;
     
     // create rect of blocks
     for (let r=0; r < rows; r++) {
@@ -31,6 +33,12 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
             blockArray.push(block);
         }
+    }
+
+    // randomly assign pickups to blocks in array
+    for (let i = 0; i < numPickups; i++) {
+        let randomInt = getRandomInt(1, blockArray.length-1);
+        blockArray[randomInt].pickup = true;
     }
 
     return blockArray;
