@@ -182,6 +182,8 @@ var Game = function() {
                     player.move(inputState.mousePos.x, canvas.w);
                     if (ball.isAttached) {
                         ball.followPlayer(inputState.mousePos.x, player, canvas.w);
+                        // make sure the ball always travels upwards on reset
+                        ball.speedY = -Math.abs(ball.speedY);
                     }
                 }
             }
@@ -318,7 +320,6 @@ var Game = function() {
         ball.isAttached = true;
         ball.x = ballInit.ballStartPosX;
         ball.y = ballInit.ballStartPosY;
-        ball.speedY = -ball.speedY;
     }
 
     var toggleSFX = function() {
