@@ -67,6 +67,7 @@ var Game = function() {
     };
 
     let spawned = {
+        numPickups: 3,
         pickupArray: []
     };
 
@@ -253,15 +254,15 @@ var Game = function() {
         let blockHeight = 20;
 
         if (gameState.currentLevel === 1) {
-            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
+            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned);
         } else if (gameState.currentLevel === 2) {
-            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
+            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned);
         } else if (gameState.currentLevel === 3) {
-            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall);
+            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned);
         } else if (gameState.currentLevel === 4) {
-            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas);
+            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned);
         } else if (gameState.currentLevel === 5) {
-            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall);
+            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned);
         }
 
         return blockArray;

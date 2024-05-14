@@ -1,11 +1,9 @@
-function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
+function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned) {
     let color = 'grey';
     let health = 1;
     
     let rows = 6;
     let cols = 10;
-
-    let numPickups = 3;
     
     // create rect of blocks
     for (let r=0; r < rows; r++) {
@@ -34,17 +32,11 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             blockArray.push(block);
         }
     }
-
-    // randomly assign pickups to blocks in array
-    for (let i = 0; i < numPickups; i++) {
-        let randomInt = getRandomInt(1, blockArray.length-1);
-        blockArray[randomInt].hasPickup = true;
-    }
-
+    randomlyAssignPickupsToBlocks(blockArray, spawned);
     return blockArray;
 }
 
-function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
+function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned) {
     let color = 'blue';
     let health = 1;
     
@@ -95,10 +87,11 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
         }
     }
     
+    randomlyAssignPickupsToBlocks(blockArray, spawned);
     return blockArray;
 }
 
-function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall) {
+function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned) {
     let color = 'green';
     let health = 1;
 
@@ -160,11 +153,11 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall)
             blockArray.push(block);
         }
     }
-    
+    randomlyAssignPickupsToBlocks(blockArray, spawned);
     return blockArray;
 }
 
-function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas) {
+function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned) {
     let color = 'purple';
     let health = 1;
     let rows = 9;
@@ -225,11 +218,11 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             blockArray.push(block);
         }
     }
-
+    randomlyAssignPickupsToBlocks(blockArray, spawned);
     return blockArray;
 }
 
-function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall) {
+function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned) {
     let color = 'teal';
     let health = 1;
 
@@ -361,6 +354,6 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall)
             blockArray.push(block);
         }
     }
-    
+    randomlyAssignPickupsToBlocks(blockArray, spawned);
     return blockArray;
 }

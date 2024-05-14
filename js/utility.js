@@ -16,7 +16,13 @@ function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
     return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
 }
 
-// for randomly assigning pickups to blocks
+function randomlyAssignPickupsToBlocks(blockArray, spawned) {
+    for (let i = 0; i < spawned.numPickups; i++) {
+        let randomInt = getRandomInt(1, blockArray.length-1);
+        blockArray[randomInt].hasPickup = true;
+    }
+}
+
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
