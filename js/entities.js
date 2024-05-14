@@ -76,7 +76,6 @@ class Block extends Entity {
 }
 
 class Pickup extends Ball {
-    pickupType;
     pickupTypeArray = [
         { type: 'health', color: 'lime' },
         { type: 'laser', color: 'gold' },
@@ -87,8 +86,8 @@ class Pickup extends Ball {
         super(x, y, radius, color, speedX, speedY);
     }
 
-    set pickupType(randomInt) {
-        this.pickupType = this.pickupTypeArray[randomInt];
+    set color(color) {
+        this.color = color;
     }
 
     move() {
