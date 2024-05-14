@@ -271,6 +271,8 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned) {
                     let pickupSpeedY = 200; // px/s
 
                     pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
+                    let randomInt = getRandomInt(1, pickup.pickupTypeArray.length-1);
+                    pickup.pickupType = randomInt;
                     spawned.pickupArray.push(pickup);
                 }
 
@@ -378,7 +380,29 @@ function testCollisionBallWithInnerWalls(b, wall) {
 
 function testCollisionPickupWithFloor(p, pickupArray, index, canvas) {
     if ((p.y + p.radius) > canvas.h) {
-        // the pickup hit the floor
         pickupArray.splice(index, 1);
+    }
+}
+
+function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player) {
+    if(circRectsOverlap(player.x, player.y, player.width, player.height, p.x, p.y, p.radius)) {
+        let pickupRightSide = p.x + p.radius;
+        let pickupLeftSide = p.x - p.radius;
+        let playerRightSide = player.x + player.width;
+        let playerLeftSide = player.x;
+
+        let pickupTopSide = p.y - p.radius;
+        let pickupBottomSide = p.y + p.radius;
+        let playerTopSide = player.y;
+        let playerBottomSide = player.y + player.height;
+
+        if (audio.sfx) { audio.pickupCollisionSound.play(); }
+
+        if (((pickupRightSide > playerLeftSide || pickupLeftSide < playerRightSide) &&
+            (p.y > playerTopSide && p.y < playerBottomSide)) ||
+            ((pickupBottomSide > playerTopSide || pickupTopSide < playerBottomSide) &&
+            (p.x > playerLeftSide && p.x < playerRightSide))) {
+            pickupArray.splice(index, 1);
+        }
     }
 }
