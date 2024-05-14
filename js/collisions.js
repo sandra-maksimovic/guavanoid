@@ -162,7 +162,7 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
     }
 }
 
-function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
+function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned) {
     blocks.forEach(function(block, index) {
         if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
             let ballRightSide = b.x + b.radius;
@@ -262,6 +262,18 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState) {
                 // update the color of breakable block with health left
                 block.color = block.colorArray[block.health-1];
             } else {
+                if (block.hasPickup === true) {
+                    let pickupX = block.x + (block.width / 2);
+                    let pickupY = block.y + (block.height / 2);
+                    let pickupRadius = block.height / 2;
+                    let pickupColor = 'lime';
+                    let pickupSpeedX = undefined; // not using speedX for pickups
+                    let pickupSpeedY = 200; // px/s
+
+                    pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
+                    spawned.pickupArray.push(pickup);
+                }
+
                 // remove the block from the array
                 blocks.splice(index, 1);
             }
@@ -361,5 +373,12 @@ function testCollisionBallWithInnerWalls(b, wall) {
                 ballTopSide = b.y - b.radius;
             }
         }
+    }
+}
+
+function testCollisionPickupWithFloor(p, pickupArray, index, canvas) {
+    if ((p.y + p.radius) > canvas.h) {
+        // the pickup hit the floor
+        pickupArray.splice(index, 1);
     }
 }

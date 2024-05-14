@@ -19,11 +19,11 @@ class Ball extends Entity {
         this.isAttached = isAttached;
     }
 
-    set incX(incrementX) {
+    set incrementX(incrementX) {
         this.incrementX = incrementX;
     }
 
-    set incY(incrementY) {
+    set incrementY(incrementY) {
         this.incrementY = incrementY;
     }
     
@@ -58,7 +58,7 @@ class Ball extends Entity {
 class Block extends Entity {
     health;
     colorArray; // for breakable blocks
-    pickup = false;
+    hasPickup = false;
     
     constructor(x, y, width, height, color, health, colorArray) {
         super(x, y, width, height, color);
@@ -70,14 +70,14 @@ class Block extends Entity {
         this.color = color;
     }
 
-    set pickup(pickup) {
-        this.pickup = pickup;
+    set hasPickup(hasPickup) {
+        this.hasPickup = hasPickup;
     }
 }
 
 class Pickup extends Ball {
-    constructor(x, y, radius, color, speedY) {
-        super(x, y, radius, color, speedY);
+    constructor(x, y, radius, color, speedX, speedY) {
+        super(x, y, radius, color, speedX, speedY);
     }
 
     move() {

@@ -66,6 +66,10 @@ var Game = function() {
         playerStartPosY: canvas.h - 50
     };
 
+    let spawned = {
+        pickupArray: []
+    };
+
     let wall;
 
     let wallInit = {
@@ -167,6 +171,13 @@ var Game = function() {
                 if (gameState.hasWall === true) {
                     wall.draw(canvas.ctx);
                 }
+                if (spawned.pickupArray.length > 0) {
+                    spawned.pickupArray.forEach((pickup, index) => {
+                        pickup.draw(canvas.ctx);
+                        pickup.incrementY = calcIncrement(pickup.speedY, delta);
+                        movePickup(pickup, index);
+                    })
+                }
 
                 drawAllBlocks(blocks);
                 displayHUD(gameState.currentLevel, gameState.currentScore, player.lives);
@@ -265,8 +276,13 @@ var Game = function() {
         b.move();    
         testCollisionBallWithWalls(b, audio, canvas);
         testCollisionBallWithPlayer(b, audio, player, ballInit);
-        testCollisionBallWithBlocks(b, audio, blocks, gameState);
+        testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned);
         if (gameState.hasWall === true) { testCollisionBallWithInnerWalls(b, wall); }
+    }
+
+    function movePickup(p, index) {
+        p.move();
+        testCollisionPickupWithFloor(p, spawned.pickupArray, index, canvas);
     }
 
     var checkWinCondition = function() {

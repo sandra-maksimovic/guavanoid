@@ -38,7 +38,7 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     // randomly assign pickups to blocks in array
     for (let i = 0; i < numPickups; i++) {
         let randomInt = getRandomInt(1, blockArray.length-1);
-        blockArray[randomInt].pickup = true;
+        blockArray[randomInt].hasPickup = true;
     }
 
     return blockArray;
