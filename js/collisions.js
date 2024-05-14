@@ -263,17 +263,7 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned) {
                 block.color = block.colorArray[block.health-1];
             } else {
                 if (block.hasPickup === true) {
-                    let pickupX = block.x + (block.width / 2);
-                    let pickupY = block.y + (block.height / 2);
-                    let pickupRadius = block.height / 2;
-                    let pickupColor = 'lime';
-                    let pickupSpeedX = undefined; // not using speedX for pickups
-                    let pickupSpeedY = 200; // px/s
-
-                    pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
-                    let randomInt = getRandomInt(1, pickup.pickupTypeArray.length-1);
-                    pickup.pickupType = randomInt;
-                    spawned.pickupArray.push(pickup);
+                    spawnPickup(block, spawned);
                 }
 
                 // remove the block from the array
