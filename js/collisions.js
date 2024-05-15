@@ -162,7 +162,7 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
     }
 }
 
-function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned) {
+function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawn) {
     blocks.forEach(function(block, index) {
         if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
             let ballRightSide = b.x + b.radius;
@@ -263,7 +263,7 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned) {
                 block.color = block.colorArray[block.health-1];
             } else {
                 if (block.hasPickup === true) {
-                    spawnPickup(block, spawned);
+                    spawnPickup(block, spawn);
                 }
 
                 // remove the block from the array

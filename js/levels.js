@@ -1,4 +1,4 @@
-function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned) {
+function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn) {
     let color = 'grey';
     let health = 1;
     
@@ -32,11 +32,11 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             blockArray.push(block);
         }
     }
-    randomlyAssignPickupsToBlocks(blockArray, spawned);
+    randomlyAssignPickupsToBlocks(blockArray, spawn);
     return blockArray;
 }
 
-function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned) {
+function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn) {
     let color = 'blue';
     let health = 1;
     
@@ -87,11 +87,11 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
         }
     }
     
-    randomlyAssignPickupsToBlocks(blockArray, spawned);
+    randomlyAssignPickupsToBlocks(blockArray, spawn);
     return blockArray;
 }
 
-function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned) {
+function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn) {
     let color = 'green';
     let health = 1;
 
@@ -153,11 +153,11 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
             blockArray.push(block);
         }
     }
-    randomlyAssignPickupsToBlocks(blockArray, spawned);
+    randomlyAssignPickupsToBlocks(blockArray, spawn);
     return blockArray;
 }
 
-function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned) {
+function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn) {
     let color = 'purple';
     let health = 1;
     let rows = 9;
@@ -218,11 +218,11 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             blockArray.push(block);
         }
     }
-    randomlyAssignPickupsToBlocks(blockArray, spawned);
+    randomlyAssignPickupsToBlocks(blockArray, spawn);
     return blockArray;
 }
 
-function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned) {
+function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn) {
     let color = 'teal';
     let health = 1;
 
@@ -354,6 +354,6 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
             blockArray.push(block);
         }
     }
-    randomlyAssignPickupsToBlocks(blockArray, spawned);
+    randomlyAssignPickupsToBlocks(blockArray, spawn);
     return blockArray;
 }

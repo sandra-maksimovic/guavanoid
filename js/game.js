@@ -66,7 +66,7 @@ var Game = function() {
         playerStartPosY: canvas.h - 50
     };
 
-    let spawned = {
+    let spawn = {
         numPickups: 3,
         pickupArray: []
     };
@@ -106,7 +106,7 @@ var Game = function() {
         gameState.currentScore = 0;
         gameState.pauseListener = false;
         gameState.hasWall = false;
-        spawned.pickupArray = [];
+        spawn.pickupArray = [];
 
         // create player
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
@@ -173,8 +173,8 @@ var Game = function() {
                 if (gameState.hasWall === true) {
                     wall.draw(canvas.ctx);
                 }
-                if (spawned.pickupArray.length > 0) {
-                    spawned.pickupArray.forEach((pickup, index) => {
+                if (spawn.pickupArray.length > 0) {
+                    spawn.pickupArray.forEach((pickup, index) => {
                         pickup.draw(canvas.ctx);
                         pickup.incrementY = calcIncrement(pickup.speedY, delta);
                         movePickup(pickup, index);
@@ -254,15 +254,15 @@ var Game = function() {
         let blockHeight = 20;
 
         if (gameState.currentLevel === 1) {
-            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned);
+            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn);
         } else if (gameState.currentLevel === 2) {
-            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned);
+            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn);
         } else if (gameState.currentLevel === 3) {
-            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned);
+            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn);
         } else if (gameState.currentLevel === 4) {
-            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawned);
+            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn);
         } else if (gameState.currentLevel === 5) {
-            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawned);
+            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn);
         }
 
         return blockArray;
@@ -278,14 +278,14 @@ var Game = function() {
         b.move();    
         testCollisionBallWithWalls(b, audio, canvas);
         testCollisionBallWithPlayer(b, audio, player, ballInit);
-        testCollisionBallWithBlocks(b, audio, blocks, gameState, spawned);
+        testCollisionBallWithBlocks(b, audio, blocks, gameState, spawn);
         if (gameState.hasWall === true) { testCollisionBallWithInnerWalls(b, wall); }
     }
 
     function movePickup(p, index) {
         p.move();
-        testCollisionPickupWithFloor(p, spawned.pickupArray, index, canvas);
-        testCollisionPickupWithPlayer(p, spawned.pickupArray, index, audio, player);
+        testCollisionPickupWithFloor(p, spawn.pickupArray, index, canvas);
+        testCollisionPickupWithPlayer(p, spawn.pickupArray, index, audio, player);
     }
 
     var checkWinCondition = function() {

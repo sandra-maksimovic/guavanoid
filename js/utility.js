@@ -16,8 +16,8 @@ function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
     return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
 }
 
-function randomlyAssignPickupsToBlocks(blockArray, spawned) {
-    for (let i = 0; i < spawned.numPickups; i++) {
+function randomlyAssignPickupsToBlocks(blockArray, spawn) {
+    for (let i = 0; i < spawn.numPickups; i++) {
         let randomInt = getRandomInt(1, blockArray.length-1);
         blockArray[randomInt].hasPickup = true;
     }
@@ -27,16 +27,16 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function spawnPickup(block, spawned) {
+function spawnPickup(block, spawn) {
     let pickupX = block.x + (block.width / 2);
     let pickupY = block.y + (block.height / 2);
     let pickupRadius = block.height / 2;
-    let pickupColor = 'black'; // for init only, this gets overridden below
-    let pickupSpeedX = 200; // px/s - for init only, not used for pickups
+    let pickupColor = 'black'; // for init only bc Pickup extends Ball, this gets overridden below by pickup type
+    let pickupSpeedX = 200; // px/s - for init only bc Pickup extends Ball, speedX not used for pickups since they only fall
     let pickupSpeedY = 200; // px/s
 
     let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
     let randomInt = getRandomInt(1, pickup.pickupTypeArray.length-1);
     pickup.color = pickup.pickupTypeArray[randomInt].color;
-    spawned.pickupArray.push(pickup);
+    spawn.pickupArray.push(pickup);
 }
