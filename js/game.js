@@ -34,12 +34,14 @@ var Game = function() {
         currentLevel: 1,
         currentScore: 0,
         displayTitle: true,
-        displayTitleStartTime: 0,
         displayTitleTimer: 1500, //ms
+        displayTitleTimerStartTime: 0,
         hasWall: false,
         lose: false,
         paused: false,
         pauseListener: false,
+        pickupGrowthTimer: 10000, //ms
+        pickupGrowthTimerStartTime: 0,
         totalLevels: 5,
         totalScore: 0,
         win: false
@@ -146,7 +148,7 @@ var Game = function() {
         loadAssets(function() {
             // we enter here only when all assets have been loaded
             gameState.displayTitle = true;
-            gameState.displayTitleStartTime = performance.now();
+            gameState.displayTitleTimerStartTime = performance.now();
             // start the game
             mainLoop();
         });
@@ -154,7 +156,7 @@ var Game = function() {
 
     function mainLoop(now) {
         // check whether the title screen has finished
-        if (now - gameState.displayTitleStartTime > gameState.displayTitleTimer) {
+        if (now - gameState.displayTitleTimerStartTime > gameState.displayTitleTimer) {
             gameState.displayTitle = false;
             
             // add the pause listener during gameplay
@@ -174,11 +176,28 @@ var Game = function() {
                 // clear the canvas
                 canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
                 
+                // revert player width if growth pickup timer has elapsed
+                if ((player.growthActive === true) && 
+                    (now - gameState.pickupGrowthTimerStartTime > gameState.pickupGrowthTimer)) {
+                        player.width = player.width / 2;
+                        player.growthActive = false;
+                }
+
                 player.draw(canvas.ctx);
+
                 ball.draw(canvas.ctx);
+
+                if (!ball.isAttached) {
+                    moveBall(ball);
+                }
+
                 if (gameState.hasWall === true) {
                     wall.draw(canvas.ctx);
                 }
+
+                drawAllBlocks(blocks);
+
+                // draw pickups as they spawn
                 if (spawn.pickupArray.length > 0) {
                     spawn.pickupArray.forEach((pickup, index) => {
                         pickup.draw(canvas.ctx);
@@ -187,17 +206,11 @@ var Game = function() {
                     })
                 }
 
-                drawAllBlocks(blocks);
                 displayHUD(gameState.currentLevel, gameState.currentScore, player.lives);
-
-                if (!ball.isAttached) {
-                    moveBall(ball);
-                }
 
                 // make the player follow the mouse
                 // test if the mouse is positioned over the canvas first
                 if(inputState.mousePos !== undefined) {
-                    //player.move(mousePos.x, mousePos.y);
                     player.move(inputState.mousePos.x, canvas.w);
                     if (ball.isAttached) {
                         ball.followPlayer(inputState.mousePos.x, player, canvas.w);
@@ -207,7 +220,7 @@ var Game = function() {
                 }
             }
     
-            // if the game is still going ask for a new frame
+            // check if the game is still going
             if (!checkWinCondition() && !checkLoseCondition()) {
                 // copy the current time to the old time
                 then = now;
@@ -291,7 +304,7 @@ var Game = function() {
     function movePickup(p, index) {
         p.move();
         testCollisionPickupWithFloor(p, spawn.pickupArray, index, canvas);
-        testCollisionPickupWithPlayer(p, spawn.pickupArray, index, audio, player);
+        testCollisionPickupWithPlayer(p, spawn.pickupArray, index, audio, player, gameState);
     }
 
     var checkWinCondition = function() {

@@ -96,6 +96,8 @@ class Pickup extends Ball {
 }
 
 class Player extends Entity {
+    growthActive = false;
+    laserActive = false;
     lives;
 
     constructor(x, y, width, height, color, lives) {
@@ -103,8 +105,16 @@ class Player extends Entity {
         this.lives = lives;
     }
 
+    set growthActive(bool) {
+        this.growthActive = bool;
+    }
+
     set lives(lives) {
         this.lives = lives;
+    }
+
+    set width(width) {
+        this.width = width;
     }
 
     move(x, w) {

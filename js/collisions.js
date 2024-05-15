@@ -374,7 +374,7 @@ function testCollisionPickupWithFloor(p, pickupArray, index, canvas) {
     }
 }
 
-function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player) {
+function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player, gameState) {
     if(circRectsOverlap(player.x, player.y, player.width, player.height, p.x, p.y, p.radius)) {
         let pickupRightSide = p.x + p.radius;
         let pickupLeftSide = p.x - p.radius;
@@ -395,6 +395,10 @@ function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player) {
             
             if (p.type === 'health') {
                 player.lives++;
+            } else if (p.type === 'growth') {
+                player.growthActive = true;
+                player.width = player.width*2;
+                gameState.pickupGrowthTimerStartTime = performance.now();
             }
             
             pickupArray.splice(index, 1);
