@@ -18,7 +18,7 @@ function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
 
 function randomlyAssignPickupsToBlocks(blockArray, spawn) {
     for (let i = 0; i < spawn.numPickups; i++) {
-        let randomInt = getRandomInt(1, blockArray.length-1);
+        let randomInt = getRandomInt(0, blockArray.length-1);
         blockArray[randomInt].hasPickup = true;
     }
 }
@@ -36,7 +36,8 @@ function spawnPickup(block, spawn) {
     let pickupSpeedY = 200; // px/s
 
     let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
-    let randomInt = getRandomInt(1, pickup.pickupTypeArray.length-1);
-    pickup.color = pickup.pickupTypeArray[randomInt].color;
+    let randomInt = getRandomInt(0, spawn.pickupTypeArray.length-1);
+    pickup.type = spawn.pickupTypeArray[randomInt].type;
+    pickup.color = spawn.pickupTypeArray[randomInt].color;
     spawn.pickupArray.push(pickup);
 }

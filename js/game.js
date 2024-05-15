@@ -60,6 +60,7 @@ var Game = function() {
 
     let playerInit = {
         playerColor: 'black',
+        playerLives: 3,
         playerHeight: 10,
         playerWidth: 50,
         playerStartPosX: undefined, // set later in start(), requires playerInit.playerWidth value for init
@@ -68,7 +69,12 @@ var Game = function() {
 
     let spawn = {
         numPickups: 3,
-        pickupArray: []
+        pickupArray: [],
+        pickupTypeArray: [
+            { type: 'health', color: 'lime' },
+            { type: 'laser', color: 'gold' },
+            { type: 'growth', color: 'magenta' }
+        ]
     };
 
     let wall;
@@ -110,7 +116,7 @@ var Game = function() {
 
         // create player
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
-        player = new Player(playerInit.playerStartPosX, playerInit.playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor);
+        player = new Player(playerInit.playerStartPosX, playerInit.playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor, playerInit.playerLives);
 
         // create ball
         ballInit.ballStartPosY = playerInit.playerStartPosY - ballInit.ballRadius;

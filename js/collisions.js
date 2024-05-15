@@ -392,6 +392,11 @@ function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player) {
             (p.y > playerTopSide && p.y < playerBottomSide)) ||
             ((pickupBottomSide > playerTopSide || pickupTopSide < playerBottomSide) &&
             (p.x > playerLeftSide && p.x < playerRightSide))) {
+            
+            if (p.type === 'health') {
+                player.lives++;
+            }
+            
             pickupArray.splice(index, 1);
         }
     }

@@ -76,11 +76,7 @@ class Block extends Entity {
 }
 
 class Pickup extends Ball {
-    pickupTypeArray = [
-        { type: 'health', color: 'lime' },
-        { type: 'laser', color: 'gold' },
-        { type: 'growth', color: 'magenta' }
-    ];
+    type;
 
     constructor(x, y, radius, color, speedX, speedY) {
         super(x, y, radius, color, speedX, speedY);
@@ -90,16 +86,25 @@ class Pickup extends Ball {
         this.color = color;
     }
 
+    set type(type) {
+        this.type = type;
+    }
+
     move() {
         this.y += this.incrementY;
     }
 }
 
 class Player extends Entity {
-    lives = 3;
+    lives;
 
-    constructor(x, y, width, height, color) {
+    constructor(x, y, width, height, color, lives) {
         super(x, y, width, height, color);
+        this.lives = lives;
+    }
+
+    set lives(lives) {
+        this.lives = lives;
     }
 
     move(x, w) {
