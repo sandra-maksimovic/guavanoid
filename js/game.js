@@ -272,6 +272,13 @@ var Game = function() {
         canvas.ctx.textAlign = "right";
         canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
     }
+
+    function displayLoseScreen() {
+        gameCanvas.classList.add("hidden");
+        gameContainerDiv.classList.add("hidden");
+        htmlElements.loseDiv.classList.remove("hidden");
+        htmlElements.loseSpan.textContent = "Score: " + gameState.totalScore;
+    }
     
     function displayTitleScreen() {
         const titleX = canvas.w / 2;
@@ -286,6 +293,13 @@ var Game = function() {
         canvas.ctx.textAlign = "center";
         canvas.ctx.textBaseline = "middle";
         canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
+    }
+
+    function displayWinScreen() {
+        gameCanvas.classList.add("hidden");
+        gameContainerDiv.classList.add("hidden");
+        htmlElements.winDiv.classList.remove("hidden");
+        htmlElements.winSpan.textContent = "Score: " + gameState.totalScore;
     }
 
     function createBlocks() {
@@ -346,12 +360,7 @@ var Game = function() {
 
             if (gameState.currentLevel === gameState.totalLevels) {
                 gameState.win = true;
-
-                // display win screen
-                gameCanvas.classList.add("hidden");
-                gameContainerDiv.classList.add("hidden");
-                htmlElements.winDiv.classList.remove("hidden");
-                htmlElements.winSpan.textContent = "Score: " + gameState.totalScore;
+                displayWinScreen();
             } else {
                 gameState.currentLevel++;
                 start();
@@ -372,11 +381,7 @@ var Game = function() {
             if (fireProjectileHandler) { removeProjectileListener(gameCanvas); }
             removeTestListener();
 
-            // display lose screen
-            gameCanvas.classList.add("hidden");
-            gameContainerDiv.classList.add("hidden");
-            htmlElements.loseDiv.classList.remove("hidden");
-            htmlElements.loseSpan.textContent = "Score: " + gameState.totalScore;
+            displayLoseScreen();
         }
 
         return gameState.lose;
