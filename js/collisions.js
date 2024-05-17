@@ -419,13 +419,15 @@ function testCollisionProjectileWithBlocks(p, audio, blocks, player) {
         // same with the projectile's bounding rect
         let projectileXBoundingRect = p.x - p.width / 2;
         let projectileYBoundingRect = p.y - p.height / 2;
-
-        //if (audio.sfx) { // add projectile hitting block sound effect }
         
         if (rectsOverlap(blockXBoundingRect, blockYBoundingRect, block.width, block.height,
             projectileXBoundingRect, projectileYBoundingRect, p.width, p.height)) {
+            
+            if (audio.sfx) { audio.laserProjectileExplosionSound.play(); }
+
             // indicate that firing is over
             player.projectileFired = false;
+            
             // remove the block from the array
             blocks.splice(index, 1);
         }
