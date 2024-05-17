@@ -15,18 +15,6 @@ class Ball extends Entity {
         this.speedY = speedY;
     }
 
-    set attached(isAttached) {
-        this.isAttached = isAttached;
-    }
-
-    set incrementX(incrementX) {
-        this.incrementX = incrementX;
-    }
-
-    set incrementY(incrementY) {
-        this.incrementY = incrementY;
-    }
-    
     draw(ctx) {
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -65,14 +53,6 @@ class Block extends Entity {
         this.health = health;
         this.colorArray = colorArray;
     }
-
-    set color(color) {
-        this.color = color;
-    }
-
-    set hasPickup(hasPickup) {
-        this.hasPickup = hasPickup;
-    }
 }
 
 class Pickup extends Ball {
@@ -82,14 +62,6 @@ class Pickup extends Ball {
         super(x, y, radius, color, speedX, speedY);
     }
 
-    set color(color) {
-        this.color = color;
-    }
-
-    set type(type) {
-        this.type = type;
-    }
-
     move() {
         this.y += this.incrementY;
     }
@@ -97,24 +69,13 @@ class Pickup extends Ball {
 
 class Player extends Entity {
     growthActive = false;
-    laserActive = false;
     lives;
+    numProjectiles = 0;
+    projectileFired = false;
 
     constructor(x, y, width, height, color, lives) {
         super(x, y, width, height, color);
         this.lives = lives;
-    }
-
-    set growthActive(bool) {
-        this.growthActive = bool;
-    }
-
-    set lives(lives) {
-        this.lives = lives;
-    }
-
-    set width(width) {
-        this.width = width;
     }
 
     move(x, w) {
@@ -127,6 +88,20 @@ class Player extends Entity {
         } else {
             this.x = x - halfPlayerWidth;
         }
+    }
+}
+
+class Projectile extends Entity {
+    x;
+    y;
+    width = 4;
+    height = 15;
+    color = 'orange';
+    incrementY;
+    speedY = -300; // px/s
+
+    move() {
+        this.y += this.incrementY;
     }
 }
 

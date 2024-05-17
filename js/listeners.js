@@ -1,4 +1,4 @@
-let processClickHandler, processKeyDownHandler, mouseMovedHandler, clearBlocksHandler;
+let processClickHandler, processKeyDownHandler, mouseMovedHandler, clearBlocksHandler, fireProjectileHandler;
 
 function addMouseListeners(canvas, ball, inputState) {
     // add a mousemove event listener to the canvas to track user mouse movement
@@ -55,6 +55,23 @@ function processKeyDown(evt, gameState, htmlElements) {
 
 function removePauseListener() {
     document.removeEventListener('keydown', processKeyDownHandler);
+}
+
+function addProjectileListener(canvas, player, spawn) {
+    fireProjectileHandler = (evt) => fireProjectile(evt, player, spawn);
+    canvas.addEventListener('click', fireProjectileHandler);
+}
+
+function fireProjectile(evt, player, spawn) {
+    spawn.projectile = new Projectile();
+    spawn.projectile.x = player.x + (player.width / 2) - (spawn.projectile.width / 2);
+    spawn.projectile.y = player.y - spawn.projectile.height;
+    player.projectileFired = true;
+    player.numProjectiles--;
+}
+
+function removeProjectileListener(canvas) {
+    canvas.removeEventListener('click', fireProjectileHandler);
 }
 
 function addTestListener(blocks) {

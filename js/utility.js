@@ -5,7 +5,6 @@ function calcIncrement(speed, del) {
     return (speed*del) / 1000;
 }
 
-// test whether rectangle and circle overlap
 function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
     let testX=cx;
     let testY=cy;
@@ -14,6 +13,19 @@ function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
     if (testY < y0) testY=y0; // test top
     if (testY > (y0+h0)) testY=(y0+h0); // test bottom
     return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
+}
+
+function rectsOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
+    if ((x1 > (x2 + w2)) || ((x1 + w1) < x2)) {
+        return false; // No horizontal axis projection overlap
+    }
+
+    if ((y1 > (y2 + h2)) || ((y1 + h1) < y2)) {
+        return false; // No vertical axis projection overlap
+    }
+
+    return true;    // If previous tests failed, then both axis projections
+                    // overlap and the rectangles intersect
 }
 
 function randomlyAssignPickupsToBlocks(blockArray, spawn) {
@@ -40,4 +52,27 @@ function spawnPickup(block, spawn) {
     pickup.type = spawn.pickupTypeArray[randomInt].type;
     pickup.color = spawn.pickupTypeArray[randomInt].color;
     spawn.pickupArray.push(pickup);
+}
+
+function growPlayer(player, playerInit, gameState) {
+    player.growthActive = true;
+    if (player.width !== playerInit.playerWidth*2) {
+        player.width = player.width*2;
+    }
+    gameState.pickupGrowthTimerStartTime = performance.now();
+}
+
+function increaseHealth(player) {
+    player.lives++;
+}
+
+function equipLaser(gameCanvas, player, spawn, laser) {
+    // get the associated pickup type color from the pickupTypeArray of objects
+    let index = spawn.pickupTypeArray.findIndex(obj => obj.type === laser);
+    player.color = spawn.pickupTypeArray[index].color;
+
+    // give the player more projectiles
+    player.numProjectiles = spawn.numProjectiles;
+
+    addProjectileListener(gameCanvas, player, spawn);
 }

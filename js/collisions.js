@@ -368,13 +368,13 @@ function testCollisionBallWithInnerWalls(b, wall) {
     }
 }
 
-function testCollisionPickupWithFloor(p, pickupArray, index, canvas) {
+function testCollisionPickupWithFloor(p, spawn, index, canvas) {
     if ((p.y + p.radius) > canvas.h) {
-        pickupArray.splice(index, 1);
+        spawn.pickupArray.splice(index, 1);
     }
 }
 
-function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player, gameState) {
+function testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerInit, gameState, gameCanvas) {
     if(circRectsOverlap(player.x, player.y, player.width, player.height, p.x, p.y, p.radius)) {
         let pickupRightSide = p.x + p.radius;
         let pickupLeftSide = p.x - p.radius;
@@ -393,15 +393,41 @@ function testCollisionPickupWithPlayer(p, pickupArray, index, audio, player, gam
             ((pickupBottomSide > playerTopSide || pickupTopSide < playerBottomSide) &&
             (p.x > playerLeftSide && p.x < playerRightSide))) {
             
-            if (p.type === 'health') {
-                player.lives++;
-            } else if (p.type === 'growth') {
-                player.growthActive = true;
-                player.width = player.width*2;
-                gameState.pickupGrowthTimerStartTime = performance.now();
+            let growth = 'growth';
+            let health = 'health';
+            let laser = 'laser';
+            
+            if (p.type === growth) {
+                growPlayer(player, playerInit, gameState);
+            } else if (p.type === health) {
+                increaseHealth(player);
+            } else if (p.type === laser) {
+                equipLaser(gameCanvas, player, spawn, laser);
             }
             
-            pickupArray.splice(index, 1);
+            spawn.pickupArray.splice(index, 1);
         }
     }
+}
+
+function testCollisionProjectileWithBlocks(p, audio, blocks, player) {
+    blocks.forEach(function(block, index) {
+        // bounding rect position and size for the block
+        // we need to translate it to half the block's size
+        let blockXBoundingRect = block.x - block.width / 2;
+        let blockYBoundingRect = block.y - block.height / 2;
+        // same with the projectile's bounding rect
+        let projectileXBoundingRect = p.x - p.width / 2;
+        let projectileYBoundingRect = p.y - p.height / 2;
+
+        //if (audio.sfx) { // add projectile hitting block sound effect }
+        
+        if (rectsOverlap(blockXBoundingRect, blockYBoundingRect, block.width, block.height,
+            projectileXBoundingRect, projectileYBoundingRect, p.width, p.height)) {
+            // indicate that firing is over
+            player.projectileFired = false;
+            // remove the block from the array
+            blocks.splice(index, 1);
+        }
+    });
 }

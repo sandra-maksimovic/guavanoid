@@ -73,10 +73,12 @@ var Game = function() {
         numPickups: 3,
         pickupArray: [],
         pickupTypeArray: [
+            { type: 'growth', color: 'magenta' },
             { type: 'health', color: 'lime' },
-            { type: 'laser', color: 'gold' },
-            { type: 'growth', color: 'magenta' }
-        ]
+            { type: 'laser', color: 'orange' }
+        ],
+        numProjectiles: 3,
+        projectile: {}
     };
 
     let wall;
@@ -179,8 +181,21 @@ var Game = function() {
                 // revert player width if growth pickup timer has elapsed
                 if ((player.growthActive === true) && 
                     (now - gameState.pickupGrowthTimerStartTime > gameState.pickupGrowthTimer)) {
-                        player.width = player.width / 2;
+                        player.width = playerInit.playerWidth;
                         player.growthActive = false;
+                }
+
+                // animate the projectile while it is firing
+                if (player.projectileFired === true) {
+                    spawn.projectile.draw(canvas.ctx);
+                    spawn.projectile.incrementY = calcIncrement(spawn.projectile.speedY, delta);
+                    moveProjectile(spawn.projectile);
+                }
+                
+                // revert player color once projectiles have run out
+                if ((player.color !== playerInit.playerColor) && (player.numProjectiles === 0)) {
+                    player.color = playerInit.playerColor;
+                    removeProjectileListener(gameCanvas);
                 }
 
                 player.draw(canvas.ctx);
@@ -303,8 +318,13 @@ var Game = function() {
 
     function movePickup(p, index) {
         p.move();
-        testCollisionPickupWithFloor(p, spawn.pickupArray, index, canvas);
-        testCollisionPickupWithPlayer(p, spawn.pickupArray, index, audio, player, gameState);
+        testCollisionPickupWithFloor(p, spawn, index, canvas);
+        testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerInit, gameState, gameCanvas);
+    }
+
+    function moveProjectile(p) {
+        p.move();
+        testCollisionProjectileWithBlocks(p, audio, blocks, player);
     }
 
     var checkWinCondition = function() {
