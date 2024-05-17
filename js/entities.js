@@ -73,9 +73,10 @@ class Player extends Entity {
     numProjectiles = 0;
     projectileFired = false;
 
-    constructor(x, y, width, height, color, lives) {
+    constructor(x, y, width, height, color, lives, numProjectiles) {
         super(x, y, width, height, color);
         this.lives = lives;
+        this.numProjectiles = numProjectiles;
     }
 
     move(x, w) {

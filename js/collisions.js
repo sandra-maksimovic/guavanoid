@@ -402,7 +402,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerIni
             } else if (p.type === health) {
                 increaseHealth(player);
             } else if (p.type === laser) {
-                equipLaser(gameCanvas, player, spawn, laser);
+                equipLaser(gameCanvas, audio, player, spawn, laser);
             }
             
             spawn.pickupArray.splice(index, 1);

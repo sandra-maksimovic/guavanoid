@@ -57,15 +57,16 @@ function removePauseListener() {
     document.removeEventListener('keydown', processKeyDownHandler);
 }
 
-function addProjectileListener(canvas, player, spawn) {
-    fireProjectileHandler = (evt) => fireProjectile(evt, player, spawn);
+function addProjectileListener(canvas, audio, player, spawn) {
+    fireProjectileHandler = (evt) => fireProjectile(evt, audio, player, spawn);
     canvas.addEventListener('click', fireProjectileHandler);
 }
 
-function fireProjectile(evt, player, spawn) {
+function fireProjectile(evt, audio, player, spawn) {
     spawn.projectile = new Projectile();
     spawn.projectile.x = player.x + (player.width / 2) - (spawn.projectile.width / 2);
     spawn.projectile.y = player.y - spawn.projectile.height;
+    if (audio.sfx) { audio.laserProjectileSound.play(); }
     player.projectileFired = true;
     player.numProjectiles--;
 }
