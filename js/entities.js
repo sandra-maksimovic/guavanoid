@@ -33,11 +33,22 @@ class Ball extends Entity {
     followPlayer(x, player, w) {
         const halfPlayerWidth = player.width / 2;
 
+        // handle the position of the ball at the left canvas boundary
         if (x < halfPlayerWidth) {
-            this.x = x + halfPlayerWidth;
+            // to get the distance increment between the centre of the ball and the left of the canvas
+            let leftInc = halfPlayerWidth - x;
+            // add the increment to get the distance for the ball draw offset
+            this.x = x + leftInc;
+            
+        // handle the position of the ball at the right canvas boundary
         } else if (x > (w - halfPlayerWidth)) {
-            this.x = x - halfPlayerWidth;
+            let distFromRight = w - x;
+            // to get the distance increment between the centre of the ball and the right of the canvas
+            let rightInc = (halfPlayerWidth - distFromRight);
+            // subtract the increment to get the distance for the ball draw offset
+            this.x = x - rightInc;
         } else {
+            // place the ball centre at mouse pos x
             this.x = x;
         }
     }
@@ -82,11 +93,26 @@ class Player extends Entity {
     move(x, w) {
         const halfPlayerWidth = this.width / 2;
 
+        // handle the position of the paddle at the left canvas boundary
         if (x < halfPlayerWidth) {
-            this.x = x;
+            // to get the distance increment between the centre of the paddle and the left of the canvas
+            let leftInc = halfPlayerWidth - x;
+            // subtract the increment to get the distance for the paddle draw offset
+            let leftOffset = halfPlayerWidth - leftInc;
+            // subtract the offset from the mouse pos to keep the pointer in the middle of the paddle
+            this.x = x - leftOffset;
+        
+        // handle the position of the paddle at the right canvas boundary
         } else if (x > (w - halfPlayerWidth)) {
-            this.x = x - this.width;
+            let distFromRight = w - x;
+            // to get the distance increment between the centre of the paddle and the right of the canvas
+            let rightInc = (halfPlayerWidth - distFromRight);
+            // add the increment to get the distance for the paddle draw offset
+            let rightOffset = halfPlayerWidth + rightInc;
+            // subtract the offset from the mouse pos to keep the pointer in the middle of the paddle
+            this.x = x - rightOffset;
         } else {
+            // shift mouse pos x to the middle of the paddle
             this.x = x - halfPlayerWidth;
         }
     }
