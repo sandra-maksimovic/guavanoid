@@ -228,7 +228,7 @@ var Game = function() {
                     })
                 }
 
-                displayHUD(gameState.currentLevel, gameState.currentScore, player.lives);
+                displayHUD();
 
                 // make the player follow the mouse
                 // test if the mouse is positioned over the canvas first
@@ -257,16 +257,20 @@ var Game = function() {
         }
     }
 
-    function displayHUD(lvl, score, lives) {
+    function displayHUD() {
         let hudXLeftAlign = 40;
         let hudXCenterAlign = canvas.w / 2;
         let huxXRightAlign = canvas.w - 40;
         let hudYTopAlign = 5;
 
+        let level = gameState.currentLevel;
+        let score = gameState.totalScore + gameState.currentScore;
+        let lives = player.lives;
+
         canvas.ctx.font = "10px sans-serif";
         canvas.ctx.textBaseline = "top";
         canvas.ctx.textAlign = "left";
-        canvas.ctx.fillText(`Level: ${lvl}`, hudXLeftAlign, hudYTopAlign);
+        canvas.ctx.fillText(`Level: ${level}`, hudXLeftAlign, hudYTopAlign);
         canvas.ctx.textAlign = "center";
         canvas.ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
         canvas.ctx.textAlign = "right";
