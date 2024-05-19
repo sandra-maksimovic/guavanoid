@@ -8,12 +8,8 @@
     display: none;
 }
 
-.scoreSpan {
-    color: black;
-    font: 30px sans-serif;
-}
-
 body {
+    background-color: black;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,7 +20,7 @@ body {
 div {
     width: 640px;
     height: 480px;
-    border: 1px solid black;
+    border: 1px solid white;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,21 +31,13 @@ div.hidden {
     display: none; /* this selector is higher in the css hierarchy, avoids having to use the !important override on the .hidden selector above */
 }
 
-h1 {
-    margin-bottom: 20px; /* add some spacing between the heading and the canvas */
-}
-
 #gameCanvas {
-    border: 1px solid black;
+    border: 1px solid white;
     background-color: black;
 }
 
 #gameContainerDiv {
     position: relative; /* ensure the container is a positioned ancestor for the pauseDiv */
-}
-
-#loseDiv.gamescreen {
-    color: red;
 }
 
 #pauseDiv.gamescreen {
@@ -79,8 +67,4 @@ h1 {
 
 #startButton:hover {
     color: red;
-}
-
-#winDiv.gamescreen {
-    color: green;
 }

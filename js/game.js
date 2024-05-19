@@ -48,11 +48,7 @@ var Game = function() {
     };
 
     let htmlElements = {
-        loseDiv: document.querySelector("#loseDiv"),
-        loseSpan: document.querySelector("#loseSpan"),
-        pauseDiv: document.querySelector("#pauseDiv"),
-        winDiv: document.querySelector("#winDiv"),
-        winSpan: document.querySelector("#winSpan")
+        pauseDiv: document.querySelector("#pauseDiv")
     };
 
     // i.e. mousePos.x
@@ -275,10 +271,19 @@ var Game = function() {
     }
 
     function displayLoseScreen() {
-        gameCanvas.classList.add("hidden");
-        gameContainerDiv.classList.add("hidden");
-        htmlElements.loseDiv.classList.remove("hidden");
-        htmlElements.loseSpan.textContent = "Score: " + gameState.totalScore;
+        const titleX = canvas.w / 2;
+        const titleY = canvas.h / 2;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'red';
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`YOU LOSE`, titleX, titleY);
+
+        canvas.ctx.font = "30px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, titleX, titleY + 60);
     }
     
     function displayTitleScreen() {
@@ -298,10 +303,19 @@ var Game = function() {
     }
 
     function displayWinScreen() {
-        gameCanvas.classList.add("hidden");
-        gameContainerDiv.classList.add("hidden");
-        htmlElements.winDiv.classList.remove("hidden");
-        htmlElements.winSpan.textContent = "Score: " + gameState.totalScore;
+        const titleX = canvas.w / 2;
+        const titleY = canvas.h / 2;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'green';
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`YOU WIN`, titleX, titleY);
+
+        canvas.ctx.font = "30px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, titleX, titleY + 60);
     }
 
     function createBlocks() {
