@@ -41,7 +41,7 @@ h1 {
 
 #gameCanvas {
     border: 1px solid black;
-    /*background-color: grey;*/
+    background-color: black;
 }
 
 #gameContainerDiv {

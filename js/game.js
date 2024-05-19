@@ -61,7 +61,7 @@ var Game = function() {
     let player;
 
     let playerInit = {
-        playerColor: 'black',
+        playerColor: 'white',
         playerLives: 3,
         playerProjectiles: 0,
         playerHeight: 10,
@@ -85,11 +85,11 @@ var Game = function() {
     let wall;
 
     let wallInit = {
-        wallColor: undefined,
-        wallHeight: undefined,
-        wallWidth: undefined,
-        wallX: undefined,
-        wallY: undefined
+        wallColor: 'white',
+        wallHeight: canvas.h / 2,
+        wallWidth: 10,
+        wallX: undefined, // set later in start(), requires wallInit.wallWidth value for init
+        wallY: 50
     };
     
     var loadAssets = function(callback) {
@@ -138,11 +138,7 @@ var Game = function() {
 
         // create vertical wall
         if (gameState.hasWall === true) {
-            wallInit.wallColor = 'black';
-            wallInit.wallHeight = (canvas.h / 2);
-            wallInit.wallWidth = 10;
             wallInit.wallX = (canvas.w / 2) - (wallInit.wallWidth / 2);
-            wallInit.wallY = 50;
             wall = new Wall(wallInit.wallX, wallInit.wallY, wallInit.wallWidth, wallInit.wallHeight, wallInit.wallColor);
         }
 
@@ -268,6 +264,7 @@ var Game = function() {
         let lives = player.lives;
 
         canvas.ctx.font = "10px sans-serif";
+        canvas.ctx.fillStyle = 'white';
         canvas.ctx.textBaseline = "top";
         canvas.ctx.textAlign = "left";
         canvas.ctx.fillText(`Level: ${level}`, hudXLeftAlign, hudYTopAlign);
@@ -294,6 +291,7 @@ var Game = function() {
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
         canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'white';
         canvas.ctx.textAlign = "center";
         canvas.ctx.textBaseline = "middle";
         canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
