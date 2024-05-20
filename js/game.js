@@ -75,7 +75,8 @@ var Game = function() {
             { type: 'laser', color: 'orange' }
         ],
         numProjectiles: 3,
-        projectile: {}
+        projectileArray: [],
+        //projectile: {}
     };
 
     let wall;
@@ -120,6 +121,7 @@ var Game = function() {
         gameState.pauseListener = false;
         gameState.hasWall = false;
         spawn.pickupArray = [];
+        spawn.projectileArray = [];
 
         // create player
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
@@ -184,17 +186,20 @@ var Game = function() {
                         player.growthActive = false;
                 }
 
-                // animate the projectile while it is firing
-                if (player.projectileFired === true) {
-                    spawn.projectile.draw(canvas.ctx);
-                    spawn.projectile.incrementY = calcIncrement(spawn.projectile.speedY, delta);
-                    moveProjectile(spawn.projectile);
+                // move projectiles if any
+                if (spawn.projectileArray.length > 0) {
+                    spawn.projectileArray.forEach(projectile => {
+                        projectile.draw(canvas.ctx);
+                        projectile.incrementY = calcIncrement(projectile.speedY, delta);
+                        moveProjectile(projectile);
+                    });
                 }
                 
                 // revert player color once projectiles have run out
                 if ((player.color !== playerInit.playerColor) && (player.numProjectiles === 0)) {
                     player.color = playerInit.playerColor;
                     removeProjectileListener(gameCanvas);
+                    fireProjectileHandler = undefined;
                 }
 
                 player.draw(canvas.ctx);
@@ -350,7 +355,9 @@ var Game = function() {
         testCollisionBallWithWalls(b, audio, canvas);
         testCollisionBallWithPlayer(b, audio, player, ballInit);
         testCollisionBallWithBlocks(b, audio, blocks, gameState, spawn);
-        if (gameState.hasWall === true) { testCollisionBallWithInnerWalls(b, wall); }
+        if (gameState.hasWall === true) {
+            testCollisionBallWithInnerWalls(b, wall);
+        }
     }
 
     function movePickup(p, index) {
@@ -361,7 +368,8 @@ var Game = function() {
 
     function moveProjectile(p) {
         p.move();
-        testCollisionProjectileWithBlocks(p, audio, blocks, player);
+        testCollisionProjectileWithBlocks(p, audio, blocks, player, spawn);
+        testCollisionProjectileWithWalls(p, spawn);
     }
 
     var checkWinCondition = function() {
@@ -371,7 +379,10 @@ var Game = function() {
             // we've won so remove all listeners
             removeMouseListeners(gameCanvas);
             removePauseListener();
-            if (fireProjectileHandler) { removeProjectileListener(gameCanvas); }
+            if (fireProjectileHandler) {
+                removeProjectileListener(gameCanvas);
+                fireProjectileHandler = undefined;
+            }
             removeTestListener();
 
             if (gameState.currentLevel === gameState.totalLevels) {
@@ -394,7 +405,10 @@ var Game = function() {
             // we've lost so remove all listeners
             removeMouseListeners(gameCanvas);
             removePauseListener();
-            if (fireProjectileHandler) { removeProjectileListener(gameCanvas); }
+            if (fireProjectileHandler) {
+                removeProjectileListener(gameCanvas);
+                fireProjectileHandler = undefined;
+            }
             removeTestListener();
 
             displayLoseScreen();

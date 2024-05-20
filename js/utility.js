@@ -74,5 +74,7 @@ function equipLaser(gameCanvas, audio, player, spawn, laser) {
     // give the player more projectiles
     player.numProjectiles = spawn.numProjectiles;
 
-    addProjectileListener(gameCanvas, audio, player, spawn);
+    if (!fireProjectileHandler) {
+        addProjectileListener(gameCanvas, audio, player, spawn);
+    }
 }

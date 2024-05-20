@@ -82,7 +82,6 @@ class Player extends Entity {
     growthActive = false;
     lives;
     numProjectiles = 0;
-    projectileFired = false;
 
     constructor(x, y, width, height, color, lives, numProjectiles) {
         super(x, y, width, height, color);

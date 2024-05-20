@@ -63,11 +63,12 @@ function addProjectileListener(canvas, audio, player, spawn) {
 }
 
 function fireProjectile(evt, audio, player, spawn) {
-    spawn.projectile = new Projectile();
-    spawn.projectile.x = player.x + (player.width / 2) - (spawn.projectile.width / 2);
-    spawn.projectile.y = player.y - spawn.projectile.height;
+    let projectile = new Projectile();
+    let newLength = spawn.projectileArray.push(projectile);
+    let newIndex = newLength - 1;
+    spawn.projectileArray[newIndex].x = player.x + (player.width / 2) - (spawn.projectileArray[newIndex].width / 2);
+    spawn.projectileArray[newIndex].y = player.y - spawn.projectileArray[newIndex].height;
     if (audio.sfx) { audio.laserProjectileSound.play(); }
-    player.projectileFired = true;
     player.numProjectiles--;
 }
 

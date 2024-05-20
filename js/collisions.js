@@ -410,7 +410,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerIni
     }
 }
 
-function testCollisionProjectileWithBlocks(p, audio, blocks, player) {
+function testCollisionProjectileWithBlocks(p, audio, blocks, player, spawn) {
     blocks.forEach(function(block, index) {
         // bounding rect position and size for the block
         // we need to translate it to half the block's size
@@ -425,11 +425,21 @@ function testCollisionProjectileWithBlocks(p, audio, blocks, player) {
             
             if (audio.sfx) { audio.laserProjectileExplosionSound.play(); }
 
-            // indicate that firing is over
-            player.projectileFired = false;
+            // remove the projectile from the projectile array
+            let pIndex = spawn.projectileArray.indexOf(p);
+            spawn.projectileArray.splice(pIndex, 1);
             
-            // remove the block from the array
+            // remove the block from the block array
             blocks.splice(index, 1);
         }
     });
+}
+
+function testCollisionProjectileWithWalls(p, spawn) {
+    // check if the projectile has hit the top canvas boundary
+    if (p.y < 0) {
+        // remove the projectile from the projectile array
+        let pIndex = spawn.projectileArray.indexOf(p);
+        spawn.projectileArray.splice(pIndex, 1);
+    }
 }
