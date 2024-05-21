@@ -410,18 +410,10 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerIni
     }
 }
 
-function testCollisionProjectileWithBlocks(p, audio, blocks, player, spawn) {
+function testCollisionProjectileWithBlocks(p, audio, blocks, gameState, spawn) {
     blocks.forEach(function(block, index) {
-        // bounding rect position and size for the block
-        // we need to translate it to half the block's size
-        let blockXBoundingRect = block.x - block.width / 2;
-        let blockYBoundingRect = block.y - block.height / 2;
-        // same with the projectile's bounding rect
-        let projectileXBoundingRect = p.x - p.width / 2;
-        let projectileYBoundingRect = p.y - p.height / 2;
-        
-        if (rectsOverlap(blockXBoundingRect, blockYBoundingRect, block.width, block.height,
-            projectileXBoundingRect, projectileYBoundingRect, p.width, p.height)) {
+        if (rectsOverlap(block.x, block.y, block.width, block.height,
+            p.x, p.y, p.width, p.height)) {
             
             if (audio.sfx) { audio.laserProjectileExplosionSound.play(); }
 
@@ -431,6 +423,8 @@ function testCollisionProjectileWithBlocks(p, audio, blocks, player, spawn) {
             
             // remove the block from the block array
             blocks.splice(index, 1);
+
+            gameState.currentScore += 1;
         }
     });
 }
