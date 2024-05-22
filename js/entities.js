@@ -66,6 +66,38 @@ class Block extends Entity {
     }
 }
 
+class Button extends Entity {
+    text;
+    textColor;
+
+    constructor(x, y, width, height, color, text, textColor) {
+        super(x, y, width, height, color);
+        this.text = text;
+        this.textColor = textColor;
+    }
+
+    draw(ctx) {
+        const textX = this.width / 2;
+        const textY = this.height / 2;
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        
+        // button
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, this.width, this.height);
+        
+        // button text
+        ctx.font = "bold 20px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = this.textColor;
+        ctx.fillText(this.text, textX, textY);
+        
+        ctx.restore();
+    }
+}
+
 class Pickup extends Ball {
     type;
 

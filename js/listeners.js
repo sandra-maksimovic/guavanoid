@@ -1,4 +1,6 @@
-let detachBallHandler, pauseGameHandler, mouseMovedHandler, clearBlocksHandler, fireProjectileHandler;
+let clearBlocksHandler, detachBallHandler, fireProjectileHandler, mouseMovedHandler, pauseGameHandler;
+let restartButtonClickHandler, restartButtonHoverHandler;
+let isHovering = false;
 
 // ADD LISTENERS
 function addMouseListeners(canvas, ball, inputState) {
@@ -18,6 +20,14 @@ function addPauseListener(gameState, htmlElements) {
 function addProjectileListener(canvas, audio, player, spawn) {
     fireProjectileHandler = (evt) => fireProjectile(evt, audio, player, spawn);
     canvas.addEventListener('click', fireProjectileHandler);
+}
+
+function addRestartButtonListeners(canvas, ctx, button) {
+    restartButtonClickHandler = (evt) => restartButtonClick(evt, canvas, button);
+    canvas.addEventListener('click', restartButtonClickHandler);
+
+    restartButtonHoverHandler = (evt) => restartButtonHover(evt, canvas, ctx, button);
+    canvas.addEventListener('mousemove', restartButtonHoverHandler);
 }
 
 function addTestListener(blocks) {
@@ -72,6 +82,43 @@ function pauseGame(evt, gameState, htmlElements) {
     }
 }
 
+function restartButtonClick(evt, canvas, button) {
+    let rect = canvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    if (x >= button.x && x <= (button.x + button.width) && 
+        y >= button.y && y <= (button.y + button.height)) {
+        // restart the whole game back to the start menu screen
+        console.log("clicked the restart button");
+    }
+}
+
+function restartButtonHover(evt, canvas, ctx, button) {
+    let rect = canvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    const isInsideButton = x >= button.x && x <= (button.x + button.width) && 
+                           y >= button.y && y <= (button.y + button.height);
+    
+    // hover state changes should only occur once 
+    // when entering and leaving the button area
+    if (isInsideButton && !isHovering) {
+        button.color = 'blue';
+        button.textColor = 'white';
+        button.draw(ctx);
+        isHovering = true;
+
+    } else if (!isInsideButton && isHovering) {
+        button.color = 'white';
+        button.textColor = 'black';
+        button.draw(ctx);
+        isHovering = false;
+
+    }
+}
+
 // REMOVE LISTENERS
 function removeMouseListeners(canvas) {
     canvas.removeEventListener('mousemove', mouseMovedHandler);
@@ -84,6 +131,10 @@ function removePauseListener() {
 
 function removeProjectileListener(canvas) {
     canvas.removeEventListener('click', fireProjectileHandler);
+}
+
+function removeRestartButtonListeners(canvas) {
+    canvas.removeEventListener('click', );
 }
 
 function removeTestListener() {

@@ -196,10 +196,11 @@ var Game = function() {
                 }
                 
                 // revert player color once projectiles have run out
-                if ((player.color !== playerInit.playerColor) && (player.numProjectiles === 0)) {
-                    player.color = playerInit.playerColor;
-                    removeProjectileListener(gameCanvas);
-                    fireProjectileHandler = undefined;
+                if ((player.color !== playerInit.playerColor) && 
+                    (player.numProjectiles === 0)) {
+                        player.color = playerInit.playerColor;
+                        removeProjectileListener(gameCanvas);
+                        fireProjectileHandler = undefined;
                 }
 
                 player.draw(canvas.ctx);
@@ -239,8 +240,20 @@ var Game = function() {
                 }
             }
     
-            // check if the game is still going
-            if (!checkWinCondition() && !checkLoseCondition()) {
+            if (checkLevelCleared()) {
+                    start();
+
+            } else if (checkLoseCondition()) {
+                // we've lost so remove all listeners
+                removeAllListeners();
+                displayLoseScreen();
+
+            } else if (checkWinCondition()) {
+                // we've won so remove all listeners
+                removeAllListeners();
+                displayWinScreen();
+
+            } else {
                 // copy the current time to the old time
                 then = now;
                 // ask for a new animation frame
@@ -252,75 +265,6 @@ var Game = function() {
             displayTitleScreen();
             requestAnimationFrame(mainLoop);
         }
-    }
-
-    function displayHUD() {
-        let hudXLeftAlign = 40;
-        let hudXCenterAlign = canvas.w / 2;
-        let huxXRightAlign = canvas.w - 40;
-        let hudYTopAlign = 5;
-
-        let level = gameState.currentLevel;
-        let score = gameState.totalScore + gameState.currentScore;
-        let lives = player.lives;
-
-        canvas.ctx.font = "10px sans-serif";
-        canvas.ctx.fillStyle = 'white';
-        canvas.ctx.textBaseline = "top";
-        canvas.ctx.textAlign = "left";
-        canvas.ctx.fillText(`Level: ${level}`, hudXLeftAlign, hudYTopAlign);
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
-        canvas.ctx.textAlign = "right";
-        canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
-    }
-
-    function displayLoseScreen() {
-        const titleX = canvas.w / 2;
-        const titleY = canvas.h / 2;
-
-        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
-        canvas.ctx.font = "bold 100px sans-serif";
-        canvas.ctx.fillStyle = 'red';
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`YOU LOSE`, titleX, titleY);
-
-        canvas.ctx.font = "30px sans-serif";
-        canvas.ctx.fillStyle = 'white';
-        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, titleX, titleY + 60);
-    }
-    
-    function displayTitleScreen() {
-        const titleX = canvas.w / 2;
-        const titleY = canvas.h / 2;
-
-        // remove the pause listener during the title screen
-        removePauseListener(gameCanvas);
-        gameState.pauseListener = false;
-
-        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
-        canvas.ctx.font = "bold 100px sans-serif";
-        canvas.ctx.fillStyle = 'white';
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
-    }
-
-    function displayWinScreen() {
-        const titleX = canvas.w / 2;
-        const titleY = canvas.h / 2;
-
-        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
-        canvas.ctx.font = "bold 100px sans-serif";
-        canvas.ctx.fillStyle = 'green';
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`YOU WIN`, titleX, titleY);
-
-        canvas.ctx.font = "30px sans-serif";
-        canvas.ctx.fillStyle = 'white';
-        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, titleX, titleY + 60);
     }
 
     function createBlocks() {
@@ -350,6 +294,101 @@ var Game = function() {
         });
     }
 
+    function displayHUD() {
+        let hudXLeftAlign = 40;
+        let hudXCenterAlign = canvas.w / 2;
+        let huxXRightAlign = canvas.w - 40;
+        let hudYTopAlign = 5;
+
+        let level = gameState.currentLevel;
+        let score = gameState.totalScore + gameState.currentScore;
+        let lives = player.lives;
+
+        canvas.ctx.font = "10px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.textBaseline = "top";
+        canvas.ctx.textAlign = "left";
+        canvas.ctx.fillText(`Level: ${level}`, hudXLeftAlign, hudYTopAlign);
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.fillText(`Score: ${score}`, hudXCenterAlign, hudYTopAlign);
+        canvas.ctx.textAlign = "right";
+        canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
+    }
+
+    function displayLoseScreen() {
+        const midX = canvas.w / 2;
+        const midY = canvas.h / 2;
+        
+        const buttonColor = 'white';
+        const buttonTextColor = 'black';
+        const buttonHeight = 50;
+        const buttonWidth = 100;
+        const buttonText = 'RESTART';
+        const buttonX = midX - (buttonWidth / 2);
+        const buttonY = midY + 100;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'red';
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`YOU LOSE`, midX, midY);
+
+        canvas.ctx.font = "30px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, midX, midY + 60);
+
+        let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        restartButton.draw(canvas.ctx);
+        console.log("in lose screen");
+        addRestartButtonListeners(gameCanvas, canvas.ctx, restartButton);
+    }
+    
+    function displayWinScreen() {
+        const midX = canvas.w / 2;
+        const midY = canvas.h / 2;
+        
+        const buttonColor = 'white';
+        const buttonTextColor = 'black';
+        const buttonHeight = 50;
+        const buttonWidth = 100;
+        const buttonText = 'RESTART';
+        const buttonX = midX - (buttonWidth / 2);
+        const buttonY = midY + 100;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'green';
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`YOU WIN`, midX, midY);
+
+        canvas.ctx.font = "30px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, midX, midY + 60);
+
+        let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        restartButton.draw(canvas.ctx);
+        console.log("in win screen");
+        addRestartButtonListeners(gameCanvas, canvas.ctx, restartButton);
+    }
+
+    function displayTitleScreen() {
+        const titleX = canvas.w / 2;
+        const titleY = canvas.h / 2;
+
+        // remove the pause listener during the title screen
+        removePauseListener(gameCanvas);
+        gameState.pauseListener = false;
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
+    }
+
     function moveBall(b) {
         b.move();    
         testCollisionBallWithWalls(b, audio, canvas);
@@ -372,50 +411,51 @@ var Game = function() {
         testCollisionProjectileWithWalls(p, spawn);
     }
 
-    var checkWinCondition = function() {
-        if (blocks.length === 0) {
-            gameState.totalScore += gameState.currentScore;
+    function removeAllListeners() {
+        removeMouseListeners(gameCanvas);
+        removePauseListener();
+        gameState.pauseListener = false;
 
-            // we've won so remove all listeners
-            removeMouseListeners(gameCanvas);
-            removePauseListener();
-            if (fireProjectileHandler) {
-                removeProjectileListener(gameCanvas);
-                fireProjectileHandler = undefined;
-            }
-            removeTestListener();
-
-            if (gameState.currentLevel === gameState.totalLevels) {
-                gameState.win = true;
-                displayWinScreen();
-            } else {
-                gameState.currentLevel++;
-                start();
-            }
+        if (fireProjectileHandler) {
+            removeProjectileListener(gameCanvas);
+            fireProjectileHandler = undefined;
         }
 
-        return gameState.win;
+        removeTestListener();
+    }
+
+    function checkLevelCleared() {
+        if (blocks.length === 0 && 
+            gameState.currentLevel < gameState.totalLevels) {
+            gameState.currentLevel++;
+            return true;
+        }
     }
 
     var checkLoseCondition = function() {
         if (player.lives < 0) {
             gameState.lose = true;
             gameState.totalScore += gameState.currentScore;
-
-            // we've lost so remove all listeners
-            removeMouseListeners(gameCanvas);
-            removePauseListener();
-            if (fireProjectileHandler) {
-                removeProjectileListener(gameCanvas);
-                fireProjectileHandler = undefined;
-            }
-            removeTestListener();
-
-            displayLoseScreen();
         }
 
         return gameState.lose;
     }
+
+    var checkWinCondition = function() {
+        if (blocks.length === 0) {
+            gameState.totalScore += gameState.currentScore;
+            
+            if (gameState.currentLevel === gameState.totalLevels) {
+                gameState.win = true;
+            }
+        }
+
+        return gameState.win;
+    }
+
+    var getSFX = function() {
+        return audio.sfx;
+    };
 
     var playerFail = function() {
         player.lives -= 1;
@@ -432,17 +472,13 @@ var Game = function() {
         }
     };
 
-    var getSFX = function() {
-        return audio.sfx;
-    };
-
     return {
         start: start,
-        checkWinCondition: checkWinCondition,
         checkLoseCondition: checkLoseCondition,
+        checkWinCondition: checkWinCondition,
+        getSFX: getSFX,
         playerFail: playerFail,
-        toggleSFX: toggleSFX,
-        getSFX: getSFX
+        toggleSFX: toggleSFX
     };
 };
 
