@@ -1,4 +1,4 @@
-let processClickHandler, processKeyDownHandler, mouseMovedHandler, clearBlocksHandler, fireProjectileHandler;
+let detachBallHandler, pauseGameHandler, mouseMovedHandler, clearBlocksHandler, fireProjectileHandler;
 
 function addMouseListeners(canvas, ball, inputState) {
     // add a mousemove event listener to the canvas to track user mouse movement
@@ -7,8 +7,8 @@ function addMouseListeners(canvas, ball, inputState) {
     canvas.addEventListener('mousemove', mouseMovedHandler);
 
     // add a mouseclick event listener to the canvas to move the ball
-    processClickHandler = (evt) => processClick(evt, ball);
-    canvas.addEventListener('click', processClickHandler);
+    detachBallHandler = (evt) => detachBall(evt, ball);
+    canvas.addEventListener('click', detachBallHandler);
 }
 
 // called when the user moves the mouse
@@ -24,22 +24,22 @@ function getMousePos(evt, canvas) {
     return { x: evt.clientX - rect.left }
 }
 
-function processClick(evt, ball) {
+function detachBall(evt, ball) {
     ball.isAttached = false;
 }
 
 function removeMouseListeners(canvas) {
     canvas.removeEventListener('mousemove', mouseMovedHandler);
-    canvas.removeEventListener('click', processClickHandler);
+    canvas.removeEventListener('click', detachBallHandler);
 }
 
 function addPauseListener(gameState, htmlElements) {
     // add a keydown event listener to the window to pause the game
-    processKeyDownHandler = (evt) => processKeyDown(evt, gameState, htmlElements);
-    document.addEventListener('keydown', processKeyDownHandler);
+    pauseGameHandler = (evt) => pauseGame(evt, gameState, htmlElements);
+    document.addEventListener('keydown', pauseGameHandler);
 }
 
-function processKeyDown(evt, gameState, htmlElements) {
+function pauseGame(evt, gameState, htmlElements) {
     if (!game.checkWinCondition() && !game.checkLoseCondition()) {
         if (evt.key === "Escape") {
             if (gameState.paused === false) {
@@ -54,7 +54,7 @@ function processKeyDown(evt, gameState, htmlElements) {
 }
 
 function removePauseListener() {
-    document.removeEventListener('keydown', processKeyDownHandler);
+    document.removeEventListener('keydown', pauseGameHandler);
 }
 
 function addProjectileListener(canvas, audio, player, spawn) {
