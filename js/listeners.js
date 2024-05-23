@@ -1,6 +1,4 @@
 let clearBlocksHandler, detachBallHandler, fireProjectileHandler, mouseMovedHandler, pauseGameHandler;
-let restartButtonClickHandler, restartButtonHoverHandler;
-let isHovering = false;
 
 // ADD LISTENERS
 function addMouseListeners(canvas, ball, inputState) {
@@ -22,12 +20,12 @@ function addProjectileListener(canvas, audio, player, spawn) {
     canvas.addEventListener('click', fireProjectileHandler);
 }
 
-function addRestartButtonListeners(canvas, ctx, button) {
-    restartButtonClickHandler = (evt) => restartButtonClick(evt, canvas, button);
-    canvas.addEventListener('click', restartButtonClickHandler);
+function addRestartButtonListeners(canvas, ctx, handler, button) {
+    handler.restartButtonClickHandler = (evt) => restartButtonClick(evt, canvas, handler, button);
+    canvas.addEventListener('click', handler.restartButtonClickHandler);
 
-    restartButtonHoverHandler = (evt) => restartButtonHover(evt, canvas, ctx, button);
-    canvas.addEventListener('mousemove', restartButtonHoverHandler);
+    handler.restartButtonHoverHandler = (evt) => restartButtonHover(evt, canvas, ctx, handler, button);
+    canvas.addEventListener('mousemove', handler.restartButtonHoverHandler);
 }
 
 function addTestListener(blocks) {
@@ -82,19 +80,24 @@ function pauseGame(evt, gameState, htmlElements) {
     }
 }
 
-function restartButtonClick(evt, canvas, button) {
+function restartButtonClick(evt, canvas, handler, button) {
     let rect = canvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
     if (x >= button.x && x <= (button.x + button.width) && 
         y >= button.y && y <= (button.y + button.height)) {
-        // restart the whole game back to the start menu screen
-        console.log("clicked the restart button");
+            
+            // reset button listeners
+            removeRestartButtonListeners(gameCanvas, handler);
+
+            // restart the whole game back to the start menu screen
+            game = new Game();
+            game.start();
     }
 }
 
-function restartButtonHover(evt, canvas, ctx, button) {
+function restartButtonHover(evt, canvas, ctx, handler, button) {
     let rect = canvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
@@ -104,17 +107,17 @@ function restartButtonHover(evt, canvas, ctx, button) {
     
     // hover state changes should only occur once 
     // when entering and leaving the button area
-    if (isInsideButton && !isHovering) {
+    if (isInsideButton && !handler.restartButtonIsHovering) {
         button.color = 'blue';
         button.textColor = 'white';
         button.draw(ctx);
-        isHovering = true;
+        handler.restartButtonIsHovering = true;
 
-    } else if (!isInsideButton && isHovering) {
+    } else if (!isInsideButton && handler.restartButtonIsHovering) {
         button.color = 'white';
         button.textColor = 'black';
         button.draw(ctx);
-        isHovering = false;
+        handler.restartButtonIsHovering = false;
 
     }
 }
@@ -133,8 +136,9 @@ function removeProjectileListener(canvas) {
     canvas.removeEventListener('click', fireProjectileHandler);
 }
 
-function removeRestartButtonListeners(canvas) {
-    canvas.removeEventListener('click', );
+function removeRestartButtonListeners(canvas, handler) {
+    canvas.removeEventListener('click', handler.restartButtonClickHandler);
+    canvas.removeEventListener('mousemove', handler.restartButtonHoverHandler);
 }
 
 function removeTestListener() {

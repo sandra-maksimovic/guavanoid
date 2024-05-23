@@ -47,6 +47,12 @@ var Game = function() {
         win: false
     };
 
+    let handler = {
+        restartButtonClickHandler: undefined,
+        restartButtonHoverHandler: undefined,
+        restartButtonIsHovering: false
+    };
+
     let htmlElements = {
         pauseDiv: document.querySelector("#pauseDiv")
     };
@@ -340,8 +346,8 @@ var Game = function() {
 
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
-        console.log("in lose screen");
-        addRestartButtonListeners(gameCanvas, canvas.ctx, restartButton);
+        
+        addRestartButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
     }
     
     function displayWinScreen() {
@@ -369,8 +375,8 @@ var Game = function() {
 
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
-        console.log("in win screen");
-        addRestartButtonListeners(gameCanvas, canvas.ctx, restartButton);
+        
+        addRestartButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
     }
 
     function displayTitleScreen() {
