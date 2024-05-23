@@ -1,4 +1,4 @@
-let clearBlocksHandler, detachBallHandler, fireProjectileHandler, mouseMovedHandler, pauseGameHandler;
+let detachBallHandler, fireProjectileHandler, mouseMovedHandler, pauseGameHandler;
 
 // ADD LISTENERS
 function addMouseListeners(canvas, ball, inputState) {
@@ -28,9 +28,9 @@ function addRestartButtonListeners(canvas, ctx, handler, button) {
     canvas.addEventListener('mousemove', handler.restartButtonHoverHandler);
 }
 
-function addTestListener(blocks) {
-    clearBlocksHandler = (evt) => clearBlocks(evt, blocks);
-    document.addEventListener('keydown', clearBlocksHandler);
+function addTestListener(blocks, handler) {
+    handler.clearBlocksHandler = (evt) => clearBlocks(evt, blocks);
+    document.addEventListener('keydown', handler.clearBlocksHandler);
 }
 
 // LISTENER BEHAVIOURS
@@ -141,6 +141,6 @@ function removeRestartButtonListeners(canvas, handler) {
     canvas.removeEventListener('mousemove', handler.restartButtonHoverHandler);
 }
 
-function removeTestListener() {
-    document.removeEventListener('keydown', clearBlocksHandler);
+function removeTestListener(handler) {
+    document.removeEventListener('keydown', handler.clearBlocksHandler);
 }

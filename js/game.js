@@ -48,6 +48,7 @@ var Game = function() {
     };
 
     let handler = {
+        clearBlocksHandler: undefined,
         restartButtonClickHandler: undefined,
         restartButtonHoverHandler: undefined,
         restartButtonIsHovering: false
@@ -151,7 +152,7 @@ var Game = function() {
 
         // add event listeners
         addMouseListeners(gameCanvas, ball, inputState);
-        addTestListener(blocks);
+        addTestListener(blocks, handler);
 
         // load assets, then when this is done, start the mainLoop
         loadAssets(function() {
@@ -247,15 +248,14 @@ var Game = function() {
             }
     
             if (checkLevelCleared()) {
-                    start();
+                removeAllListeners();
+                start();
 
             } else if (checkLoseCondition()) {
-                // we've lost so remove all listeners
                 removeAllListeners();
                 displayLoseScreen();
 
             } else if (checkWinCondition()) {
-                // we've won so remove all listeners
                 removeAllListeners();
                 displayWinScreen();
 
@@ -427,7 +427,7 @@ var Game = function() {
             fireProjectileHandler = undefined;
         }
 
-        removeTestListener();
+        removeTestListener(handler);
     }
 
     function checkLevelCleared() {
