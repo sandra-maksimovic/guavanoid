@@ -66,7 +66,7 @@ function increaseHealth(player) {
     player.lives++;
 }
 
-function equipLaser(gameCanvas, audio, player, spawn, laser) {
+function equipLaser(gameCanvas, audio, handler, player, spawn, laser) {
     // get the associated pickup type color from the pickupTypeArray of objects
     let index = spawn.pickupTypeArray.findIndex(obj => obj.type === laser);
     player.color = spawn.pickupTypeArray[index].color;
@@ -74,7 +74,7 @@ function equipLaser(gameCanvas, audio, player, spawn, laser) {
     // give the player more projectiles
     player.numProjectiles = spawn.numProjectiles;
 
-    if (!fireProjectileHandler) {
-        addProjectileListener(gameCanvas, audio, player, spawn);
+    if (!handler.fireProjectileHandler) {
+        addProjectileListener(gameCanvas, audio, handler, player, spawn);
     }
 }

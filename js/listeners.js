@@ -1,5 +1,3 @@
-let fireProjectileHandler;
-
 // ADD LISTENERS
 function addMouseListeners(canvas, ball, handler, inputState) {
     // arrow function ensures the function is not triggered upon assigning it as an event listener
@@ -15,9 +13,9 @@ function addPauseListener(gameState, handler, htmlElements) {
     document.addEventListener('keydown', handler.pauseGameHandler);
 }
 
-function addProjectileListener(canvas, audio, player, spawn) {
-    fireProjectileHandler = (evt) => fireProjectile(evt, audio, player, spawn);
-    canvas.addEventListener('click', fireProjectileHandler);
+function addProjectileListener(canvas, audio, handler, player, spawn) {
+    handler.fireProjectileHandler = (evt) => fireProjectile(evt, audio, player, spawn);
+    canvas.addEventListener('click', handler.fireProjectileHandler);
 }
 
 function addRestartButtonListeners(canvas, ctx, handler, button) {
@@ -132,8 +130,8 @@ function removePauseListener(handler) {
     document.removeEventListener('keydown', handler.pauseGameHandler);
 }
 
-function removeProjectileListener(canvas) {
-    canvas.removeEventListener('click', fireProjectileHandler);
+function removeProjectileListener(canvas, handler) {
+    canvas.removeEventListener('click', handler.fireProjectileHandler);
 }
 
 function removeRestartButtonListeners(canvas, handler) {

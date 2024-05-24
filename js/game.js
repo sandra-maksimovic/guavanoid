@@ -50,6 +50,7 @@ var Game = function() {
     let handler = {
         clearBlocksHandler: undefined,
         detachBallHandler: undefined,
+        fireProjectileHandler: undefined,
         mouseMovedHandler: undefined,
         pauseGameHandler: undefined,
         restartButtonClickHandler: undefined,
@@ -209,8 +210,8 @@ var Game = function() {
                 if ((player.color !== playerInit.playerColor) && 
                     (player.numProjectiles === 0)) {
                         player.color = playerInit.playerColor;
-                        removeProjectileListener(gameCanvas);
-                        fireProjectileHandler = undefined;
+                        removeProjectileListener(gameCanvas, handler);
+                        handler.fireProjectileHandler = undefined;
                 }
 
                 player.draw(canvas.ctx);
@@ -412,7 +413,7 @@ var Game = function() {
     function movePickup(p, index) {
         p.move();
         testCollisionPickupWithFloor(p, spawn, index, canvas);
-        testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerInit, gameState, gameCanvas);
+        testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, playerInit, gameState, gameCanvas);
     }
 
     function moveProjectile(p) {
@@ -430,9 +431,9 @@ var Game = function() {
         handler.pauseGameHandler = undefined;
         gameState.pauseListener = false;
 
-        if (fireProjectileHandler) {
-            removeProjectileListener(gameCanvas);
-            fireProjectileHandler = undefined;
+        if (handler.fireProjectileHandler) {
+            removeProjectileListener(gameCanvas, handler);
+            handler.fireProjectileHandler = undefined;
         }
 
         removeTestListener(handler);

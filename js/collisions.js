@@ -374,7 +374,7 @@ function testCollisionPickupWithFloor(p, spawn, index, canvas) {
     }
 }
 
-function testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerInit, gameState, gameCanvas) {
+function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, playerInit, gameState, gameCanvas) {
     if(circRectsOverlap(player.x, player.y, player.width, player.height, p.x, p.y, p.radius)) {
         let pickupRightSide = p.x + p.radius;
         let pickupLeftSide = p.x - p.radius;
@@ -402,7 +402,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, player, playerIni
             } else if (p.type === health) {
                 increaseHealth(player);
             } else if (p.type === laser) {
-                equipLaser(gameCanvas, audio, player, spawn, laser);
+                equipLaser(gameCanvas, audio, handler, player, spawn, laser);
             }
             
             spawn.pickupArray.splice(index, 1);
