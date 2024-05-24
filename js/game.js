@@ -421,6 +421,8 @@ var Game = function() {
 
     function removeAllListeners() {
         removeMouseListeners(gameCanvas, handler);
+        handler.detachBallHandler = undefined;
+        handler.mouseMovedHandler = undefined;
         removePauseListener();
         gameState.pauseListener = false;
 
@@ -430,6 +432,7 @@ var Game = function() {
         }
 
         removeTestListener(handler);
+        handler.clearBlocksHandler = undefined;
     }
 
     function checkLevelCleared() {
