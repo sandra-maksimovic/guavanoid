@@ -1,13 +1,13 @@
-let detachBallHandler, fireProjectileHandler, mouseMovedHandler, pauseGameHandler;
+let fireProjectileHandler, pauseGameHandler;
 
 // ADD LISTENERS
-function addMouseListeners(canvas, ball, inputState) {
+function addMouseListeners(canvas, ball, handler, inputState) {
     // arrow function ensures the function is not triggered upon assigning it as an event listener
-    mouseMovedHandler = (evt) => mouseMoved(evt, canvas, inputState);
-    canvas.addEventListener('mousemove', mouseMovedHandler);
+    handler.mouseMovedHandler = (evt) => mouseMoved(evt, canvas, inputState);
+    canvas.addEventListener('mousemove', handler.mouseMovedHandler);
 
-    detachBallHandler = (evt) => detachBall(evt, ball);
-    canvas.addEventListener('click', detachBallHandler);
+    handler.detachBallHandler = (evt) => detachBall(evt, ball);
+    canvas.addEventListener('click', handler.detachBallHandler);
 }
 
 function addPauseListener(gameState, htmlElements) {
@@ -123,9 +123,9 @@ function restartButtonHover(evt, canvas, ctx, handler, button) {
 }
 
 // REMOVE LISTENERS
-function removeMouseListeners(canvas) {
-    canvas.removeEventListener('mousemove', mouseMovedHandler);
-    canvas.removeEventListener('click', detachBallHandler);
+function removeMouseListeners(canvas, handler) {
+    canvas.removeEventListener('mousemove', handler.mouseMovedHandler);
+    canvas.removeEventListener('click', handler.detachBallHandler);
 }
 
 function removePauseListener() {

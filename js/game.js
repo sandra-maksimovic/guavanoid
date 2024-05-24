@@ -49,6 +49,8 @@ var Game = function() {
 
     let handler = {
         clearBlocksHandler: undefined,
+        detachBallHandler: undefined,
+        mouseMovedHandler: undefined,
         restartButtonClickHandler: undefined,
         restartButtonHoverHandler: undefined,
         restartButtonIsHovering: false
@@ -151,7 +153,7 @@ var Game = function() {
         blocks = createBlocks();
 
         // add event listeners
-        addMouseListeners(gameCanvas, ball, inputState);
+        addMouseListeners(gameCanvas, ball, handler, inputState);
         addTestListener(blocks, handler);
 
         // load assets, then when this is done, start the mainLoop
@@ -418,7 +420,7 @@ var Game = function() {
     }
 
     function removeAllListeners() {
-        removeMouseListeners(gameCanvas);
+        removeMouseListeners(gameCanvas, handler);
         removePauseListener();
         gameState.pauseListener = false;
 
