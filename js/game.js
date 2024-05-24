@@ -51,6 +51,7 @@ var Game = function() {
         clearBlocksHandler: undefined,
         detachBallHandler: undefined,
         mouseMovedHandler: undefined,
+        pauseGameHandler: undefined,
         restartButtonClickHandler: undefined,
         restartButtonHoverHandler: undefined,
         restartButtonIsHovering: false
@@ -173,7 +174,7 @@ var Game = function() {
             
             // add the pause listener during gameplay
             if (!gameState.pauseListener) {
-                addPauseListener(gameState, htmlElements);
+                addPauseListener(gameState, handler, htmlElements);
                 gameState.pauseListener = true;
             }
 
@@ -386,7 +387,8 @@ var Game = function() {
         const titleY = canvas.h / 2;
 
         // remove the pause listener during the title screen
-        removePauseListener(gameCanvas);
+        removePauseListener(handler);
+        handler.pauseGameHandler = undefined;
         gameState.pauseListener = false;
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
@@ -423,7 +425,9 @@ var Game = function() {
         removeMouseListeners(gameCanvas, handler);
         handler.detachBallHandler = undefined;
         handler.mouseMovedHandler = undefined;
-        removePauseListener();
+
+        removePauseListener(handler);
+        handler.pauseGameHandler = undefined;
         gameState.pauseListener = false;
 
         if (fireProjectileHandler) {

@@ -1,4 +1,4 @@
-let fireProjectileHandler, pauseGameHandler;
+let fireProjectileHandler;
 
 // ADD LISTENERS
 function addMouseListeners(canvas, ball, handler, inputState) {
@@ -10,9 +10,9 @@ function addMouseListeners(canvas, ball, handler, inputState) {
     canvas.addEventListener('click', handler.detachBallHandler);
 }
 
-function addPauseListener(gameState, htmlElements) {
-    pauseGameHandler = (evt) => pauseGame(evt, gameState, htmlElements);
-    document.addEventListener('keydown', pauseGameHandler);
+function addPauseListener(gameState, handler, htmlElements) {
+    handler.pauseGameHandler = (evt) => pauseGame(evt, gameState, htmlElements);
+    document.addEventListener('keydown', handler.pauseGameHandler);
 }
 
 function addProjectileListener(canvas, audio, player, spawn) {
@@ -128,8 +128,8 @@ function removeMouseListeners(canvas, handler) {
     canvas.removeEventListener('click', handler.detachBallHandler);
 }
 
-function removePauseListener() {
-    document.removeEventListener('keydown', pauseGameHandler);
+function removePauseListener(handler) {
+    document.removeEventListener('keydown', handler.pauseGameHandler);
 }
 
 function removeProjectileListener(canvas) {
