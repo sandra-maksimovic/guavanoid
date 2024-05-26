@@ -1,6 +1,6 @@
 "use strict";
 
-var game, gameCanvas, gameContainerDiv;
+var game, gameCanvas;
 
 var Game = function() {    
     let canvas = {
@@ -48,14 +48,14 @@ var Game = function() {
     };
 
     let handler = {
+        buttonClickHandler: undefined,
+        buttonHoverHandler: undefined,
+        buttonIsHovering: false,
         clearBlocksHandler: undefined,
         detachBallHandler: undefined,
         fireProjectileHandler: undefined,
         mouseMovedHandler: undefined,
-        pauseGameHandler: undefined,
-        restartButtonClickHandler: undefined,
-        restartButtonHoverHandler: undefined,
-        restartButtonIsHovering: false
+        pauseGameHandler: undefined
     };
 
     let htmlElements = {
@@ -351,7 +351,7 @@ var Game = function() {
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
         
-        addRestartButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
+        addButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
     }
     
     function displayWinScreen() {
@@ -380,7 +380,7 @@ var Game = function() {
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
         
-        addRestartButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
+        addButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
     }
 
     function displayTitleScreen() {
@@ -469,6 +469,31 @@ var Game = function() {
         return gameState.win;
     }
 
+    var displayStartScreen = function() {    
+        const midX = canvas.w / 2;
+        const midY = canvas.h / 2;
+        
+        const buttonColor = 'white';
+        const buttonTextColor = 'black';
+        const buttonHeight = 50;
+        const buttonWidth = 100;
+        const buttonText = 'START';
+        const buttonX = midX - (buttonWidth / 2);
+        const buttonY = midY + 100;
+    
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+        canvas.ctx.font = "bold 100px sans-serif";
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.textAlign = "center";
+        canvas.ctx.textBaseline = "middle";
+        canvas.ctx.fillText("GUAVANOID", midX, midY);
+    
+        let startButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        startButton.draw(canvas.ctx);
+        
+        addButtonListeners(gameCanvas, canvas.ctx, handler, startButton);
+    }
+
     var getSFX = function() {
         return audio.sfx;
     };
@@ -492,6 +517,7 @@ var Game = function() {
         start: start,
         checkLoseCondition: checkLoseCondition,
         checkWinCondition: checkWinCondition,
+        displayStartScreen: displayStartScreen,
         getSFX: getSFX,
         playerFail: playerFail,
         toggleSFX: toggleSFX
@@ -499,21 +525,11 @@ var Game = function() {
 };
 
 window.onload = function init() {
-    let startButton = document.querySelector("#startButton");
     let sfxToggleBtn = document.querySelector("#sfxToggleBtn");
-    let startDiv = document.querySelector("#startDiv");
 
-    gameContainerDiv = document.querySelector("#gameContainerDiv");
     gameCanvas = document.querySelector("#gameCanvas");
     game = new Game();
-
-    startButton.addEventListener('click', function(evt) {
-        startButton.classList.add("hidden");
-        startDiv.classList.add("hidden");
-        gameContainerDiv.classList.remove("hidden");
-        gameCanvas.classList.remove("hidden");
-        game.start();
-    });
+    game.displayStartScreen();
 
     sfxToggleBtn.addEventListener('click', function(evt) {
         game.toggleSFX();

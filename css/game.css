@@ -59,19 +59,3 @@ div.hidden {
 #sfxToggleBtn {
     margin-top: 5px;
 }
-
-#startButton {
-    font: bold 50px sans-serif;
-    color: blue;
-}
-
-#startButton:hover {
-    color: red;
-}
-
-#startDiv {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 100px;
-    font-weight: bold;
-    color: white;
-}
