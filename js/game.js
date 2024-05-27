@@ -37,14 +37,12 @@ var Game = function() {
         displayTitleTimer: 1500, //ms
         displayTitleTimerStartTime: 0,
         hasWall: false,
-        lose: false,
         paused: false,
         pauseListener: false,
         pickupGrowthTimer: 10000, //ms
         pickupGrowthTimerStartTime: 0,
         totalLevels: 5,
-        totalScore: 0,
-        win: false
+        totalScore: 0
     };
 
     let handler = {
@@ -255,13 +253,13 @@ var Game = function() {
                 removeAllListeners();
                 start();
 
-            } else if (checkLoseCondition()) {
-                removeAllListeners();
-                displayLoseScreen();
-
             } else if (checkWinCondition()) {
                 removeAllListeners();
                 displayWinScreen();
+
+            } else if (checkLoseCondition()) {
+                removeAllListeners();
+                displayLoseScreen();
 
             } else {
                 // copy the current time to the old time
@@ -397,7 +395,7 @@ var Game = function() {
         canvas.ctx.fillStyle = 'white';
         canvas.ctx.textAlign = "center";
         canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`Level ${gameState.currentLevel}`, titleX, titleY);
+        canvas.ctx.fillText(`LEVEL ${gameState.currentLevel}`, titleX, titleY);
     }
 
     function moveBall(b) {
@@ -443,30 +441,25 @@ var Game = function() {
     function checkLevelCleared() {
         if (blocks.length === 0 && 
             gameState.currentLevel < gameState.totalLevels) {
-            gameState.currentLevel++;
-            return true;
+                gameState.totalScore += gameState.currentScore;
+                gameState.currentLevel++;
+                return true;
         }
     }
 
     var checkLoseCondition = function() {
         if (player.lives < 0) {
-            gameState.lose = true;
             gameState.totalScore += gameState.currentScore;
+            return true;
         }
-
-        return gameState.lose;
     }
 
     var checkWinCondition = function() {
-        if (blocks.length === 0) {
-            gameState.totalScore += gameState.currentScore;
-            
-            if (gameState.currentLevel === gameState.totalLevels) {
-                gameState.win = true;
-            }
+        if (blocks.length === 0 && 
+            gameState.currentLevel === gameState.totalLevels) {
+                gameState.totalScore += gameState.currentScore;
+                return true;
         }
-
-        return gameState.win;
     }
 
     var displayStartScreen = function() {    
