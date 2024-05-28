@@ -1,7 +1,4 @@
-function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn) {
-    let color = 'grey';
-    let health = 1;
-    
+function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn) {
     let rows = 6;
     let cols = 10;
     
@@ -28,7 +25,7 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
     }
@@ -36,10 +33,7 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     return blockArray;
 }
 
-function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn) {
-    let color = 'blue';
-    let health = 1;
-    
+function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn) {
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
@@ -71,7 +65,7 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
                 blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
 
@@ -91,10 +85,7 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     return blockArray;
 }
 
-function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn) {
-    let color = 'green';
-    let health = 1;
-
+function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, wall, spawn) {
     let rows = 10;
     let cols = 4;
 
@@ -121,7 +112,7 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
     }
@@ -149,7 +140,7 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
                 blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
     }
@@ -157,26 +148,13 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
     return blockArray;
 }
 
-function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn) {
-    let color = 'purple';
-    let health = 1;
+function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, canvas, spawn) {
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
     
     let rowsBreakable = 1;
     let colsBreakable = 10;
-    let healthBreakable = 3;
-
-    let colorLightBrown = 'rgb(153, 79, 0)';
-    let colorMedBrown = 'rgb(102, 53, 0)';
-    let colorDarkBrown = 'rgb(51, 26, 0)';
-    
-    let colorArrayBreakable = [ 
-        colorLightBrown,
-        colorMedBrown,
-        colorDarkBrown
-    ];
 
     // create right-angled triangle of blocks (stacked left)
     for (let r=0; r < rows; r++) {
@@ -192,7 +170,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
 
             blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
 
@@ -211,9 +189,9 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             let blockX = leftGapX + c*blockXSpacing;
 
             if (c === colsBreakable-1) {
-                var block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+                var block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             } else {
-                var block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+                var block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[0], true);
             }
             blockArray.push(block);
         }
@@ -222,26 +200,12 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
     return blockArray;
 }
 
-function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn) {
-    let color = 'teal';
-    let health = 1;
-
+function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, wall, spawn) {
     let rows = 8;
     let cols = 4;
 
     let rowsBreakable = 2;
     let colsBreakable = 4;
-    let healthBreakable = 3;
-
-    let colorLightBrown = 'rgb(153, 79, 0)';
-    let colorMedBrown = 'rgb(102, 53, 0)';
-    let colorDarkBrown = 'rgb(51, 26, 0)';
-    
-    let colorArrayBreakable = [ 
-        colorLightBrown,
-        colorMedBrown,
-        colorDarkBrown
-    ];
 
     // populate blocks left of wall
     for (let r=0; r < rows; r++) {
@@ -266,7 +230,7 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
     }
@@ -294,7 +258,7 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[0], true);
             blockArray.push(block);
         }
     }
@@ -322,7 +286,7 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
                 blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             blockArray.push(block);
         }
     }
@@ -350,7 +314,7 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall,
                 blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[0], true);
             blockArray.push(block);
         }
     }

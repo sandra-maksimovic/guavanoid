@@ -56,13 +56,14 @@ class Ball extends Entity {
 
 class Block extends Entity {
     health;
-    colorArray; // for breakable blocks
     hasPickup = false;
+    isBreakable = false;
     
-    constructor(x, y, width, height, color, health, colorArray) {
+    constructor(x, y, width, height, color, isBreakable) {
         super(x, y, width, height, color);
-        this.health = health;
-        this.colorArray = colorArray;
+        
+        if (isBreakable) { this.health = 3 }
+        else { this.health = 1 }
     }
 }
 

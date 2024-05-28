@@ -30,6 +30,22 @@ var Game = function() {
 
     let blocks = [];
 
+    let blockColor = [
+        'red',
+        'orange',
+        'yellow',
+        'green',
+        'blue',
+        'indigo',
+        'violet'
+    ];
+
+    let breakableBlockColor = [
+        'rgb(153, 79, 0)',  // light
+        'rgb(102, 53, 0)',  // med
+        'rgb(51, 26, 0)'    // dark
+    ];
+
     let gameState = {
         currentLevel: 1,
         currentScore: 0,
@@ -282,15 +298,15 @@ var Game = function() {
         let blockHeight = 20;
 
         if (gameState.currentLevel === 1) {
-            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn);
+            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn);
         } else if (gameState.currentLevel === 2) {
-            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn);
+            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn);
         } else if (gameState.currentLevel === 3) {
-            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn);
+            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, wall, spawn);
         } else if (gameState.currentLevel === 4) {
-            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canvas, spawn);
+            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, canvas, spawn);
         } else if (gameState.currentLevel === 5) {
-            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, wall, spawn);
+            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, wall, spawn);
         }
 
         return blockArray;
@@ -402,7 +418,7 @@ var Game = function() {
         b.move();    
         testCollisionBallWithWalls(b, audio, canvas);
         testCollisionBallWithPlayer(b, audio, player, ballInit);
-        testCollisionBallWithBlocks(b, audio, blocks, gameState, spawn);
+        testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, gameState, spawn);
         if (gameState.hasWall === true) {
             testCollisionBallWithInnerWalls(b, wall);
         }

@@ -162,7 +162,7 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
     }
 }
 
-function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawn) {
+function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, gameState, spawn) {
     blocks.forEach(function(block, index) {
         if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
             let ballRightSide = b.x + b.radius;
@@ -260,7 +260,7 @@ function testCollisionBallWithBlocks(b, audio, blocks, gameState, spawn) {
 
             if (block.health > 0) {
                 // update the color of breakable block with health left
-                block.color = block.colorArray[block.health-1];
+                block.color = breakableBlockColor[block.health-1];
             } else {
                 if (block.hasPickup === true) {
                     spawnPickup(block, spawn);
