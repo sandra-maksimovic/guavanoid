@@ -41,9 +41,9 @@ var Game = function() {
     ];
 
     let breakableBlockColor = [
-        'rgb(153, 79, 0)',  // light
-        'rgb(102, 53, 0)',  // med
-        'rgb(51, 26, 0)'    // dark
+        'white',
+        'darkgray',
+        'dimgray'
     ];
 
     let gameState = {

@@ -61,9 +61,23 @@ class Block extends Entity {
     
     constructor(x, y, width, height, color, isBreakable) {
         super(x, y, width, height, color);
+        this.isBreakable = isBreakable;
         
-        if (isBreakable) { this.health = 3 }
-        else { this.health = 1 }
+        if (this.isBreakable) { this.health = 3; }
+        else { this.health = 1; }
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, this.width, this.height);
+        if (this.isBreakable) {
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'white';
+            ctx.strokeRect(1, 1, this.width-1, this.height-1);
+        }
+        ctx.restore();
     }
 }
 

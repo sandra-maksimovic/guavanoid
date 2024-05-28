@@ -191,7 +191,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, block
             if (c === colsBreakable-1) {
                 var block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
             } else {
-                var block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[0], true);
+                var block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
             }
             blockArray.push(block);
         }
@@ -258,7 +258,7 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
                 blockX = leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[0], true);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
             blockArray.push(block);
         }
     }
@@ -314,7 +314,7 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
                 blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[0], true);
+            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
             blockArray.push(block);
         }
     }
