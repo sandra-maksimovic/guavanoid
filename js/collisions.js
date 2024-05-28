@@ -270,7 +270,7 @@ function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, game
                 blocks.splice(index, 1);
             }
 
-            gameState.currentScore += 1;
+            incrementScore(block, gameState);
         }
     });
 }
@@ -424,7 +424,7 @@ function testCollisionProjectileWithBlocks(p, audio, blocks, gameState, spawn) {
             // remove the block from the block array
             blocks.splice(index, 1);
 
-            gameState.currentScore += 1;
+            incrementScore(block, gameState);
         }
     });
 }

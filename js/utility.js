@@ -78,3 +78,36 @@ function equipLaser(gameCanvas, audio, handler, player, spawn, laser) {
         addProjectileListener(gameCanvas, audio, handler, player, spawn);
     }
 }
+
+function incrementScore(block, gameState) {
+    let score;
+
+    switch(block.color) {
+        case 'red':
+            score = 7;
+            break;
+        case 'orange':
+            score = 6;
+            break;
+        case 'yellow':
+            score = 5;
+            break;
+        case 'green':
+            score = 4;
+            break;
+        case 'blue':
+            score = 3;
+            break;
+        case 'indigo':
+            score = 2;
+            break;
+        case 'violet':
+            score = 1;
+            break;
+        default:
+            score = 1;
+            break;
+    }
+
+    gameState.currentScore += score;
+}
