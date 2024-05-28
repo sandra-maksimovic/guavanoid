@@ -189,7 +189,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, block
             let blockX = leftGapX + c*blockXSpacing;
 
             if (c === colsBreakable-1) {
-                var block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
+                var block = new Block(blockX, blockY, blockWidth, blockHeight, 'white', false);
             } else {
                 var block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
             }
