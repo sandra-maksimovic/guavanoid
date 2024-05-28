@@ -183,11 +183,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
         let blockY;
         let blockYSpacing = blockHeight + blockGap;
 
-        if (r === 0) {
-            blockY = blockYSpacing;
-        } else {
-            blockY = blockYSpacing + r*blockYSpacing;
-        }
+        blockY = blockYSpacing + r*blockYSpacing;
 
         for (let c=0; c < cols; c++) {
             let blockX;
@@ -214,7 +210,11 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, canva
             let leftGapX = (canvas.w - blockXSpacing*colsBreakable) / 2;
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+            if (c === colsBreakable-1) {
+                var block = new Block(blockX, blockY, blockWidth, blockHeight, color, health);
+            } else {
+                var block = new Block(blockX, blockY, blockWidth, blockHeight, colorArrayBreakable[healthBreakable-1], healthBreakable, colorArrayBreakable);
+            }
             blockArray.push(block);
         }
     }
