@@ -179,7 +179,21 @@ class Projectile extends Entity {
 }
 
 class Wall extends Entity {
-    constructor(x, y, width, height, color) {
+    strokeColor;
+
+    constructor(x, y, width, height, color, strokeColor) {
         super(x, y, width, height, color);
+        this.strokeColor = strokeColor;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.strokeRect(1, 1, this.width-1, this.height-1);
+        ctx.restore();
     }
 }

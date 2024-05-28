@@ -107,9 +107,10 @@ var Game = function() {
     let wall;
 
     let wallInit = {
-        wallColor: 'white',
+        wallColor: 'black',
         wallHeight: canvas.h / 2,
         wallWidth: 10,
+        wallStrokeColor: 'white',
         wallX: undefined, // set later in start(), requires wallInit.wallWidth value for init
         wallY: 50
     };
@@ -162,7 +163,7 @@ var Game = function() {
         // create vertical wall
         if (gameState.hasWall === true) {
             wallInit.wallX = (canvas.w / 2) - (wallInit.wallWidth / 2);
-            wall = new Wall(wallInit.wallX, wallInit.wallY, wallInit.wallWidth, wallInit.wallHeight, wallInit.wallColor);
+            wall = new Wall(wallInit.wallX, wallInit.wallY, wallInit.wallWidth, wallInit.wallHeight, wallInit.wallColor, wallInit.wallStrokeColor);
         }
 
         // create blocks
