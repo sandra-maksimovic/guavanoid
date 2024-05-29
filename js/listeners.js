@@ -1,10 +1,10 @@
 // ADD LISTENERS
-function addMouseListeners(canvas, ball, handler, inputState) {
+function addMouseListeners(canvas, ball, button, ctx, handler, icon, inputState) {
     // arrow function ensures the function is not triggered upon assigning it as an event listener
-    handler.mouseMovedHandler = (evt) => mouseMoved(evt, canvas, inputState);
+    handler.mouseMovedHandler = (evt) => mouseMoved(evt, button, canvas, ctx, inputState);
     canvas.addEventListener('mousemove', handler.mouseMovedHandler);
 
-    handler.detachBallHandler = (evt) => detachBall(evt, ball);
+    handler.detachBallHandler = (evt) => detachBall(evt, ball, button, canvas, ctx, icon);
     canvas.addEventListener('click', handler.detachBallHandler);
 }
 
@@ -38,8 +38,25 @@ function clearBlocks(evt, blocks) {
     }
 }
 
-function detachBall(evt, ball) {
-    ball.isAttached = false;
+function detachBall(evt, ball, button, canvas, ctx, icon) {
+    let rect = canvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    const isInsideSFXButton = x < (button.sfxToggleBtn.x + button.sfxToggleBtn.width) &&
+                              y > (button.sfxToggleBtn.y)
+
+    if (isInsideSFXButton) {
+        game.toggleSFX();
+        if (game.getSFX()) {
+            button.sfxToggleBtn.img = icon.sfxOn;
+        } else {
+            button.sfxToggleBtn.img = icon.sfxOff;
+        }
+        button.sfxToggleBtn.draw(ctx);
+    } else {
+        ball.isAttached = false;
+    }
 }
 
 function fireProjectile(evt, audio, player, spawn) {
@@ -52,16 +69,30 @@ function fireProjectile(evt, audio, player, spawn) {
     player.numProjectiles--;
 }
 
-function getMousePos(evt, canvas) {
-    // necessary to work in the local canvas coordinate system
+function getMousePos(evt, button, canvas, ctx) {
     let rect = canvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    const isInsideSFXButton = x < (button.sfxToggleBtn.x + button.sfxToggleBtn.width) &&
+                              y > (button.sfxToggleBtn.y)
     
+    if (isInsideSFXButton && !button.isHovering) {
+        button.sfxToggleBtn.color = 'lightgray';
+        button.sfxToggleBtn.draw(ctx);
+        button.isHovering = true;
+    } else if (!isInsideSFXButton && button.isHovering) {
+        button.sfxToggleBtn.color = 'gray';
+        button.sfxToggleBtn.draw(ctx);
+        button.isHovering = false;
+    }
+
     // we can return the mouse coords as a simple object in JS
     return { x: evt.clientX - rect.left }
 }
 
-function mouseMoved(evt, canvas, inputState) {
-    inputState.mousePos = getMousePos(evt, canvas);
+function mouseMoved(evt, button, canvas, ctx, inputState) {
+    inputState.mousePos = getMousePos(evt, button, canvas, ctx);
 }
 
 function pauseGame(evt, gameState, htmlElements) {

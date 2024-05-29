@@ -178,6 +178,24 @@ class Projectile extends Entity {
     }
 }
 
+class ToggleButton extends Entity {
+    img;
+
+    constructor(x, y, width, height, color, img) {
+        super(x, y, width, height, color);
+        this.img = img;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+        ctx.restore();
+    }
+}
+
 class Wall extends Entity {
     strokeColor;
 
