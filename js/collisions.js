@@ -396,6 +396,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
             let growth = 'growth';
             let health = 'health';
             let laser = 'laser';
+            let points = 'points';
             
             if (p.type === growth) {
                 growPlayer(player, playerInit, gameState);
@@ -403,6 +404,8 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
                 increaseHealth(player);
             } else if (p.type === laser) {
                 equipLaser(gameCanvas, audio, handler, player, spawn, laser);
+            } else if (p.type === points) {
+                gameState.currentScore += 10;
             }
             
             spawn.pickupArray.splice(index, 1);

@@ -20,7 +20,7 @@ var Game = function() {
     let ball;
 
     let ballInit = {
-        ballColor: 'red',
+        ballColor: 'lime',
         ballRadius: 5,
         ballStartPosX: canvas.w / 2,
         ballStartPosY: undefined, // set later in start(), requires ballInit.ballRadius value for init
@@ -105,9 +105,10 @@ var Game = function() {
         numPickups: 3,
         pickupArray: [],
         pickupTypeArray: [
-            { type: 'growth', color: 'magenta' },
-            { type: 'health', color: 'lime' },
-            { type: 'laser', color: 'orange' }
+            { type: 'growth', color: 'blue' },
+            { type: 'health', color: 'green' },
+            { type: 'laser', color: 'red' },
+            { type: 'points', color: 'yellow' }
         ],
         numProjectiles: 3,
         projectileArray: [],

@@ -169,7 +169,7 @@ class Projectile extends Entity {
     y;
     width = 4;
     height = 15;
-    color = 'orange';
+    color = 'red';
     incrementY;
     speedY = -300; // px/s
 
