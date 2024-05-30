@@ -369,7 +369,9 @@ var Game = function() {
         const buttonWidth = 100;
         const buttonText = 'RESTART';
         const buttonX = midX - (buttonWidth / 2);
-        const buttonY = midY + 100;
+        const buttonY = midY + (canvas.h-midY) / 2;
+
+        const highScoreY = midY + (buttonY - midY) / 2;
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
         canvas.ctx.font = "bold 100px sans-serif";
@@ -378,9 +380,13 @@ var Game = function() {
         canvas.ctx.textBaseline = "middle";
         canvas.ctx.fillText(`YOU LOSE`, midX, midY);
 
-        canvas.ctx.font = "30px sans-serif";
-        canvas.ctx.fillStyle = 'white';
-        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, midX, midY + 60);
+        if (localStorage.highScore) {
+            canvas.ctx.font = "30px sans-serif";
+            canvas.ctx.fillStyle = 'white';
+            canvas.ctx.textAlign = "center";
+            canvas.ctx.textBaseline = "middle";
+            canvas.ctx.fillText(`High Score: ${localStorage.highScore}`, midX, highScoreY);
+        }
 
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
@@ -398,7 +404,9 @@ var Game = function() {
         const buttonWidth = 100;
         const buttonText = 'RESTART';
         const buttonX = midX - (buttonWidth / 2);
-        const buttonY = midY + 100;
+        const buttonY = midY + (canvas.h-midY) / 2;
+
+        const highScoreY = midY + (buttonY - midY) / 2;
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
         canvas.ctx.font = "bold 100px sans-serif";
@@ -406,10 +414,14 @@ var Game = function() {
         canvas.ctx.textAlign = "center";
         canvas.ctx.textBaseline = "middle";
         canvas.ctx.fillText(`YOU WIN`, midX, midY);
-
-        canvas.ctx.font = "30px sans-serif";
-        canvas.ctx.fillStyle = 'white';
-        canvas.ctx.fillText(`Score: ${gameState.totalScore}`, midX, midY + 60);
+        
+        if (localStorage.highScore) {
+            canvas.ctx.font = "30px sans-serif";
+            canvas.ctx.fillStyle = 'white';
+            canvas.ctx.textAlign = "center";
+            canvas.ctx.textBaseline = "middle";
+            canvas.ctx.fillText(`High Score: ${localStorage.highScore}`, midX, highScoreY);
+        }
 
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
@@ -486,6 +498,7 @@ var Game = function() {
     var checkLoseCondition = function() {
         if (player.lives < 0) {
             gameState.totalScore += gameState.currentScore;
+            saveHighScore();
             return true;
         }
     }
@@ -494,6 +507,7 @@ var Game = function() {
         if (blocks.length === 0 && 
             gameState.currentLevel === gameState.totalLevels) {
                 gameState.totalScore += gameState.currentScore;
+                saveHighScore();
                 return true;
         }
     }
@@ -543,6 +557,7 @@ var Game = function() {
     };
 
     return {
+        gameState: gameState,
         start: start,
         checkLoseCondition: checkLoseCondition,
         checkWinCondition: checkWinCondition,

@@ -111,3 +111,10 @@ function incrementScore(block, gameState) {
 
     gameState.currentScore += score;
 }
+
+function saveHighScore() {
+    if (localStorage.highScore === undefined ||
+        localStorage.highScore < game.gameState.totalScore) {
+            window.localStorage.highScore = JSON.stringify(game.gameState.totalScore);
+        }
+}
