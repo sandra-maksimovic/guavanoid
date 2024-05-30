@@ -178,6 +178,35 @@ class Projectile extends Entity {
     }
 }
 
+class ResultText {
+    x;
+    y;
+    color;
+    font;
+    text;
+    textAlign = "center";
+    textBaseline = "middle";
+
+    constructor(x, y, color, font, text) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.font = font;
+        this.text = text;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        // we don't want to translate the coordinate system for the result
+        ctx.font = this.font;
+        ctx.fillStyle = this.color;
+        ctx.textAlign = this.textAlign;
+        ctx.textBaseline = this.textBaseline;
+        ctx.fillText(this.text, this.x, this.y);
+        ctx.restore();
+    }
+}
+
 class ToggleButton extends Entity {
     img;
 

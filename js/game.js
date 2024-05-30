@@ -291,11 +291,11 @@ var Game = function() {
 
             } else if (checkWinCondition()) {
                 removeAllListeners();
-                displayWinScreen();
+                displayResultScreen('green', 'YOU WIN');
 
             } else if (checkLoseCondition()) {
                 removeAllListeners();
-                displayLoseScreen();
+                displayResultScreen('red', 'YOU LOSE');
 
             } else {
                 // copy the current time to the old time
@@ -339,10 +339,10 @@ var Game = function() {
     }
 
     function displayHUD() {
-        let hudXLeftAlign = 40;
-        let hudXCenterAlign = canvas.w / 2;
-        let huxXRightAlign = canvas.w - 40;
-        let hudYTopAlign = 5;
+        const hudXLeftAlign = 40;
+        const hudXCenterAlign = canvas.w / 2;
+        const huxXRightAlign = canvas.w - 40;
+        const hudYTopAlign = 5;
 
         let level = gameState.currentLevel;
         let score = gameState.totalScore + gameState.currentScore;
@@ -359,74 +359,41 @@ var Game = function() {
         canvas.ctx.fillText(`Lives: ${lives}`, huxXRightAlign, hudYTopAlign);
     }
 
-    function displayLoseScreen() {
+    function displayResultScreen(color, text) {
         const midX = canvas.w / 2;
         const midY = canvas.h / 2;
+
+        const resultText = text;
+        const resultTextColor = color;
+        const resultTextFont = 'bold 100px sans-serif';
+
+        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
+
+        let result = new ResultText(midX, midY, resultTextColor, resultTextFont, resultText);
+        result.draw(canvas.ctx);
         
         const buttonColor = 'white';
-        const buttonTextColor = 'black';
         const buttonHeight = 50;
         const buttonWidth = 100;
         const buttonText = 'RESTART';
-        const buttonX = midX - (buttonWidth / 2);
-        const buttonY = midY + (canvas.h-midY) / 2;
-
-        const highScoreY = midY + (buttonY - midY) / 2;
-
-        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
-        canvas.ctx.font = "bold 100px sans-serif";
-        canvas.ctx.fillStyle = 'red';
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`YOU LOSE`, midX, midY);
-
-        if (localStorage.highScore) {
-            canvas.ctx.font = "30px sans-serif";
-            canvas.ctx.fillStyle = 'white';
-            canvas.ctx.textAlign = "center";
-            canvas.ctx.textBaseline = "middle";
-            canvas.ctx.fillText(`High Score: ${localStorage.highScore}`, midX, highScoreY);
-        }
-
-        let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
-        restartButton.draw(canvas.ctx);
-        
-        addButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
-    }
-    
-    function displayWinScreen() {
-        const midX = canvas.w / 2;
-        const midY = canvas.h / 2;
-        
-        const buttonColor = 'white';
         const buttonTextColor = 'black';
-        const buttonHeight = 50;
-        const buttonWidth = 100;
-        const buttonText = 'RESTART';
         const buttonX = midX - (buttonWidth / 2);
         const buttonY = midY + (canvas.h-midY) / 2;
-
-        const highScoreY = midY + (buttonY - midY) / 2;
-
-        canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
-        canvas.ctx.font = "bold 100px sans-serif";
-        canvas.ctx.fillStyle = 'green';
-        canvas.ctx.textAlign = "center";
-        canvas.ctx.textBaseline = "middle";
-        canvas.ctx.fillText(`YOU WIN`, midX, midY);
         
-        if (localStorage.highScore) {
-            canvas.ctx.font = "30px sans-serif";
-            canvas.ctx.fillStyle = 'white';
-            canvas.ctx.textAlign = "center";
-            canvas.ctx.textBaseline = "middle";
-            canvas.ctx.fillText(`High Score: ${localStorage.highScore}`, midX, highScoreY);
-        }
-
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
-        
+
         addButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
+
+        if (localStorage.highScore) {
+            const highScoreY = midY + (buttonY - midY) / 2;
+            const highScoreColor = 'white';
+            const highScoreFont = '30px sans-serif';
+            const highScoreText = `High Score: ${localStorage.highScore}`;
+
+            let highScore = new ResultText(midX, highScoreY, highScoreColor, highScoreFont, highScoreText);
+            highScore.draw(canvas.ctx);
+        }
     }
 
     function displayTitleScreen() {
