@@ -72,10 +72,9 @@ var Game = function() {
         buttonHoverHandler: undefined,
         buttonIsHovering: false,
         clearBlocksHandler: undefined,
-        processClickHandler: undefined,
-        fireProjectileHandler: undefined,
         mouseMovedHandler: undefined,
-        pauseGameHandler: undefined
+        pauseGameHandler: undefined,
+        processClickHandler: undefined
     };
 
     let htmlElements = {
@@ -249,7 +248,8 @@ var Game = function() {
                 if ((player.color !== playerInit.playerColor) && 
                     (player.numProjectiles === 0)) {
                         player.color = playerInit.playerColor;
-                        removeProjectileListener(gameCanvas, handler);
+                        //removeProjectileListener(gameCanvas, handler);
+                        player.armed = false;
                         handler.fireProjectileHandler = undefined;
                 }
 
@@ -449,11 +449,6 @@ var Game = function() {
         handler.pauseGameHandler = undefined;
         gameState.pauseListener = false;
 
-        if (handler.fireProjectileHandler) {
-            removeProjectileListener(gameCanvas, handler);
-            handler.fireProjectileHandler = undefined;
-        }
-
         removeTestListener(handler);
         handler.clearBlocksHandler = undefined;
     }
@@ -509,10 +504,6 @@ var Game = function() {
         addButtonListeners(gameCanvas, canvas.ctx, handler, startButton);
     }
 
-    var getSFX = function() {
-        return audio.sfx;
-    };
-
     var playerFail = function() {
         player.lives -= 1;
         ball.isAttached = true;
@@ -531,13 +522,20 @@ var Game = function() {
     };
 
     return {
+        // need to 'get' instantiated objects
+        get ball() { return ball },
+        get player() { return player },
+        audio: audio,
+        button: button,
+        canvas: canvas,
         gameState: gameState,
-        start: start,
+        icon: icon,
+        spawn: spawn,
         checkLoseCondition: checkLoseCondition,
         checkWinCondition: checkWinCondition,
         displayStartScreen: displayStartScreen,
-        getSFX: getSFX,
         playerFail: playerFail,
+        start: start,
         toggleSFX: toggleSFX
     };
 };

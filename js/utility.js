@@ -15,43 +15,29 @@ function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
     return (((cx-testX)*(cx-testX)+(cy-testY)*(cy-testY)) < r*r); // to avoid expensive sqrt calc
 }
 
-function rectsOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
-    if ((x1 > (x2 + w2)) || ((x1 + w1) < x2)) {
-        return false; // No horizontal axis projection overlap
-    }
+function equipLaser(laser) {
+    // get the associated pickup type color from the pickupTypeArray of objects
+    let index = game.spawn.pickupTypeArray.findIndex(obj => obj.type === laser);
+    game.player.color = game.spawn.pickupTypeArray[index].color;
 
-    if ((y1 > (y2 + h2)) || ((y1 + h1) < y2)) {
-        return false; // No vertical axis projection overlap
-    }
+    // give the player more projectiles
+    game.player.numProjectiles = game.spawn.numProjectiles;
 
-    return true;    // If previous tests failed, then both axis projections
-                    // overlap and the rectangles intersect
+    if (game.player.armed === false) { game.player.armed = true; }
 }
 
-function randomlyAssignPickupsToBlocks(blockArray, spawn) {
-    for (let i = 0; i < spawn.numPickups; i++) {
-        let randomInt = getRandomInt(0, blockArray.length-1);
-        blockArray[randomInt].hasPickup = true;
-    }
+function fireProjectile() {
+    let projectile = new Projectile();
+    let newLength = game.spawn.projectileArray.push(projectile);
+    let newIndex = newLength - 1;
+    game.spawn.projectileArray[newIndex].x = game.player.x + (game.player.width / 2) - (game.spawn.projectileArray[newIndex].width / 2);
+    game.spawn.projectileArray[newIndex].y = game.player.y - game.spawn.projectileArray[newIndex].height;
+    if (game.audio.sfx) { game.audio.laserProjectileSound.play(); }
+    game.player.numProjectiles--;
 }
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function spawnPickup(block, spawn) {
-    let pickupX = block.x + (block.width / 2);
-    let pickupY = block.y + (block.height / 2);
-    let pickupRadius = block.height / 2;
-    let pickupColor = 'black'; // for init only bc Pickup extends Ball, this gets overridden below by pickup type
-    let pickupSpeedX = 200; // px/s - for init only bc Pickup extends Ball, speedX not used for pickups since they only fall
-    let pickupSpeedY = 200; // px/s
-
-    let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
-    let randomInt = getRandomInt(0, spawn.pickupTypeArray.length-1);
-    pickup.type = spawn.pickupTypeArray[randomInt].type;
-    pickup.color = spawn.pickupTypeArray[randomInt].color;
-    spawn.pickupArray.push(pickup);
 }
 
 function growPlayer(player, playerInit, gameState) {
@@ -64,19 +50,6 @@ function growPlayer(player, playerInit, gameState) {
 
 function increaseHealth(player) {
     player.lives++;
-}
-
-function equipLaser(gameCanvas, audio, handler, player, spawn, laser) {
-    // get the associated pickup type color from the pickupTypeArray of objects
-    let index = spawn.pickupTypeArray.findIndex(obj => obj.type === laser);
-    player.color = spawn.pickupTypeArray[index].color;
-
-    // give the player more projectiles
-    player.numProjectiles = spawn.numProjectiles;
-
-    if (!handler.fireProjectileHandler) {
-        addProjectileListener(gameCanvas, audio, handler, player, spawn);
-    }
 }
 
 function incrementScore(block, gameState) {
@@ -112,9 +85,44 @@ function incrementScore(block, gameState) {
     gameState.currentScore += score;
 }
 
+function randomlyAssignPickupsToBlocks(blockArray, spawn) {
+    for (let i = 0; i < spawn.numPickups; i++) {
+        let randomInt = getRandomInt(0, blockArray.length-1);
+        blockArray[randomInt].hasPickup = true;
+    }
+}
+
+function rectsOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
+    if ((x1 > (x2 + w2)) || ((x1 + w1) < x2)) {
+        return false; // No horizontal axis projection overlap
+    }
+
+    if ((y1 > (y2 + h2)) || ((y1 + h1) < y2)) {
+        return false; // No vertical axis projection overlap
+    }
+
+    return true;    // If previous tests failed, then both axis projections
+                    // overlap and the rectangles intersect
+}
+
 function saveHighScore() {
     if (localStorage.highScore === undefined ||
         localStorage.highScore < game.gameState.totalScore) {
             window.localStorage.highScore = JSON.stringify(game.gameState.totalScore);
         }
+}
+
+function spawnPickup(block, spawn) {
+    let pickupX = block.x + (block.width / 2);
+    let pickupY = block.y + (block.height / 2);
+    let pickupRadius = block.height / 2;
+    let pickupColor = 'black'; // for init only bc Pickup extends Ball, this gets overridden below by pickup type
+    let pickupSpeedX = 200; // px/s - for init only bc Pickup extends Ball, speedX not used for pickups since they only fall
+    let pickupSpeedY = 200; // px/s
+
+    let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
+    let randomInt = getRandomInt(0, spawn.pickupTypeArray.length-1);
+    pickup.type = spawn.pickupTypeArray[randomInt].type;
+    pickup.color = spawn.pickupTypeArray[randomInt].color;
+    spawn.pickupArray.push(pickup);
 }

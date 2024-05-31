@@ -126,6 +126,7 @@ class Pickup extends Ball {
 }
 
 class Player extends Entity {
+    armed = false;
     growthActive = false;
     lives;
     numProjectiles = 0;

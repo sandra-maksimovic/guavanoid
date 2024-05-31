@@ -4,18 +4,12 @@ function addMouseListeners(canvas, ball, button, ctx, handler, icon, inputState)
     handler.mouseMovedHandler = (evt) => mouseMoved(evt, button, canvas, ctx, inputState);
     canvas.addEventListener('mousemove', handler.mouseMovedHandler);
 
-    handler.processClickHandler = (evt) => processClick(evt, ball, button, canvas, ctx, icon);
-    canvas.addEventListener('click', handler.processClickHandler);
+    canvas.addEventListener('click', processClick);
 }
 
 function addPauseListener(gameState, handler, htmlElements) {
     handler.pauseGameHandler = (evt) => pauseGame(evt, gameState, htmlElements);
     document.addEventListener('keydown', handler.pauseGameHandler);
-}
-
-function addProjectileListener(canvas, audio, handler, player, spawn) {
-    handler.fireProjectileHandler = (evt) => fireProjectile(evt, audio, player, spawn);
-    canvas.addEventListener('click', handler.fireProjectileHandler);
 }
 
 function addButtonListeners(canvas, ctx, handler, button) {
@@ -38,38 +32,27 @@ function clearBlocks(evt, blocks) {
     }
 }
 
-function processClick(evt, ball, button, canvas, ctx, icon) {
-    let rect = canvas.getBoundingClientRect();
+function processClick(evt) {
+    let rect = gameCanvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
-    const isInsideSFXButton = x < (button.sfxToggleBtn.x + button.sfxToggleBtn.width) &&
-                              y > (button.sfxToggleBtn.y)
+    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
+                              y > (game.button.sfxToggleBtn.y)
 
-    // handle clicking the audio toggle
     if (isInsideSFXButton) {
         game.toggleSFX();
-        if (game.getSFX()) {
-            button.sfxToggleBtn.img = icon.sfxOn;
-        } else {
-            button.sfxToggleBtn.img = icon.sfxOff;
-        }
-        button.sfxToggleBtn.draw(ctx);
-    
-    // otherwise launch the ball
-    } else {
-        ball.isAttached = false;
-    }
-}
 
-function fireProjectile(evt, audio, player, spawn) {
-    let projectile = new Projectile();
-    let newLength = spawn.projectileArray.push(projectile);
-    let newIndex = newLength - 1;
-    spawn.projectileArray[newIndex].x = player.x + (player.width / 2) - (spawn.projectileArray[newIndex].width / 2);
-    spawn.projectileArray[newIndex].y = player.y - spawn.projectileArray[newIndex].height;
-    if (audio.sfx) { audio.laserProjectileSound.play(); }
-    player.numProjectiles--;
+        if (game.audio.sfx) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
+        else                { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
+        game.button.sfxToggleBtn.draw(game.canvas.ctx);
+    
+    } else if (game.ball.isAttached) {
+        game.ball.isAttached = false;
+
+    } else if (game.player.armed) {
+        fireProjectile();
+    }
 }
 
 function getMousePos(evt, button, canvas, ctx) {
@@ -162,10 +145,6 @@ function removeMouseListeners(canvas, handler) {
 
 function removePauseListener(handler) {
     document.removeEventListener('keydown', handler.pauseGameHandler);
-}
-
-function removeProjectileListener(canvas, handler) {
-    canvas.removeEventListener('click', handler.fireProjectileHandler);
 }
 
 function removeButtonListeners(canvas, handler) {
