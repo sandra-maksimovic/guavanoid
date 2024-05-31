@@ -1,6 +1,7 @@
 "use strict";
 
 var game, gameCanvas;
+var globalSFX = true;
 
 var Game = function() {    
     let canvas = {
@@ -160,6 +161,7 @@ var Game = function() {
 
     var start = function() {
         // reset game state
+        audio.sfx = globalSFX;
         gameState.currentScore = 0;
         gameState.pauseListener = false;
         gameState.hasWall = false;
@@ -192,7 +194,9 @@ var Game = function() {
             gameState.displayTitle = true;
             gameState.displayTitleTimerStartTime = performance.now();
 
-            button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOn);
+            if (audio.sfx) { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOn); }
+            else           { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOff); }
+
             addMouseListeners(gameCanvas, ball, button, canvas.ctx, handler, icon, inputState);
             addTestListener(blocks, handler);
 
@@ -519,9 +523,11 @@ var Game = function() {
     var toggleSFX = function() {
         if (audio.sfx === true) {
             audio.sfx = false;
+            
         } else {
             audio.sfx = true;
         }
+        globalSFX = audio.sfx;
     };
 
     return {
