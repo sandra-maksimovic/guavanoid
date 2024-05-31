@@ -72,7 +72,7 @@ var Game = function() {
         buttonHoverHandler: undefined,
         buttonIsHovering: false,
         clearBlocksHandler: undefined,
-        detachBallHandler: undefined,
+        processClickHandler: undefined,
         fireProjectileHandler: undefined,
         mouseMovedHandler: undefined,
         pauseGameHandler: undefined
@@ -442,7 +442,7 @@ var Game = function() {
 
     function removeAllListeners() {
         removeMouseListeners(gameCanvas, handler);
-        handler.detachBallHandler = undefined;
+        handler.processClickHandler = undefined;
         handler.mouseMovedHandler = undefined;
 
         removePauseListener(handler);

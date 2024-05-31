@@ -4,8 +4,8 @@ function addMouseListeners(canvas, ball, button, ctx, handler, icon, inputState)
     handler.mouseMovedHandler = (evt) => mouseMoved(evt, button, canvas, ctx, inputState);
     canvas.addEventListener('mousemove', handler.mouseMovedHandler);
 
-    handler.detachBallHandler = (evt) => detachBall(evt, ball, button, canvas, ctx, icon);
-    canvas.addEventListener('click', handler.detachBallHandler);
+    handler.processClickHandler = (evt) => processClick(evt, ball, button, canvas, ctx, icon);
+    canvas.addEventListener('click', handler.processClickHandler);
 }
 
 function addPauseListener(gameState, handler, htmlElements) {
@@ -38,7 +38,7 @@ function clearBlocks(evt, blocks) {
     }
 }
 
-function detachBall(evt, ball, button, canvas, ctx, icon) {
+function processClick(evt, ball, button, canvas, ctx, icon) {
     let rect = canvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
@@ -46,6 +46,7 @@ function detachBall(evt, ball, button, canvas, ctx, icon) {
     const isInsideSFXButton = x < (button.sfxToggleBtn.x + button.sfxToggleBtn.width) &&
                               y > (button.sfxToggleBtn.y)
 
+    // handle clicking the audio toggle
     if (isInsideSFXButton) {
         game.toggleSFX();
         if (game.getSFX()) {
@@ -54,6 +55,8 @@ function detachBall(evt, ball, button, canvas, ctx, icon) {
             button.sfxToggleBtn.img = icon.sfxOff;
         }
         button.sfxToggleBtn.draw(ctx);
+    
+    // otherwise launch the ball
     } else {
         ball.isAttached = false;
     }
@@ -154,7 +157,7 @@ function buttonHover(evt, canvas, ctx, handler, button) {
 // REMOVE LISTENERS
 function removeMouseListeners(canvas, handler) {
     canvas.removeEventListener('mousemove', handler.mouseMovedHandler);
-    canvas.removeEventListener('click', handler.detachBallHandler);
+    canvas.removeEventListener('click', handler.processClickHandler);
 }
 
 function removePauseListener(handler) {
