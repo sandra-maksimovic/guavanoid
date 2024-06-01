@@ -1,12 +1,8 @@
 // ADD LISTENERS
-function addMouseListeners() {
-    gameCanvas.addEventListener('mousemove', mouseMoved);
+function addListeners() {
+    document.addEventListener('keydown', processKeyDown);
     gameCanvas.addEventListener('click', processClick);
-}
-
-function addPauseListener(gameState, handler, htmlElements) {
-    handler.pauseGameHandler = (evt) => pauseGame(evt, gameState, htmlElements);
-    document.addEventListener('keydown', handler.pauseGameHandler);
+    gameCanvas.addEventListener('mousemove', mouseMoved);
 }
 
 function addButtonListeners(canvas, ctx, handler, button) {
@@ -17,81 +13,7 @@ function addButtonListeners(canvas, ctx, handler, button) {
     canvas.addEventListener('mousemove', handler.buttonHoverHandler);
 }
 
-function addTestListener(blocks, handler) {
-    handler.clearBlocksHandler = (evt) => clearBlocks(evt, blocks);
-    document.addEventListener('keydown', handler.clearBlocksHandler);
-}
-
 // LISTENER BEHAVIOURS
-function clearBlocks(evt, blocks) {
-    if (evt.key === "b") {
-        blocks.splice(0, blocks.length);
-    }
-}
-
-function processClick(evt) {
-    let rect = gameCanvas.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-
-    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
-                              y > (game.button.sfxToggleBtn.y)
-
-    if (isInsideSFXButton) {
-        game.toggleSFX();
-
-        if (game.audio.sfx) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
-        else                { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
-        game.button.sfxToggleBtn.draw(game.canvas.ctx);
-    
-    } else if (game.ball.isAttached) {
-        game.ball.isAttached = false;
-
-    } else if (game.player.armed) {
-        fireProjectile();
-    }
-}
-
-function getMousePos(evt) {
-    let rect = gameCanvas.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-
-    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
-                              y > (game.button.sfxToggleBtn.y)
-    
-    if (isInsideSFXButton && !game.button.isHovering) {
-        game.button.sfxToggleBtn.color = 'lightgray';
-        game.button.sfxToggleBtn.draw(game.canvas.ctx);
-        game.button.isHovering = true;
-    } else if (!isInsideSFXButton && game.button.isHovering) {
-        game.button.sfxToggleBtn.color = 'gray';
-        game.button.sfxToggleBtn.draw(game.canvas.ctx);
-        game.button.isHovering = false;
-    }
-
-    // we can return the mouse coords as a simple object in JS
-    return { x: evt.clientX - rect.left }
-}
-
-function mouseMoved(evt) {
-    game.inputState.mousePos = getMousePos(evt);
-}
-
-function pauseGame(evt, gameState, htmlElements) {
-    if (!game.checkWinCondition() && !game.checkLoseCondition()) {
-        if (evt.key === "Escape") {
-            if (gameState.paused === false) {
-                gameState.paused = true;
-                htmlElements.pauseDiv.classList.remove("hidden");
-            } else {
-                gameState.paused = false;
-                htmlElements.pauseDiv.classList.add("hidden");
-            }
-        }
-    }
-}
-
 function buttonClick(evt, canvas, handler, button) {
     let rect = canvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
@@ -134,21 +56,78 @@ function buttonHover(evt, canvas, ctx, handler, button) {
     }
 }
 
-// REMOVE LISTENERS
-function removeMouseListeners(canvas, handler) {
-    canvas.removeEventListener('mousemove', handler.mouseMovedHandler);
-    canvas.removeEventListener('click', handler.processClickHandler);
+function getMousePos(evt) {
+    let rect = gameCanvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
+                              y > (game.button.sfxToggleBtn.y)
+    
+    if (isInsideSFXButton && !game.button.isHovering) {
+        game.button.sfxToggleBtn.color = 'lightgray';
+        game.button.sfxToggleBtn.draw(game.canvas.ctx);
+        game.button.isHovering = true;
+    } else if (!isInsideSFXButton && game.button.isHovering) {
+        game.button.sfxToggleBtn.color = 'gray';
+        game.button.sfxToggleBtn.draw(game.canvas.ctx);
+        game.button.isHovering = false;
+    }
+
+    // we can return the mouse coords as a simple object in JS
+    return { x: evt.clientX - rect.left }
 }
 
-function removePauseListener(handler) {
-    document.removeEventListener('keydown', handler.pauseGameHandler);
+function mouseMoved(evt) {
+    game.inputState.mousePos = getMousePos(evt);
+}
+
+function processClick(evt) {
+    let rect = gameCanvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
+                              y > (game.button.sfxToggleBtn.y)
+
+    if (isInsideSFXButton) {
+        game.toggleSFX();
+
+        if (game.audio.sfx) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
+        else                { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
+        game.button.sfxToggleBtn.draw(game.canvas.ctx);
+    
+    } else if (game.ball.isAttached) {
+        game.ball.isAttached = false;
+
+    } else if (game.player.armed) {
+        fireProjectile();
+    }
+}
+
+function processKeyDown(evt) {
+    if (evt.key === "b") {
+        game.blocks.splice(0, game.blocks.length);
+    }
+    if (evt.key === "Escape" && game.gameState.pauseable) {
+        if (game.gameState.paused === false) {
+            game.gameState.paused = true;
+            game.htmlElements.pauseDiv.classList.remove("hidden");
+        } else {
+            game.gameState.paused = false;
+            game.htmlElements.pauseDiv.classList.add("hidden");
+        }
+    }
+}
+
+// REMOVE LISTENERS
+function removeListeners() {
+    document.removeEventListener('keydown', processKeyDown);
+    gameCanvas.removeEventListener('click', processClick);
+    gameCanvas.removeEventListener('mousemove', mouseMoved);
 }
 
 function removeButtonListeners(canvas, handler) {
     canvas.removeEventListener('click', handler.buttonClickHandler);
     canvas.removeEventListener('mousemove', handler.buttonHoverHandler);
-}
-
-function removeTestListener(handler) {
-    document.removeEventListener('keydown', handler.clearBlocksHandler);
 }

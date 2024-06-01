@@ -59,8 +59,8 @@ var Game = function() {
         displayTitleTimer: 1500, //ms
         displayTitleTimerStartTime: 0,
         hasWall: false,
+        pauseable: false,
         paused: false,
-        pauseListener: false,
         pickupGrowthTimer: 10000, //ms
         pickupGrowthTimerStartTime: 0,
         totalLevels: 5,
@@ -71,10 +71,6 @@ var Game = function() {
         buttonClickHandler: undefined,
         buttonHoverHandler: undefined,
         buttonIsHovering: false,
-        clearBlocksHandler: undefined,
-        mouseMovedHandler: undefined,
-        pauseGameHandler: undefined,
-        processClickHandler: undefined
     };
 
     let htmlElements = {
@@ -111,8 +107,7 @@ var Game = function() {
             { type: 'points', color: 'yellow' }
         ],
         numProjectiles: 3,
-        projectileArray: [],
-        //projectile: {}
+        projectileArray: []
     };
 
     let wall;
@@ -162,7 +157,6 @@ var Game = function() {
         // reset game state
         audio.sfx = globalSFX;
         gameState.currentScore = 0;
-        gameState.pauseListener = false;
         gameState.hasWall = false;
         spawn.pickupArray = [];
         spawn.projectileArray = [];
@@ -187,8 +181,7 @@ var Game = function() {
         // create blocks
         blocks = createBlocks();
 
-        addMouseListeners();
-        addTestListener(blocks, handler);
+        addListeners();
 
         // load assets, then when this is done, start the mainLoop
         loadAssets(function() {
@@ -209,11 +202,7 @@ var Game = function() {
         if (now - gameState.displayTitleTimerStartTime > gameState.displayTitleTimer) {
             gameState.displayTitle = false;
             
-            // add the pause listener during gameplay
-            if (!gameState.pauseListener) {
-                addPauseListener(gameState, handler, htmlElements);
-                gameState.pauseListener = true;
-            }
+            if (!gameState.pauseable) { gameState.pauseable = true; }
 
             // main gameplay loop
             if (!gameState.paused) {
@@ -291,15 +280,15 @@ var Game = function() {
             }
     
             if (checkLevelCleared()) {
-                removeAllListeners();
+                removeListeners();
                 start();
 
             } else if (checkWinCondition()) {
-                removeAllListeners();
+                removeListeners();
                 displayResultScreen('green', 'YOU WIN');
 
             } else if (checkLoseCondition()) {
-                removeAllListeners();
+                removeListeners();
                 displayResultScreen('red', 'YOU LOSE');
 
             } else {
@@ -372,6 +361,8 @@ var Game = function() {
         const resultTextColor = color;
         const resultTextFont = 'bold 100px sans-serif';
 
+        gameState.pauseable = false;
+
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
 
         let result = new ResultText(midX, midY, resultTextColor, resultTextFont, resultText);
@@ -405,10 +396,7 @@ var Game = function() {
         const titleX = canvas.w / 2;
         const titleY = canvas.h / 2;
 
-        // remove the pause listener during the title screen
-        removePauseListener(handler);
-        handler.pauseGameHandler = undefined;
-        gameState.pauseListener = false;
+        gameState.pauseable = false;
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
         canvas.ctx.font = "bold 100px sans-serif";
@@ -438,19 +426,6 @@ var Game = function() {
         p.move();
         testCollisionProjectileWithBlocks(p, audio, blocks, gameState, spawn);
         testCollisionProjectileWithWalls(p, spawn);
-    }
-
-    function removeAllListeners() {
-        removeMouseListeners(gameCanvas, handler);
-        handler.processClickHandler = undefined;
-        handler.mouseMovedHandler = undefined;
-
-        removePauseListener(handler);
-        handler.pauseGameHandler = undefined;
-        gameState.pauseListener = false;
-
-        removeTestListener(handler);
-        handler.clearBlocksHandler = undefined;
     }
 
     function checkLevelCleared() {
@@ -522,13 +497,15 @@ var Game = function() {
     };
 
     return {
-        // need to 'get' instantiated objects
+        // need to 'get' top-level 'game' objects that change
         get ball() { return ball },
+        get blocks() { return blocks },
         get player() { return player },
         audio: audio,
         button: button,
         canvas: canvas,
         gameState: gameState,
+        htmlElements: htmlElements,
         icon: icon,
         inputState: inputState,
         spawn: spawn,
