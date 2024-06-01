@@ -187,6 +187,9 @@ var Game = function() {
         // create blocks
         blocks = createBlocks();
 
+        addMouseListeners();
+        addTestListener(blocks, handler);
+
         // load assets, then when this is done, start the mainLoop
         loadAssets(function() {
             // we enter here only when all assets have been loaded
@@ -195,9 +198,6 @@ var Game = function() {
 
             if (audio.sfx) { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOn); }
             else           { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOff); }
-
-            addMouseListeners(gameCanvas, ball, button, canvas.ctx, handler, icon, inputState);
-            addTestListener(blocks, handler);
 
             // start the game
             mainLoop();
@@ -530,6 +530,7 @@ var Game = function() {
         canvas: canvas,
         gameState: gameState,
         icon: icon,
+        inputState: inputState,
         spawn: spawn,
         checkLoseCondition: checkLoseCondition,
         checkWinCondition: checkWinCondition,

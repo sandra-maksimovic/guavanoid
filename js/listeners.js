@@ -1,10 +1,7 @@
 // ADD LISTENERS
-function addMouseListeners(canvas, ball, button, ctx, handler, icon, inputState) {
-    // arrow function ensures the function is not triggered upon assigning it as an event listener
-    handler.mouseMovedHandler = (evt) => mouseMoved(evt, button, canvas, ctx, inputState);
-    canvas.addEventListener('mousemove', handler.mouseMovedHandler);
-
-    canvas.addEventListener('click', processClick);
+function addMouseListeners() {
+    gameCanvas.addEventListener('mousemove', mouseMoved);
+    gameCanvas.addEventListener('click', processClick);
 }
 
 function addPauseListener(gameState, handler, htmlElements) {
@@ -55,30 +52,30 @@ function processClick(evt) {
     }
 }
 
-function getMousePos(evt, button, canvas, ctx) {
-    let rect = canvas.getBoundingClientRect();
+function getMousePos(evt) {
+    let rect = gameCanvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
-    const isInsideSFXButton = x < (button.sfxToggleBtn.x + button.sfxToggleBtn.width) &&
-                              y > (button.sfxToggleBtn.y)
+    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
+                              y > (game.button.sfxToggleBtn.y)
     
-    if (isInsideSFXButton && !button.isHovering) {
-        button.sfxToggleBtn.color = 'lightgray';
-        button.sfxToggleBtn.draw(ctx);
-        button.isHovering = true;
-    } else if (!isInsideSFXButton && button.isHovering) {
-        button.sfxToggleBtn.color = 'gray';
-        button.sfxToggleBtn.draw(ctx);
-        button.isHovering = false;
+    if (isInsideSFXButton && !game.button.isHovering) {
+        game.button.sfxToggleBtn.color = 'lightgray';
+        game.button.sfxToggleBtn.draw(game.canvas.ctx);
+        game.button.isHovering = true;
+    } else if (!isInsideSFXButton && game.button.isHovering) {
+        game.button.sfxToggleBtn.color = 'gray';
+        game.button.sfxToggleBtn.draw(game.canvas.ctx);
+        game.button.isHovering = false;
     }
 
     // we can return the mouse coords as a simple object in JS
     return { x: evt.clientX - rect.left }
 }
 
-function mouseMoved(evt, button, canvas, ctx, inputState) {
-    inputState.mousePos = getMousePos(evt, button, canvas, ctx);
+function mouseMoved(evt) {
+    game.inputState.mousePos = getMousePos(evt);
 }
 
 function pauseGame(evt, gameState, htmlElements) {
