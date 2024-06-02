@@ -48,8 +48,8 @@ function growPlayer() {
     game.gameState.pickupGrowthTimerStartTime = performance.now();
 }
 
-function increaseHealth(player) {
-    player.lives++;
+function increaseHealth() {
+    game.player.lives++;
 }
 
 function incrementScore(block, gameState) {

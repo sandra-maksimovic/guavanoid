@@ -401,7 +401,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
             if (p.type === growth) {
                 growPlayer();
             } else if (p.type === health) {
-                increaseHealth(player);
+                increaseHealth();
             } else if (p.type === laser) {
                 equipLaser(laser);
             } else if (p.type === points) {
