@@ -106,7 +106,7 @@ function processClick(evt) {
 }
 
 function processKeyDown(evt) {
-    if (evt.key === "b") {
+    if (evt.key === "b" && !game.gameState.paused) {
         game.blocks.splice(0, game.blocks.length);
     }
     if (evt.key === "Escape" && game.gameState.pauseable) {
