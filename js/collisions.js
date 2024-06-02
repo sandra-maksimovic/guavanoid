@@ -399,7 +399,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
             let points = 'points';
             
             if (p.type === growth) {
-                growPlayer(player, playerInit, gameState);
+                growPlayer();
             } else if (p.type === health) {
                 increaseHealth(player);
             } else if (p.type === laser) {

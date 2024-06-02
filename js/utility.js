@@ -40,12 +40,12 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function growPlayer(player, playerInit, gameState) {
-    player.growthActive = true;
-    if (player.width !== playerInit.playerWidth*2) {
-        player.width = player.width*2;
+function growPlayer() {
+    game.player.growthActive = true;
+    if (game.player.width !== game.playerInit.playerWidth*2) {
+        game.player.width = game.player.width*2;
     }
-    gameState.pickupGrowthTimerStartTime = performance.now();
+    game.gameState.pickupGrowthTimerStartTime = performance.now();
 }
 
 function increaseHealth(player) {

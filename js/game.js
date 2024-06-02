@@ -509,6 +509,7 @@ var Game = function() {
         htmlElements: htmlElements,
         icon: icon,
         inputState: inputState,
+        playerInit: playerInit,
         spawn: spawn,
         checkLoseCondition: checkLoseCondition,
         checkWinCondition: checkWinCondition,
