@@ -259,17 +259,11 @@ function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, game
             }
 
             if (block.health > 0) {
-                // update the color of breakable block with health left
+                // update color of breakable block based on health
                 block.color = breakableBlockColor[block.health-1];
             } else {
-                if (block.hasPickup === true) {
-                    spawnPickup(block);
-                }
-
-                // remove the block from the array
-                blocks.splice(index, 1);
+                clearBlock(block, index);
             }
-
             incrementScore(block);
         }
     });
@@ -424,9 +418,7 @@ function testCollisionProjectileWithBlocks(p, audio, blocks, gameState, spawn) {
             let pIndex = spawn.projectileArray.indexOf(p);
             spawn.projectileArray.splice(pIndex, 1);
             
-            // remove the block from the block array
-            blocks.splice(index, 1);
-
+            clearBlock(block, index);
             incrementScore(block);
         }
     });

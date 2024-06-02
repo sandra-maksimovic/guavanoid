@@ -5,6 +5,13 @@ function calcIncrement(speed, del) {
     return (speed*del) / 1000;
 }
 
+function clearBlock(block, index) {
+    if (block.hasPickup === true) {
+        spawnPickup(block);
+    }
+    game.blocks.splice(index, 1);
+}
+
 function circRectsOverlap(x0, y0, w0, h0, cx, cy, r) {
     let testX=cx;
     let testY=cy;
