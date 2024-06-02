@@ -5,34 +5,31 @@ function addListeners() {
     gameCanvas.addEventListener('mousemove', mouseMoved);
 }
 
-function addButtonListeners(canvas, ctx, handler, button) {
-    handler.buttonClickHandler = (evt) => buttonClick(evt, canvas, handler, button);
-    canvas.addEventListener('click', handler.buttonClickHandler);
+function addButtonListeners(button) {
+    // arrow function ensures the callback is not triggered upon assignment
+    game.handler.buttonClickHandler = (evt) => buttonClick(evt, button);
+    gameCanvas.addEventListener('click', game.handler.buttonClickHandler);
 
-    handler.buttonHoverHandler = (evt) => buttonHover(evt, canvas, ctx, handler, button);
-    canvas.addEventListener('mousemove', handler.buttonHoverHandler);
+    game.handler.buttonHoverHandler = (evt) => buttonHover(evt, button);
+    gameCanvas.addEventListener('mousemove', game.handler.buttonHoverHandler);
 }
 
 // LISTENER BEHAVIOURS
-function buttonClick(evt, canvas, handler, button) {
-    let rect = canvas.getBoundingClientRect();
+function buttonClick(evt, button) {
+    let rect = gameCanvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
     if (x >= button.x && x <= (button.x + button.width) && 
         y >= button.y && y <= (button.y + button.height)) {
-            
-            // reset button listeners
-            removeButtonListeners(gameCanvas, handler);
-
-            // start or restart the game
+            removeButtonListeners();
             game = new Game();
             game.start();
     }
 }
 
-function buttonHover(evt, canvas, ctx, handler, button) {
-    let rect = canvas.getBoundingClientRect();
+function buttonHover(evt, button) {
+    let rect = gameCanvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
@@ -41,17 +38,17 @@ function buttonHover(evt, canvas, ctx, handler, button) {
     
     // hover state changes should only occur once 
     // when entering and leaving the button area
-    if (isInsideButton && !handler.buttonIsHovering) {
+    if (isInsideButton && !game.handler.buttonIsHovering) {
         button.color = 'blue';
         button.textColor = 'white';
-        button.draw(ctx);
-        handler.buttonIsHovering = true;
+        button.draw(game.canvas.ctx);
+        game.handler.buttonIsHovering = true;
 
-    } else if (!isInsideButton && handler.buttonIsHovering) {
+    } else if (!isInsideButton && game.handler.buttonIsHovering) {
         button.color = 'white';
         button.textColor = 'black';
-        button.draw(ctx);
-        handler.buttonIsHovering = false;
+        button.draw(game.canvas.ctx);
+        game.handler.buttonIsHovering = false;
 
     }
 }
@@ -127,7 +124,7 @@ function removeListeners() {
     gameCanvas.removeEventListener('mousemove', mouseMoved);
 }
 
-function removeButtonListeners(canvas, handler) {
-    canvas.removeEventListener('click', handler.buttonClickHandler);
-    canvas.removeEventListener('mousemove', handler.buttonHoverHandler);
+function removeButtonListeners() {
+    gameCanvas.removeEventListener('click', game.handler.buttonClickHandler);
+    gameCanvas.removeEventListener('mousemove', game.handler.buttonHoverHandler);
 }

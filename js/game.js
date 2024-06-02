@@ -379,7 +379,7 @@ var Game = function() {
         let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
 
-        addButtonListeners(gameCanvas, canvas.ctx, handler, restartButton);
+        addButtonListeners(restartButton);
 
         if (localStorage.highScore) {
             const highScoreY = midY + (buttonY - midY) / 2;
@@ -476,7 +476,7 @@ var Game = function() {
         let startButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         startButton.draw(canvas.ctx);
         
-        addButtonListeners(gameCanvas, canvas.ctx, handler, startButton);
+        addButtonListeners(startButton);
     }
 
     var playerFail = function() {
@@ -505,6 +505,7 @@ var Game = function() {
         button: button,
         canvas: canvas,
         gameState: gameState,
+        handler: handler,
         htmlElements: htmlElements,
         icon: icon,
         inputState: inputState,
