@@ -52,7 +52,7 @@ function increaseHealth() {
     game.player.lives++;
 }
 
-function incrementScore(block, gameState) {
+function incrementScore(block) {
     let score;
 
     switch(block.color) {
@@ -82,7 +82,7 @@ function incrementScore(block, gameState) {
             break;
     }
 
-    gameState.currentScore += score;
+    game.gameState.currentScore += score;
 }
 
 function randomlyAssignPickupsToBlocks(blockArray, spawn) {
