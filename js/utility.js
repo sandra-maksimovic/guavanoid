@@ -85,8 +85,8 @@ function incrementScore(block) {
     game.gameState.currentScore += score;
 }
 
-function randomlyAssignPickupsToBlocks(blockArray, spawn) {
-    for (let i = 0; i < spawn.numPickups; i++) {
+function randomlyAssignPickupsToBlocks(blockArray) {
+    for (let i = 0; i < game.spawn.numPickups; i++) {
         let randomInt = getRandomInt(0, blockArray.length-1);
         blockArray[randomInt].hasPickup = true;
     }
@@ -112,7 +112,7 @@ function saveHighScore() {
         }
 }
 
-function spawnPickup(block, spawn) {
+function spawnPickup(block) {
     let pickupX = block.x + (block.width / 2);
     let pickupY = block.y + (block.height / 2);
     let pickupRadius = block.height / 2;
@@ -121,8 +121,8 @@ function spawnPickup(block, spawn) {
     let pickupSpeedY = 200; // px/s
 
     let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
-    let randomInt = getRandomInt(0, spawn.pickupTypeArray.length-1);
-    pickup.type = spawn.pickupTypeArray[randomInt].type;
-    pickup.color = spawn.pickupTypeArray[randomInt].color;
-    spawn.pickupArray.push(pickup);
+    let randomInt = getRandomInt(0, game.spawn.pickupTypeArray.length-1);
+    pickup.type = game.spawn.pickupTypeArray[randomInt].type;
+    pickup.color = game.spawn.pickupTypeArray[randomInt].color;
+    game.spawn.pickupArray.push(pickup);
 }

@@ -18,7 +18,7 @@ function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, block
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray, spawn);
+    randomlyAssignPickupsToBlocks(blockArray);
     return blockArray;
 }
 
@@ -64,7 +64,7 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, block
         }
     }
     
-    randomlyAssignPickupsToBlocks(blockArray, spawn);
+    randomlyAssignPickupsToBlocks(blockArray);
     return blockArray;
 }
 
@@ -101,7 +101,7 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, block
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray, spawn);
+    randomlyAssignPickupsToBlocks(blockArray);
     return blockArray;
 }
 
@@ -150,7 +150,7 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, block
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray, spawn);
+    randomlyAssignPickupsToBlocks(blockArray);
     return blockArray;
 }
 
@@ -223,6 +223,6 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray, spawn);
+    randomlyAssignPickupsToBlocks(blockArray);
     return blockArray;
 }

@@ -263,7 +263,7 @@ function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, game
                 block.color = breakableBlockColor[block.health-1];
             } else {
                 if (block.hasPickup === true) {
-                    spawnPickup(block, spawn);
+                    spawnPickup(block);
                 }
 
                 // remove the block from the array
