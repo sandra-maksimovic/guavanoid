@@ -33,6 +33,11 @@ function equipLaser(laser) {
     if (game.player.armed === false) { game.player.armed = true; }
 }
 
+function despawnProjectile(p) {
+    let pIndex = game.spawn.projectileArray.indexOf(p);
+    game.spawn.projectileArray.splice(pIndex, 1);
+}
+
 function fireProjectile() {
     let projectile = new Projectile();
     let newLength = game.spawn.projectileArray.push(projectile);

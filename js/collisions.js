@@ -407,28 +407,24 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
     }
 }
 
-function testCollisionProjectileWithBlocks(p, audio, blocks, gameState, spawn) {
-    blocks.forEach(function(block, index) {
+function testCollisionProjectileWithBlocks(p) {
+    game.blocks.forEach(function(block, index) {
         if (rectsOverlap(block.x, block.y, block.width, block.height,
             p.x, p.y, p.width, p.height)) {
             
-            if (audio.sfx) { audio.laserProjectileExplosionSound.play(); }
-
-            // remove the projectile from the projectile array
-            let pIndex = spawn.projectileArray.indexOf(p);
-            spawn.projectileArray.splice(pIndex, 1);
-            
+            if (game.audio.sfx) {
+                game.audio.laserProjectileExplosionSound.play();
+            }
+            despawnProjectile(p);
             clearBlock(block, index);
             incrementScore(block);
         }
     });
 }
 
-function testCollisionProjectileWithWalls(p, spawn) {
+function testCollisionProjectileWithWalls(p) {
     // check if the projectile has hit the top canvas boundary
     if (p.y < 0) {
-        // remove the projectile from the projectile array
-        let pIndex = spawn.projectileArray.indexOf(p);
-        spawn.projectileArray.splice(pIndex, 1);
+        despawnProjectile(p);
     }
 }

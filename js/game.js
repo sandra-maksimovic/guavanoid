@@ -424,8 +424,8 @@ var Game = function() {
 
     function moveProjectile(p) {
         p.move();
-        testCollisionProjectileWithBlocks(p, audio, blocks, gameState, spawn);
-        testCollisionProjectileWithWalls(p, spawn);
+        testCollisionProjectileWithBlocks(p);
+        testCollisionProjectileWithWalls(p);
     }
 
     function checkLevelCleared() {
