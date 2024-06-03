@@ -5,6 +5,10 @@ function clearBlock(block, index) {
     game.blocks.splice(index, 1);
 }
 
+function despawnPickup(index) {
+    game.spawn.pickupArray.splice(index, 1);
+}
+
 function despawnProjectile(p) {
     let pIndex = game.spawn.projectileArray.indexOf(p);
     game.spawn.projectileArray.splice(pIndex, 1);

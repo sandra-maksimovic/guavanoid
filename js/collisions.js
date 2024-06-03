@@ -364,7 +364,7 @@ function testCollisionBallWithInnerWalls(b, wall) {
 
 function testCollisionPickupWithFloor(p, spawn, index, canvas) {
     if ((p.y + p.radius) > canvas.h) {
-        spawn.pickupArray.splice(index, 1);
+        despawnPickup(index);
     }
 }
 
@@ -400,7 +400,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
                 gameState.currentScore += 10;
             }
             
-            spawn.pickupArray.splice(index, 1);
+            despawnPickup(index);
         }
 
         playSound(game.audio.pickupCollisionSound);
