@@ -27,7 +27,7 @@ function testCollisionBallWithWalls(b, audio, canvas) {
         // put the ball at the collision point
         ////b.y = canvas.h - b.radius;
 
-        if (audio.sfx) { audio.failCollisionSound.play(); }
+        playSound(game.audio.failCollisionSound);
         game.playerFail();
     } else if ((b.y - b.radius) < 0) {
         // the ball hit the top wall
@@ -55,8 +55,6 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
         let ballGoingLeft = b.speedX < 0;
         let ballGoingUp = b.speedY < 0;
         let ballGoingDown = b.speedY > 0;
-
-        if (audio.sfx) { audio.playerCollisionSound.play(); }
 
         // check if the ball hit the LEFT side of the player
         if (ballRightSide > playerLeftSide && ballGoingRight) {
@@ -159,6 +157,8 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
                 ballTopSide = b.y - b.radius;
             }
         }
+
+        playSound(game.audio.playerCollisionSound);
     }
 }
 
@@ -179,10 +179,6 @@ function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, game
             let ballGoingLeft = b.speedX < 0;
             let ballGoingUp = b.speedY < 0;
             let ballGoingDown = b.speedY > 0;
-
-            if (audio.sfx) { audio.blockCollisionSound.play(); }
-
-            block.health -= 1;
 
             // check if the ball hit the LEFT side of the block
             if (ballRightSide > blockLeftSide && ballGoingRight) {
@@ -258,13 +254,17 @@ function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, game
                 }
             }
 
+            block.health -= 1;
+
             if (block.health > 0) {
                 // update color of breakable block based on health
                 block.color = breakableBlockColor[block.health-1];
             } else {
                 clearBlock(block, index);
             }
+
             incrementScore(block);
+            playSound(game.audio.blockCollisionSound);
         }
     });
 }
@@ -380,8 +380,6 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
         let playerTopSide = player.y;
         let playerBottomSide = player.y + player.height;
 
-        if (audio.sfx) { audio.pickupCollisionSound.play(); }
-
         if (((pickupRightSide > playerLeftSide || pickupLeftSide < playerRightSide) &&
             (p.y > playerTopSide && p.y < playerBottomSide)) ||
             ((pickupBottomSide > playerTopSide || pickupTopSide < playerBottomSide) &&
@@ -404,6 +402,8 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
             
             spawn.pickupArray.splice(index, 1);
         }
+
+        playSound(game.audio.pickupCollisionSound);
     }
 }
 
@@ -411,20 +411,18 @@ function testCollisionProjectileWithBlocks(p) {
     game.blocks.forEach(function(block, index) {
         if (rectsOverlap(block.x, block.y, block.width, block.height,
             p.x, p.y, p.width, p.height)) {
-            
-            if (game.audio.sfx) {
-                game.audio.laserProjectileExplosionSound.play();
+                clearBlock(block, index);
+                despawnProjectile(p);
+                incrementScore(block);
+                playSound(game.audio.laserProjectileExplosionSound);
             }
-            despawnProjectile(p);
-            clearBlock(block, index);
-            incrementScore(block);
-        }
-    });
+        });
 }
 
 function testCollisionProjectileWithWalls(p) {
-    // check if the projectile has hit the top canvas boundary
-    if (p.y < 0) {
+    let projectileTop = p.y;
+    let topBoundary = 0;
+    if (projectileTop < topBoundary) {
         despawnProjectile(p);
     }
 }

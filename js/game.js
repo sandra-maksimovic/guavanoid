@@ -13,6 +13,8 @@ var Game = function() {
     let audio = {
         blockCollisionSound: undefined,
         failCollisionSound: undefined,
+        laserProjectileSound: undefined,
+        laserProjectileExplosionSound: undefined,
         pickupCollisionSound: undefined,
         playerCollisionSound: undefined,
         sfx: true

@@ -44,7 +44,7 @@ function fireProjectile() {
     let newIndex = newLength - 1;
     game.spawn.projectileArray[newIndex].x = game.player.x + (game.player.width / 2) - (game.spawn.projectileArray[newIndex].width / 2);
     game.spawn.projectileArray[newIndex].y = game.player.y - game.spawn.projectileArray[newIndex].height;
-    if (game.audio.sfx) { game.audio.laserProjectileSound.play(); }
+    playSound(game.audio.laserProjectileSound);
     game.player.numProjectiles--;
 }
 
