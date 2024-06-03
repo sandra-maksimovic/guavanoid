@@ -33,21 +33,26 @@ var Game = function() {
 
     let blocks = [];
 
-    let blockColor = [
-        'red',
-        'orange',
-        'yellow',
-        'green',
-        'blue',
-        'indigo',
-        'violet'
-    ];
-
-    let breakableBlockColor = [
-        'white',
-        'darkgray',
-        'dimgray'
-    ];
+    let blockInit = {
+        blockArray: [],
+        blockColor: [
+            'red',
+            'orange',
+            'yellow',
+            'green',
+            'blue',
+            'indigo',
+            'violet'
+        ],
+        blockGap: 3,
+        blockHeight: 20,
+        blockWidth: 60,
+        breakableBlockColor: [
+            'white',
+            'darkgray',
+            'dimgray'
+        ]
+    };
 
     let button = {
         isHovering: false,
@@ -308,29 +313,24 @@ var Game = function() {
     }
 
     function createBlocks() {
-        let blockArray = [];
-        let blockGap = 3;
-        let blockWidth = 60;
-        let blockHeight = 20;
-
         if (gameState.currentLevel === 1) {
-            blockArray = createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn);
+            blockInit.blockArray = createLevel1Layout();
         } else if (gameState.currentLevel === 2) {
-            blockArray = createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn);
+            blockInit.blockArray = createLevel2Layout();
         } else if (gameState.currentLevel === 3) {
-            blockArray = createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, wall, spawn);
+            blockInit.blockArray = createLevel3Layout();
         } else if (gameState.currentLevel === 4) {
-            blockArray = createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, canvas, spawn);
+            blockInit.blockArray = createLevel4Layout();
         } else if (gameState.currentLevel === 5) {
-            blockArray = createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, wall, spawn);
+            blockInit.blockArray = createLevel5Layout();
         }
 
-        return blockArray;
+        return blockInit.blockArray;
     }
 
-    function drawAllBlocks(blockArray) {
-        blockArray.forEach(function(b) {
-            b.draw(canvas.ctx);
+    function drawAllBlocks(blocks) {
+        blocks.forEach(function(block) {
+            block.draw(canvas.ctx);
         });
     }
 
@@ -410,9 +410,9 @@ var Game = function() {
 
     function moveBall(b) {
         b.move();    
-        testCollisionBallWithWalls(b, audio, canvas);
-        testCollisionBallWithPlayer(b, audio, player, ballInit);
-        testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, gameState, spawn);
+        testCollisionBallWithWalls(b);
+        testCollisionBallWithPlayer(b);
+        testCollisionBallWithBlocks(b);
         if (gameState.hasWall === true) {
             testCollisionBallWithInnerWalls(b, wall);
         }
@@ -489,21 +489,23 @@ var Game = function() {
     }
 
     var toggleSFX = function() {
-        if (audio.isSFX === true) {
-            audio.isSFX = false;
-            
-        } else {
-            audio.isSFX = true;
-        }
+        if (audio.isSFX === true) { audio.isSFX = false; }
+        else                      { audio.isSFX = true; }
         isGlobalSFX = audio.isSFX;
     };
 
     return {
-        // need to 'get' top-level 'game' objects that change
+        // need to 'get' top-level objects since
+        // they update after initial game object return
         get ball() { return ball },
         get blocks() { return blocks },
         get player() { return player },
+        get wall() { return wall },
+        // since these objects contain other objects,
+        // only the ref to top-level obj is needed
         audio: audio,
+        ballInit: ballInit,
+        blockInit: blockInit,
         button: button,
         canvas: canvas,
         gameState: gameState,
@@ -513,6 +515,8 @@ var Game = function() {
         inputState: inputState,
         playerInit: playerInit,
         spawn: spawn,
+        // returned function expressions will be
+        // evaluated at call time
         checkLoseCondition: checkLoseCondition,
         checkWinCondition: checkWinCondition,
         displayStartScreen: displayStartScreen,

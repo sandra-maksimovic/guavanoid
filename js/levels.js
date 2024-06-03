@@ -1,44 +1,48 @@
-function createLevel1Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn) {
+function createLevel1Layout() {
     let rows = 6;
     let cols = 10;
     
     // create rect of blocks
     for (let r=0; r < rows; r++) {
-        let blockYSpacing = blockHeight + blockGap;
+        let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
         let topGapY = 50;
         let blockY = topGapY + r*blockYSpacing;
 
         for (let c=0; c < cols; c++) {
-            let blockXSpacing = blockWidth + blockGap;
-            let leftGapX = (canvas.w - blockXSpacing*cols) / 2;
+            let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
+            let leftGapX = (game.canvas.w - blockXSpacing*cols) / 2;
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray);
-    return blockArray;
+    randomlyAssignPickupsToBlocks();
+    return game.blockInit.blockArray;
 }
 
-function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, canvas, spawn) {
+function createLevel2Layout() {
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
 
-    let blockCenter = blockWidth / 2;
-    let canvasCenter = canvas.w / 2;
+    let blockCenter = game.blockInit.blockWidth / 2;
+    let canvasCenter = game.canvas.w / 2;
 
     // create diamond of blocks
     for (let r=0; r < rows; r++) {
-        let blockYSpacing = blockHeight + blockGap;
+        let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
         let topGapY = 50;
         let blockY = topGapY + r*blockYSpacing;
 
         for (let c=0; c < cols; c++) {
             let blockX = canvasCenter - blockCenter;
-            let blockXSpacing = blockWidth + blockGap;
+            let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
 
             // use row num as basis for spacing top of diamond horizontally
             if (r !== 0 && colsMax === rows) {
@@ -48,8 +52,12 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, block
                 blockX = (blockX - blockXSpacing*parseInt(colsMax/2)) + c*blockXSpacing;
             }
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
 
         // grow the num of cols while under max
@@ -64,18 +72,18 @@ function createLevel2Layout(blockArray, blockGap, blockWidth, blockHeight, block
         }
     }
     
-    randomlyAssignPickupsToBlocks(blockArray);
-    return blockArray;
+    randomlyAssignPickupsToBlocks();
+    return game.blockInit.blockArray;
 }
 
-function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, wall, spawn) {
+function createLevel3Layout() {
     let rows = 8;
     let cols = 4;
 
-    let blockXSpacing = blockWidth + blockGap;
-    let blockYSpacing = blockHeight + blockGap;
+    let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
+    let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
 
-    let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+    let leftGapX = (game.wall.x - blockXSpacing*cols) / 2;
     let topGapY = 75;
 
     // populate blocks left of wall
@@ -85,8 +93,12 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, block
         for (let c=0; c < cols; c++) {
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
     }
     // populate blocks right of wall
@@ -94,18 +106,22 @@ function createLevel3Layout(blockArray, blockGap, blockWidth, blockHeight, block
         let blockY = topGapY + r*blockYSpacing;
 
         for (let c=0; c < cols; c++) {
-            let blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
+            let blockX = (game.wall.x + game.wall.width) + leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray);
-    return blockArray;
+    randomlyAssignPickupsToBlocks();
+    return game.blockInit.blockArray;
 }
 
-function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, canvas, spawn) {
+function createLevel4Layout() {
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
@@ -115,16 +131,20 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, block
 
     // create right-angled triangle of blocks (stacked left)
     for (let r=0; r < rows; r++) {
-        let blockYSpacing = blockHeight + blockGap;
+        let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
         let blockY = blockYSpacing + r*blockYSpacing;
 
         for (let c=0; c < cols; c++) {
-            let blockXSpacing = blockWidth + blockGap;
-            let leftGapX = (canvas.w - blockXSpacing*(colsMax+1)) / 2; // 10 cols fit across the canvas width with these block dimensions
+            let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
+            let leftGapX = (game.canvas.w - blockXSpacing*(colsMax+1)) / 2; // 10 cols fit across the canvas width with these block dimensions
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
 
         // increment max columns per row to create triangle shape
@@ -133,39 +153,46 @@ function createLevel4Layout(blockArray, blockGap, blockWidth, blockHeight, block
 
     // create row of breakable blocks
     for (let r=0; r < rowsBreakable; r++) {
-        let blockYSpacing = blockHeight + blockGap;
+        let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
         let blockY = blockYSpacing + blockYSpacing*rows;
 
         for (let c=0; c < colsBreakable; c++) {
-            let blockXSpacing = blockWidth + blockGap;
-            let leftGapX = (canvas.w - blockXSpacing*colsBreakable) / 2;
+            let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
+            let leftGapX = (game.canvas.w - blockXSpacing*colsBreakable) / 2;
             let blockX = leftGapX + c*blockXSpacing;
 
             if (c === colsBreakable-1) {
-                var block = new Block(blockX, blockY, blockWidth, blockHeight, 'white', false); // special end block
+                var block = new Block(blockX, blockY, 
+                                game.blockInit.blockWidth, 
+                                game.blockInit.blockHeight, 
+                                'white', false); // special end block
             } else {
-                var block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
+                var block = new Block(blockX, blockY, 
+                                game.blockInit.blockWidth, 
+                                game.blockInit.blockHeight, 
+                                game.blockInit.breakableBlockColor[game.blockInit.breakableBlockColor.length-1], 
+                                true);
             }
-            blockArray.push(block);
+            game.blockInit.blockArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray);
-    return blockArray;
+    randomlyAssignPickupsToBlocks();
+    return game.blockInit.blockArray;
 }
 
-function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, blockColor, breakableBlockColor, wall, spawn) {
+function createLevel5Layout() {
     let rows = 8;
     let cols = 4;
 
     let rowsBreakable = 2;
     let colsBreakable = 4;
 
-    let blockYSpacing = blockHeight + blockGap;
+    let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
     let topGapY = 50;
 
-    let blockXSpacing = blockWidth + blockGap;
-    let leftGapX = (wall.x - blockXSpacing*cols) / 2;
+    let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
+    let leftGapX = (game.wall.x - blockXSpacing*cols) / 2;
 
     // populate regular blocks left of wall
     for (let r=0; r < rows; r++) {
@@ -175,8 +202,12 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
         for (let c=0; c < cols; c++) {
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
     }
 
@@ -190,8 +221,12 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
         for (let c=0; c < colsBreakable; c++) {
             let blockX = leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.breakableBlockColor[game.blockInit.breakableBlockColor.length-1], 
+                            true);
+            game.blockInit.blockArray.push(block);
         }
     }
 
@@ -201,10 +236,14 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
         let blockY = topGapY + r*blockYSpacing;
 
         for (let c=0; c < cols; c++) {
-            let blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
+            let blockX = (game.wall.x + game.wall.width) + leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, blockColor[r], false);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.blockColor[r], 
+                            false);
+            game.blockInit.blockArray.push(block);
         }
     }
 
@@ -216,13 +255,17 @@ function createLevel5Layout(blockArray, blockGap, blockWidth, blockHeight, block
         else         { blockY = topGapY + (rows+1)*blockYSpacing; }
 
         for (let c=0; c < colsBreakable; c++) {
-            let blockX = (wall.x + wall.width) + leftGapX + c*blockXSpacing;
+            let blockX = (game.wall.x + game.wall.width) + leftGapX + c*blockXSpacing;
 
-            let block = new Block(blockX, blockY, blockWidth, blockHeight, breakableBlockColor[breakableBlockColor.length-1], true);
-            blockArray.push(block);
+            let block = new Block(blockX, blockY, 
+                            game.blockInit.blockWidth, 
+                            game.blockInit.blockHeight, 
+                            game.blockInit.breakableBlockColor[game.blockInit.breakableBlockColor.length-1], 
+                            true);
+            game.blockInit.blockArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks(blockArray);
-    return blockArray;
+    randomlyAssignPickupsToBlocks();
+    return game.blockInit.blockArray;
 }

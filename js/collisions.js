@@ -1,12 +1,12 @@
-function testCollisionBallWithWalls(b, audio, canvas) {
+function testCollisionBallWithWalls(b) {
     // COLLISION WITH VERTICAL WALLS
-    if ((b.x + b.radius) > canvas.w) {
+    if ((b.x + b.radius) > game.canvas.w) {
         // the ball hit the right wall
         // change horizontal direction
         b.speedX = -b.speedX;
         
         // put the ball at the collision point
-        b.x = canvas.w - b.radius;
+        b.x = game.canvas.w - b.radius;
     } else if ((b.x - b.radius) < 0) {
         // the ball hit the left wall
         // change horizontal direction
@@ -19,13 +19,13 @@ function testCollisionBallWithWalls(b, audio, canvas) {
     // COLLISIONS WTH HORIZONTAL WALLS
     // Not in the else as the ball can touch both
     // vertical and horizontal walls in corners
-    if ((b.y + b.radius) > canvas.h) {
+    if ((b.y + b.radius) > game.canvas.h) {
         // the ball hit the bottom wall
         // change vertical direction
-        ////b.speedY = -b.speedY;
+        //b.speedY = -b.speedY;
         
         // put the ball at the collision point
-        ////b.y = canvas.h - b.radius;
+        //b.y = game.canvas.h - b.radius;
 
         playSound(game.audio.failCollisionSound);
         game.playerFail();
@@ -39,17 +39,17 @@ function testCollisionBallWithWalls(b, audio, canvas) {
     }
 }
 
-function testCollisionBallWithPlayer(b, audio, player, ballInit) {
-    if(circRectsOverlap(player.x, player.y, player.width, player.height, b.x, b.y, b.radius)) {
+function testCollisionBallWithPlayer(b) {
+    if(circRectsOverlap(game.player.x, game.player.y, game.player.width, game.player.height, b.x, b.y, b.radius)) {
         let ballRightSide = b.x + b.radius;
         let ballLeftSide = b.x - b.radius;
-        let playerRightSide = player.x + player.width;
-        let playerLeftSide = player.x;
+        let playerRightSide = game.player.x + game.player.width;
+        let playerLeftSide = game.player.x;
 
         let ballTopSide = b.y - b.radius;
         let ballBottomSide = b.y + b.radius;
-        let playerTopSide = player.y;
-        let playerBottomSide = player.y + player.height;
+        let playerTopSide = game.player.y;
+        let playerBottomSide = game.player.y + game.player.height;
 
         let ballGoingRight = b.speedX > 0;
         let ballGoingLeft = b.speedX < 0;
@@ -98,17 +98,17 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
 
             // also check if the ball centre is within the LEFT & RIGHT bounds of the block
             if (b.x > playerLeftSide && b.x < playerRightSide) {
-                let segment1 = player.x + (player.width / 5);
-                let segment2 = player.x + (player.width / 5)*2;
-                let segment3 = player.x + (player.width / 5)*3;
-                let segment4 = player.x + (player.width / 5)*4;
+                let segment1 = game.player.x + (game.player.width / 5);
+                let segment2 = game.player.x + (game.player.width / 5)*2;
+                let segment3 = game.player.x + (game.player.width / 5)*3;
+                let segment4 = game.player.x + (game.player.width / 5)*4;
                 let segment5 = playerRightSide;
-                let fullSpeedX = ballInit.ballStartSpeedX;
+                let fullSpeedX = game.ballInit.ballStartSpeedX;
                 let medSpeedX = fullSpeedX*0.6;
                 let lowSpeedX = fullSpeedX*0.2;
 
-                // change horiztonal direction by different amount
-                // to simulate a change of angle
+                // change ball horizontal speed based on where 
+                // it hit the paddle to simulate a change of angle
                 if (b.x > playerLeftSide  && b.x < segment1) {
                     if (b.speedX > 0) { b.speedX = fullSpeedX; }
                     else if (b.speedX < 0) { b.speedX = -fullSpeedX; }
@@ -162,8 +162,8 @@ function testCollisionBallWithPlayer(b, audio, player, ballInit) {
     }
 }
 
-function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, gameState, spawn) {
-    blocks.forEach(function(block, index) {
+function testCollisionBallWithBlocks(b) {
+    game.blocks.forEach(function(block, index) {
         if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
             let ballRightSide = b.x + b.radius;
             let ballLeftSide = b.x - b.radius;
@@ -258,7 +258,7 @@ function testCollisionBallWithBlocks(b, audio, blocks, breakableBlockColor, game
 
             if (block.health > 0) {
                 // update color of breakable block based on health
-                block.color = breakableBlockColor[block.health-1];
+                block.color = game.blockInit.breakableBlockColor[block.health-1];
             } else {
                 clearBlock(block, index);
             }
