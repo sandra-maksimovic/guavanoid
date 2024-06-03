@@ -90,8 +90,8 @@ function processClick(evt) {
     if (isInsideSFXButton) {
         game.toggleSFX();
 
-        if (game.audio.sfx) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
-        else                { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
+        if (game.audio.isSFX) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
+        else                  { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
         game.button.sfxToggleBtn.draw(game.canvas.ctx);
     
     } else if (game.ball.isAttached) {

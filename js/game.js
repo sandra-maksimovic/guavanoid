@@ -1,7 +1,7 @@
 "use strict";
 
 var game, gameCanvas;
-var globalSFX = true;
+var isGlobalSFX = true;
 
 var Game = function() {    
     let canvas = {
@@ -17,7 +17,7 @@ var Game = function() {
         laserProjectileExplosionSound: undefined,
         pickupCollisionSound: undefined,
         playerCollisionSound: undefined,
-        sfx: true
+        isSFX: true
     };
 
     let ball;
@@ -157,7 +157,7 @@ var Game = function() {
 
     var start = function() {
         // reset game state
-        audio.sfx = globalSFX;
+        audio.isSFX = isGlobalSFX;
         gameState.currentScore = 0;
         gameState.hasWall = false;
         spawn.pickupArray = [];
@@ -191,8 +191,8 @@ var Game = function() {
             gameState.displayTitle = true;
             gameState.displayTitleTimerStartTime = performance.now();
 
-            if (audio.sfx) { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOn); }
-            else           { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOff); }
+            if (audio.isSFX) { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOn); }
+            else             { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOff); }
 
             // start the game
             mainLoop();
@@ -489,13 +489,13 @@ var Game = function() {
     }
 
     var toggleSFX = function() {
-        if (audio.sfx === true) {
-            audio.sfx = false;
+        if (audio.isSFX === true) {
+            audio.isSFX = false;
             
         } else {
-            audio.sfx = true;
+            audio.isSFX = true;
         }
-        globalSFX = audio.sfx;
+        isGlobalSFX = audio.isSFX;
     };
 
     return {
