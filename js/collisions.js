@@ -269,17 +269,17 @@ function testCollisionBallWithBlocks(b) {
     });
 }
 
-function testCollisionBallWithInnerWalls(b, wall) {
-    if(circRectsOverlap(wall.x, wall.y, wall.width, wall.height, b.x, b.y, b.radius)) {
+function testCollisionBallWithInnerWalls(b) {
+    if(circRectsOverlap(game.wall.x, game.wall.y, game.wall.width, game.wall.height, b.x, b.y, b.radius)) {
         let ballRightSide = b.x + b.radius;
         let ballLeftSide = b.x - b.radius;
-        let wallRightSide = wall.x + wall.width;
-        let wallLeftSide = wall.x;
+        let wallRightSide = game.wall.x + game.wall.width;
+        let wallLeftSide = game.wall.x;
 
         let ballTopSide = b.y - b.radius;
         let ballBottomSide = b.y + b.radius;
-        let wallTopSide = wall.y;
-        let wallBottomSide = wall.y + wall.height;
+        let wallTopSide = game.wall.y;
+        let wallBottomSide = game.wall.y + game.wall.height;
 
         let ballGoingRight = b.speedX > 0;
         let ballGoingLeft = b.speedX < 0;
@@ -362,23 +362,23 @@ function testCollisionBallWithInnerWalls(b, wall) {
     }
 }
 
-function testCollisionPickupWithFloor(p, spawn, index, canvas) {
-    if ((p.y + p.radius) > canvas.h) {
+function testCollisionPickupWithFloor(p, index) {
+    if ((p.y + p.radius) > game.canvas.h) {
         despawnPickup(index);
     }
 }
 
-function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, playerInit, gameState, gameCanvas) {
-    if(circRectsOverlap(player.x, player.y, player.width, player.height, p.x, p.y, p.radius)) {
+function testCollisionPickupWithPlayer(p, index) {
+    if(circRectsOverlap(game.player.x, game.player.y, game.player.width, game.player.height, p.x, p.y, p.radius)) {
         let pickupRightSide = p.x + p.radius;
         let pickupLeftSide = p.x - p.radius;
-        let playerRightSide = player.x + player.width;
-        let playerLeftSide = player.x;
+        let playerRightSide = game.player.x + game.player.width;
+        let playerLeftSide = game.player.x;
 
         let pickupTopSide = p.y - p.radius;
         let pickupBottomSide = p.y + p.radius;
-        let playerTopSide = player.y;
-        let playerBottomSide = player.y + player.height;
+        let playerTopSide = game.player.y;
+        let playerBottomSide = game.player.y + game.player.height;
 
         if (((pickupRightSide > playerLeftSide || pickupLeftSide < playerRightSide) &&
             (p.y > playerTopSide && p.y < playerBottomSide)) ||
@@ -397,7 +397,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
             } else if (p.type === laser) {
                 equipLaser(laser);
             } else if (p.type === points) {
-                gameState.currentScore += 10;
+                game.gameState.currentScore += 10;
             }
             
             despawnPickup(index);

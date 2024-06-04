@@ -414,14 +414,14 @@ var Game = function() {
         testCollisionBallWithPlayer(b);
         testCollisionBallWithBlocks(b);
         if (gameState.hasWall === true) {
-            testCollisionBallWithInnerWalls(b, wall);
+            testCollisionBallWithInnerWalls(b);
         }
     }
 
     function movePickup(p, index) {
         p.move();
-        testCollisionPickupWithFloor(p, spawn, index, canvas);
-        testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, playerInit, gameState, gameCanvas);
+        testCollisionPickupWithFloor(p, index);
+        testCollisionPickupWithPlayer(p, index);
     }
 
     function moveProjectile(p) {
@@ -494,6 +494,7 @@ var Game = function() {
         isGlobalSFX = audio.isSFX;
     };
 
+    // game framework API
     return {
         // need to 'get' top-level objects since
         // they update after initial game object return
