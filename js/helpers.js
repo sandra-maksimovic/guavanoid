@@ -25,16 +25,6 @@ function equipLaser(laser) {
     if (game.player.armed === false) { game.player.armed = true; }
 }
 
-function fireProjectile() {
-    let projectile = new Projectile();
-    let newLength = game.spawn.projectileArray.push(projectile);
-    let newIndex = newLength - 1;
-    game.spawn.projectileArray[newIndex].x = game.player.x + (game.player.width / 2) - (game.spawn.projectileArray[newIndex].width / 2);
-    game.spawn.projectileArray[newIndex].y = game.player.y - game.spawn.projectileArray[newIndex].height;
-    playSound(game.audio.laserProjectileSound);
-    game.player.numProjectiles--;
-}
-
 function growPlayer() {
     game.player.growthActive = true;
     if (game.player.width !== game.playerInit.playerWidth*2) {
@@ -132,4 +122,14 @@ function spawnPickup(block) {
     pickup.type = game.spawn.pickupTypeArray[randomInt].type;
     pickup.color = game.spawn.pickupTypeArray[randomInt].color;
     game.spawn.pickupArray.push(pickup);
+}
+
+function spawnProjectile() {
+    let projectile = new Projectile();
+    let newLength = game.spawn.projectileArray.push(projectile);
+    let newIndex = newLength - 1;
+    game.spawn.projectileArray[newIndex].x = game.player.x + (game.player.width / 2) - (game.spawn.projectileArray[newIndex].width / 2);
+    game.spawn.projectileArray[newIndex].y = game.player.y - game.spawn.projectileArray[newIndex].height;
+    playSound(game.audio.laserProjectileSound);
+    game.player.numProjectiles--;
 }

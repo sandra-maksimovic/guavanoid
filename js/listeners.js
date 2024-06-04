@@ -10,6 +10,8 @@ function addButtonListeners(button) {
     game.handler.buttonClickHandler = (evt) => buttonClick(evt, button);
     gameCanvas.addEventListener('click', game.handler.buttonClickHandler);
 
+    // the handler gives us a ref to the parameterised callback which is required for 
+    // listener removal since identical inline parameterised callbacks give different refs
     game.handler.buttonHoverHandler = (evt) => buttonHover(evt, button);
     gameCanvas.addEventListener('mousemove', game.handler.buttonHoverHandler);
 }
@@ -98,7 +100,7 @@ function processClick(evt) {
         game.ball.isAttached = false;
 
     } else if (game.player.armed) {
-        fireProjectile();
+        spawnProjectile();
     }
 }
 
