@@ -5,6 +5,10 @@ function clearBlock(block, index) {
     game.blocks.splice(index, 1);
 }
 
+function decreaseBlockHealth(block) {
+    block.health -= 1;
+}
+
 function despawnPickup(index) {
     game.spawn.pickupArray.splice(index, 1);
 }
@@ -33,7 +37,7 @@ function growPlayer() {
     game.gameState.pickupGrowthTimerStartTime = performance.now();
 }
 
-function increaseHealth() {
+function increasePlayerHealth() {
     game.player.lives++;
 }
 

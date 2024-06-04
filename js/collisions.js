@@ -254,7 +254,7 @@ function testCollisionBallWithBlocks(b) {
                 }
             }
 
-            block.health -= 1;
+            decreaseBlockHealth(block);
 
             if (block.health > 0) {
                 // update color of breakable block based on health
@@ -393,7 +393,7 @@ function testCollisionPickupWithPlayer(p, spawn, index, audio, handler, player, 
             if (p.type === growth) {
                 growPlayer();
             } else if (p.type === health) {
-                increaseHealth();
+                increasePlayerHealth();
             } else if (p.type === laser) {
                 equipLaser(laser);
             } else if (p.type === points) {
