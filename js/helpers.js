@@ -10,21 +10,21 @@ function decreaseBlockHealth(block) {
 }
 
 function despawnPickup(index) {
-    game.spawn.pickupArray.splice(index, 1);
+    game.spawn.activePickupArray.splice(index, 1);
 }
 
-function despawnProjectile(p) {
-    let pIndex = game.spawn.projectileArray.indexOf(p);
-    game.spawn.projectileArray.splice(pIndex, 1);
+function despawnProjectile(projectile) {
+    let index = game.spawn.activeProjectileArray.indexOf(projectile);
+    game.spawn.activeProjectileArray.splice(index, 1);
 }
 
 function equipLaser(laser) {
-    // get the associated pickup type color from the pickupTypeArray of objects
-    let index = game.spawn.pickupTypeArray.findIndex(obj => obj.type === laser);
-    game.player.color = game.spawn.pickupTypeArray[index].color;
+    // get the associated pickup type color from the pickup type array of objects
+    let index = game.pickupInit.pickupTypeArray.findIndex(obj => obj.type === laser);
+    game.player.color = game.pickupInit.pickupTypeArray[index].color;
 
     // give the player more projectiles
-    game.player.numProjectiles = game.spawn.numProjectiles;
+    game.player.numProjectiles = game.projectileInit.numProjectiles;
 
     if (game.player.armed === false) { game.player.armed = true; }
 }
@@ -100,7 +100,7 @@ function playSound(sound) {
 }
 
 function randomlyAssignPickupsToBlocks() {
-    for (let i = 0; i < game.spawn.numPickups; i++) {
+    for (let i = 0; i < game.pickupInit.numPickups; i++) {
         let randomInt = getRandomInt(0, game.blockInit.blockArray.length-1);
         game.blockInit.blockArray[randomInt].hasPickup = true;
     }
@@ -122,18 +122,18 @@ function spawnPickup(block) {
     let pickupSpeedY = 200; // px/s
 
     let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
-    let randomInt = getRandomInt(0, game.spawn.pickupTypeArray.length-1);
-    pickup.type = game.spawn.pickupTypeArray[randomInt].type;
-    pickup.color = game.spawn.pickupTypeArray[randomInt].color;
-    game.spawn.pickupArray.push(pickup);
+    let randomInt = getRandomInt(0, game.pickupInit.pickupTypeArray.length-1);
+    pickup.type = game.pickupInit.pickupTypeArray[randomInt].type;
+    pickup.color = game.pickupInit.pickupTypeArray[randomInt].color;
+    game.spawn.activePickupArray.push(pickup);
 }
 
 function spawnProjectile() {
     let projectile = new Projectile();
-    let newLength = game.spawn.projectileArray.push(projectile);
+    let newLength = game.spawn.activeProjectileArray.push(projectile);
     let newIndex = newLength - 1;
-    game.spawn.projectileArray[newIndex].x = game.player.x + (game.player.width / 2) - (game.spawn.projectileArray[newIndex].width / 2);
-    game.spawn.projectileArray[newIndex].y = game.player.y - game.spawn.projectileArray[newIndex].height;
+    game.spawn.activeProjectileArray[newIndex].x = game.player.x + (game.player.width / 2) - (game.spawn.activeProjectileArray[newIndex].width / 2);
+    game.spawn.activeProjectileArray[newIndex].y = game.player.y - game.spawn.activeProjectileArray[newIndex].height;
     playSound(game.audio.laserProjectileSound);
     game.player.numProjectiles--;
 }

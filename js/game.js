@@ -92,6 +92,16 @@ var Game = function() {
     // i.e. mousePos.x
     let inputState = {};
 
+    let pickupInit = {
+        numPickups: 3,
+        pickupTypeArray: [
+            { type: 'growth', color: 'blue' },
+            { type: 'health', color: 'green' },
+            { type: 'laser', color: 'red' },
+            { type: 'points', color: 'yellow' }
+        ]
+    };
+
     let player;
 
     let playerInit = {
@@ -104,17 +114,13 @@ var Game = function() {
         playerStartPosY: canvas.h - 50
     };
 
+    let projectileInit = {
+        numProjectiles: 3
+    };
+
     let spawn = {
-        numPickups: 3,
-        pickupArray: [],
-        pickupTypeArray: [
-            { type: 'growth', color: 'blue' },
-            { type: 'health', color: 'green' },
-            { type: 'laser', color: 'red' },
-            { type: 'points', color: 'yellow' }
-        ],
-        numProjectiles: 3,
-        projectileArray: []
+        activePickupArray: [],
+        activeProjectileArray: []
     };
 
     let wall;
@@ -165,8 +171,8 @@ var Game = function() {
         audio.isSFX = isGlobalSFX;
         gameState.currentScore = 0;
         gameState.hasWall = false;
-        spawn.pickupArray = [];
-        spawn.projectileArray = [];
+        spawn.activePickupArray = [];
+        spawn.activeProjectileArray = [];
 
         // create player
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
@@ -232,8 +238,8 @@ var Game = function() {
                 }
 
                 // move projectiles if any
-                if (spawn.projectileArray.length > 0) {
-                    spawn.projectileArray.forEach(projectile => {
+                if (spawn.activeProjectileArray.length > 0) {
+                    spawn.activeProjectileArray.forEach(projectile => {
                         projectile.draw(canvas.ctx);
                         projectile.incrementY = calcIncrement(projectile.speedY, delta);
                         moveProjectile(projectile);
@@ -264,8 +270,8 @@ var Game = function() {
                 drawAllBlocks(blocks);
 
                 // draw pickups as they spawn
-                if (spawn.pickupArray.length > 0) {
-                    spawn.pickupArray.forEach((pickup, index) => {
+                if (spawn.activePickupArray.length > 0) {
+                    spawn.activePickupArray.forEach((pickup, index) => {
                         pickup.draw(canvas.ctx);
                         pickup.incrementY = calcIncrement(pickup.speedY, delta);
                         movePickup(pickup, index);
@@ -514,7 +520,9 @@ var Game = function() {
         htmlElements: htmlElements,
         icon: icon,
         inputState: inputState,
+        pickupInit: pickupInit,
         playerInit: playerInit,
+        projectileInit: projectileInit,
         spawn: spawn,
         // returned function expressions will be
         // evaluated at call time
