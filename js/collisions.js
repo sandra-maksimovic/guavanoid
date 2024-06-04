@@ -1,95 +1,95 @@
-function testCollisionBallWithWalls(b) {
+function testCollisionBallWithWalls(ball) {
     // COLLISION WITH VERTICAL WALLS
-    if ((b.x + b.radius) > game.canvas.w) {
+    if ((ball.x + ball.radius) > game.canvas.w) {
         // the ball hit the right wall
         // change horizontal direction
-        b.speedX = -b.speedX;
+        ball.speedX = -ball.speedX;
         
         // put the ball at the collision point
-        b.x = game.canvas.w - b.radius;
-    } else if ((b.x - b.radius) < 0) {
+        ball.x = game.canvas.w - ball.radius;
+    } else if ((ball.x - ball.radius) < 0) {
         // the ball hit the left wall
         // change horizontal direction
-        b.speedX = -b.speedX;
+        ball.speedX = -ball.speedX;
         
         // put the ball at the collision point
-        b.x = b.radius;
+        ball.x = ball.radius;
     }
 
     // COLLISIONS WTH HORIZONTAL WALLS
     // Not in the else as the ball can touch both
     // vertical and horizontal walls in corners
-    if ((b.y + b.radius) > game.canvas.h) {
+    if ((ball.y + ball.radius) > game.canvas.h) {
         // the ball hit the bottom wall
         // change vertical direction
-        //b.speedY = -b.speedY;
+        //ball.speedY = -ball.speedY;
         
         // put the ball at the collision point
-        //b.y = game.canvas.h - b.radius;
+        //ball.y = game.canvas.h - ball.radius;
 
         playSound(game.audio.failCollisionSound);
         game.playerFail();
-    } else if ((b.y - b.radius) < 0) {
+    } else if ((ball.y - ball.radius) < 0) {
         // the ball hit the top wall
         // change vertical direction
-        b.speedY = -b.speedY;
+        ball.speedY = -ball.speedY;
         
         // put the ball at the collision point
-        b.y = b.radius;
+        ball.y = ball.radius;
     }
 }
 
-function testCollisionBallWithPlayer(b) {
-    if(circRectsOverlap(game.player.x, game.player.y, game.player.width, game.player.height, b.x, b.y, b.radius)) {
-        let ballRightSide = b.x + b.radius;
-        let ballLeftSide = b.x - b.radius;
+function testCollisionBallWithPlayer(ball) {
+    if(circRectsOverlap(game.player.x, game.player.y, game.player.width, game.player.height, ball.x, ball.y, ball.radius)) {
+        let ballRightSide = ball.x + ball.radius;
+        let ballLeftSide = ball.x - ball.radius;
         let playerRightSide = game.player.x + game.player.width;
         let playerLeftSide = game.player.x;
 
-        let ballTopSide = b.y - b.radius;
-        let ballBottomSide = b.y + b.radius;
+        let ballTopSide = ball.y - ball.radius;
+        let ballBottomSide = ball.y + ball.radius;
         let playerTopSide = game.player.y;
         let playerBottomSide = game.player.y + game.player.height;
 
-        let ballGoingRight = b.speedX > 0;
-        let ballGoingLeft = b.speedX < 0;
-        let ballGoingUp = b.speedY < 0;
-        let ballGoingDown = b.speedY > 0;
+        let ballGoingRight = ball.speedX > 0;
+        let ballGoingLeft = ball.speedX < 0;
+        let ballGoingUp = ball.speedY < 0;
+        let ballGoingDown = ball.speedY > 0;
 
         // check if the ball hit the LEFT side of the player
         if (ballRightSide > playerLeftSide && ballGoingRight) {
                 
             // also check if the ball centre is within the TOP & BOTTOM bounds of the block
-            if (b.y > playerTopSide && b.y < playerBottomSide) {
+            if (ball.y > playerTopSide && ball.y < playerBottomSide) {
                 // change horizontal direction
-                b.speedX = -b.speedX;
+                ball.speedX = -ball.speedX;
                 ballGoingRight = false;
                 ballGoingLeft = true;
                 
                 // put the ball at the collision point
-                b.x = ballLeftSide - b.radius;
+                ball.x = ballLeftSide - ball.radius;
                 
                 // update the horizontal ball bounds
-                ballLeftSide = b.x - b.radius;
-                ballRightSide = b.x + b.radius;
+                ballLeftSide = ball.x - ball.radius;
+                ballRightSide = ball.x + ball.radius;
             }
 
         // otherwise check if the ball hit the RIGHT side of the player
         } else if (ballLeftSide < playerRightSide && ballGoingLeft) {
                 
             // also check if the ball centre is within the TOP & BOTTOM bounds of the block
-            if (b.y > playerTopSide && b.y < playerBottomSide) {
+            if (ball.y > playerTopSide && ball.y < playerBottomSide) {
                 // change horizontal direction
-                b.speedX = -b.speedX;
+                ball.speedX = -ball.speedX;
                 ballGoingLeft = false;
                 ballGoingRight = true;
                 
                 // put the ball at the collision point
-                b.x = playerRightSide + b.radius;
+                ball.x = playerRightSide + ball.radius;
 
                 // update the horizontal ball bounds
-                ballRightSide = b.x + b.radius;
-                ballLeftSide = b.x - b.radius;
+                ballRightSide = ball.x + ball.radius;
+                ballLeftSide = ball.x - ball.radius;
             }
         }
 
@@ -97,7 +97,7 @@ function testCollisionBallWithPlayer(b) {
         if (ballBottomSide > playerTopSide && ballGoingDown) {
 
             // also check if the ball centre is within the LEFT & RIGHT bounds of the block
-            if (b.x > playerLeftSide && b.x < playerRightSide) {
+            if (ball.x > playerLeftSide && ball.x < playerRightSide) {
                 let segment1 = game.player.x + (game.player.width / 5);
                 let segment2 = game.player.x + (game.player.width / 5)*2;
                 let segment3 = game.player.x + (game.player.width / 5)*3;
@@ -109,52 +109,52 @@ function testCollisionBallWithPlayer(b) {
 
                 // change ball horizontal speed based on where 
                 // it hit the paddle to simulate a change of angle
-                if (b.x > playerLeftSide  && b.x < segment1) {
-                    if (b.speedX > 0) { b.speedX = fullSpeedX; }
-                    else if (b.speedX < 0) { b.speedX = -fullSpeedX; }
-                } else if (b.x > segment1 && b.x < segment2) {
-                    if (b.speedX > 0) { b.speedX = medSpeedX; }
-                    else if (b.speedX < 0) { b.speedX = -medSpeedX; }
-                } else if (b.x > segment2 && b.x < segment3) {
-                    if (b.speedX > 0) { b.speedX = lowSpeedX; }
-                    else if (b.speedX < 0) { b.speedX = -lowSpeedX; }
-                } else if (b.x > segment3 && b.x < segment4) {
-                    if (b.speedX > 0) { b.speedX = medSpeedX; }
-                    else if (b.speedX < 0) { b.speedX = -medSpeedX; }
-                } else if (b.x > segment4 && b.x < segment5) {
-                    if (b.speedX > 0) { b.speedX = medSpeedX; }
-                    else if (b.speedX < 0) { b.speedX = -medSpeedX; }
+                if (ball.x > playerLeftSide  && ball.x < segment1) {
+                    if (ball.speedX > 0) { ball.speedX = fullSpeedX; }
+                    else if (ball.speedX < 0) { ball.speedX = -fullSpeedX; }
+                } else if (ball.x > segment1 && ball.x < segment2) {
+                    if (ball.speedX > 0) { ball.speedX = medSpeedX; }
+                    else if (ball.speedX < 0) { ball.speedX = -medSpeedX; }
+                } else if (ball.x > segment2 && ball.x < segment3) {
+                    if (ball.speedX > 0) { ball.speedX = lowSpeedX; }
+                    else if (ball.speedX < 0) { ball.speedX = -lowSpeedX; }
+                } else if (ball.x > segment3 && ball.x < segment4) {
+                    if (ball.speedX > 0) { ball.speedX = medSpeedX; }
+                    else if (ball.speedX < 0) { ball.speedX = -medSpeedX; }
+                } else if (ball.x > segment4 && ball.x < segment5) {
+                    if (ball.speedX > 0) { ball.speedX = medSpeedX; }
+                    else if (ball.speedX < 0) { ball.speedX = -medSpeedX; }
                 }
 
                 // change vertical direction
-                b.speedY = -b.speedY;
+                ball.speedY = -ball.speedY;
                 ballGoingDown = false;
                 ballGoingUp = true;
                 
                 // put the ball at the collision point
-                b.y = playerTopSide - b.radius;
+                ball.y = playerTopSide - ball.radius;
 
                 // update the vertical ball bounds
-                ballTopSide = b.y - b.radius;
-                ballBottomSide = b.y + b.radius;
+                ballTopSide = ball.y - ball.radius;
+                ballBottomSide = ball.y + ball.radius;
             }
         
         // otherwise check if the ball hit the BOTTOM side of the player
         } else if (ballTopSide < playerBottomSide && ballGoingUp) {
 
             // also check if the ball centre is within the LEFT & RIGHT bounds of the block
-            if (b.x > playerLeftSide && b.x < playerRightSide) {
+            if (ball.x > playerLeftSide && ball.x < playerRightSide) {
                 // change vertical direction
-                b.speedY = -b.speedY;
+                ball.speedY = -ball.speedY;
                 ballGoingUp = false;
                 ballGoingDown = true;
                 
                 // put the ball at the collision point
-                b.y = playerBottomSide + b.radius;
+                ball.y = playerBottomSide + ball.radius;
 
                 // update the vertical ball bounds
-                ballBottomSide = b.y + b.radius;
-                ballTopSide = b.y - b.radius;
+                ballBottomSide = ball.y + ball.radius;
+                ballTopSide = ball.y - ball.radius;
             }
         }
 
@@ -162,58 +162,58 @@ function testCollisionBallWithPlayer(b) {
     }
 }
 
-function testCollisionBallWithBlocks(b) {
+function testCollisionBallWithBlocks(ball) {
     game.blocks.forEach(function(block, index) {
-        if(circRectsOverlap(block.x, block.y, block.width, block.height, b.x, b.y, b.radius)) {
-            let ballRightSide = b.x + b.radius;
-            let ballLeftSide = b.x - b.radius;
+        if(circRectsOverlap(block.x, block.y, block.width, block.height, ball.x, ball.y, ball.radius)) {
+            let ballRightSide = ball.x + ball.radius;
+            let ballLeftSide = ball.x - ball.radius;
             let blockRightSide = block.x + block.width;
             let blockLeftSide = block.x;
 
-            let ballTopSide = b.y - b.radius;
-            let ballBottomSide = b.y + b.radius;
+            let ballTopSide = ball.y - ball.radius;
+            let ballBottomSide = ball.y + ball.radius;
             let blockTopSide = block.y;
             let blockBottomSide = block.y + block.height;
 
-            let ballGoingRight = b.speedX > 0;
-            let ballGoingLeft = b.speedX < 0;
-            let ballGoingUp = b.speedY < 0;
-            let ballGoingDown = b.speedY > 0;
+            let ballGoingRight = ball.speedX > 0;
+            let ballGoingLeft = ball.speedX < 0;
+            let ballGoingUp = ball.speedY < 0;
+            let ballGoingDown = ball.speedY > 0;
 
             // check if the ball hit the LEFT side of the block
             if (ballRightSide > blockLeftSide && ballGoingRight) {
                 
                 // also check if the ball centre is within the TOP & BOTTOM bounds of the block
-                if (b.y > blockTopSide && b.y < blockBottomSide) {
+                if (ball.y > blockTopSide && ball.y < blockBottomSide) {
                     // change horizontal direction
-                    b.speedX = -b.speedX;
+                    ball.speedX = -ball.speedX;
                     ballGoingRight = false;
                     ballGoingLeft = true;
                     
                     // put the ball at the collision point
-                    b.x = ballLeftSide - b.radius;
+                    ball.x = ballLeftSide - ball.radius;
                     
                     // update the horizontal ball bounds
-                    ballLeftSide = b.x - b.radius;
-                    ballRightSide = b.x + b.radius;
+                    ballLeftSide = ball.x - ball.radius;
+                    ballRightSide = ball.x + ball.radius;
                 }
             
             // otherwise check if the ball hit the RIGHT side of the block
             } else if (ballLeftSide < blockRightSide && ballGoingLeft) {
                 
                 // also check if the ball centre is within the TOP & BOTTOM bounds of the block
-                if (b.y > blockTopSide && b.y < blockBottomSide) {
+                if (ball.y > blockTopSide && ball.y < blockBottomSide) {
                     // change horizontal direction
-                    b.speedX = -b.speedX;
+                    ball.speedX = -ball.speedX;
                     ballGoingLeft = false;
                     ballGoingRight = true;
                     
                     // put the ball at the collision point
-                    b.x = blockRightSide + b.radius;
+                    ball.x = blockRightSide + ball.radius;
 
                     // update the horizontal ball bounds
-                    ballRightSide = b.x + b.radius;
-                    ballLeftSide = b.x - b.radius;
+                    ballRightSide = ball.x + ball.radius;
+                    ballLeftSide = ball.x - ball.radius;
                 }
             }
             
@@ -221,36 +221,36 @@ function testCollisionBallWithBlocks(b) {
             if (ballBottomSide > blockTopSide && ballGoingDown) {
 
                 // also check if the ball centre is within the LEFT & RIGHT bounds of the block
-                if (b.x > blockLeftSide && b.x < blockRightSide) {
+                if (ball.x > blockLeftSide && ball.x < blockRightSide) {
                     // change vertical direction
-                    b.speedY = -b.speedY;
+                    ball.speedY = -ball.speedY;
                     ballGoingDown = false;
                     ballGoingUp = true;
                     
                     // put the ball at the collision point
-                    b.y = blockTopSide - b.radius;
+                    ball.y = blockTopSide - ball.radius;
 
                     // update the vertical ball bounds
-                    ballTopSide = b.y - b.radius;
-                    ballBottomSide = b.y + b.radius;
+                    ballTopSide = ball.y - ball.radius;
+                    ballBottomSide = ball.y + ball.radius;
                 }
             
             // otherwise check if the ball hit the BOTTOM side of the block
             } else if (ballTopSide < blockBottomSide && ballGoingUp) {
 
                 // also check if the ball centre is within the LEFT & RIGHT bounds of the block
-                if (b.x > blockLeftSide && b.x < blockRightSide) {
+                if (ball.x > blockLeftSide && ball.x < blockRightSide) {
                     // change vertical direction
-                    b.speedY = -b.speedY;
+                    ball.speedY = -ball.speedY;
                     ballGoingUp = false;
                     ballGoingDown = true;
                     
                     // put the ball at the collision point
-                    b.y = blockBottomSide + b.radius;
+                    ball.y = blockBottomSide + ball.radius;
 
                     // update the vertical ball bounds
-                    ballBottomSide = b.y + b.radius;
-                    ballTopSide = b.y - b.radius;
+                    ballBottomSide = ball.y + ball.radius;
+                    ballTopSide = ball.y - ball.radius;
                 }
             }
 
@@ -269,57 +269,57 @@ function testCollisionBallWithBlocks(b) {
     });
 }
 
-function testCollisionBallWithInnerWalls(b) {
-    if(circRectsOverlap(game.wall.x, game.wall.y, game.wall.width, game.wall.height, b.x, b.y, b.radius)) {
-        let ballRightSide = b.x + b.radius;
-        let ballLeftSide = b.x - b.radius;
+function testCollisionBallWithInnerWalls(ball) {
+    if(circRectsOverlap(game.wall.x, game.wall.y, game.wall.width, game.wall.height, ball.x, ball.y, ball.radius)) {
+        let ballRightSide = ball.x + ball.radius;
+        let ballLeftSide = ball.x - ball.radius;
         let wallRightSide = game.wall.x + game.wall.width;
         let wallLeftSide = game.wall.x;
 
-        let ballTopSide = b.y - b.radius;
-        let ballBottomSide = b.y + b.radius;
+        let ballTopSide = ball.y - ball.radius;
+        let ballBottomSide = ball.y + ball.radius;
         let wallTopSide = game.wall.y;
         let wallBottomSide = game.wall.y + game.wall.height;
 
-        let ballGoingRight = b.speedX > 0;
-        let ballGoingLeft = b.speedX < 0;
-        let ballGoingUp = b.speedY < 0;
-        let ballGoingDown = b.speedY > 0;
+        let ballGoingRight = ball.speedX > 0;
+        let ballGoingLeft = ball.speedX < 0;
+        let ballGoingUp = ball.speedY < 0;
+        let ballGoingDown = ball.speedY > 0;
 
         // check if the ball hit the LEFT side of the wall
         if (ballRightSide > wallLeftSide && ballGoingRight) {
             
             // also check if the ball centre is within the TOP & BOTTOM bounds of the wall
-            if (b.y > wallTopSide && b.y < wallBottomSide) {
+            if (ball.y > wallTopSide && ball.y < wallBottomSide) {
                 // change horizontal direction
-                b.speedX = -b.speedX;
+                ball.speedX = -ball.speedX;
                 ballGoingRight = false;
                 ballGoingLeft = true;
                 
                 // put the ball at the collision point
-                b.x = ballLeftSide - b.radius;
+                ball.x = ballLeftSide - ball.radius;
                 
                 // update the horizontal ball bounds
-                ballLeftSide = b.x - b.radius;
-                ballRightSide = b.x + b.radius;
+                ballLeftSide = ball.x - ball.radius;
+                ballRightSide = ball.x + ball.radius;
             }
         
         // otherwise check if the ball hit the RIGHT side of the wall
         } else if (ballLeftSide < wallRightSide && ballGoingLeft) {
             
             // also check if the ball centre is within the TOP & BOTTOM bounds of the wall
-            if (b.y > wallTopSide && b.y < wallBottomSide) {
+            if (ball.y > wallTopSide && ball.y < wallBottomSide) {
                 // change horizontal direction
-                b.speedX = -b.speedX;
+                ball.speedX = -ball.speedX;
                 ballGoingLeft = false;
                 ballGoingRight = true;
                 
                 // put the ball at the collision point
-                b.x = wallRightSide + b.radius;
+                ball.x = wallRightSide + ball.radius;
 
                 // update the horizontal ball bounds
-                ballRightSide = b.x + b.radius;
-                ballLeftSide = b.x - b.radius;
+                ballRightSide = ball.x + ball.radius;
+                ballLeftSide = ball.x - ball.radius;
             }
         }
         
@@ -327,76 +327,76 @@ function testCollisionBallWithInnerWalls(b) {
         if (ballBottomSide > wallTopSide && ballGoingDown) {
 
             // also check if the ball centre is within the LEFT & RIGHT bounds of the wall
-            if (b.x > wallLeftSide && b.x < wallRightSide) {
+            if (ball.x > wallLeftSide && ball.x < wallRightSide) {
                 // change vertical direction
-                b.speedY = -b.speedY;
+                ball.speedY = -ball.speedY;
                 ballGoingDown = false;
                 ballGoingUp = true;
                 
                 // put the ball at the collision point
-                b.y = wallTopSide - b.radius;
+                ball.y = wallTopSide - ball.radius;
 
                 // update the vertical ball bounds
-                ballTopSide = b.y - b.radius;
-                ballBottomSide = b.y + b.radius;
+                ballTopSide = ball.y - ball.radius;
+                ballBottomSide = ball.y + ball.radius;
             }
         
         // otherwise check if the ball hit the BOTTOM side of the wall
         } else if (ballTopSide < wallBottomSide && ballGoingUp) {
 
             // also check if the ball centre is within the LEFT & RIGHT bounds of the wall
-            if (b.x > wallLeftSide && b.x < wallRightSide) {
+            if (ball.x > wallLeftSide && ball.x < wallRightSide) {
                 // change vertical direction
-                b.speedY = -b.speedY;
+                ball.speedY = -ball.speedY;
                 ballGoingUp = false;
                 ballGoingDown = true;
                 
                 // put the ball at the collision point
-                b.y = wallBottomSide + b.radius;
+                ball.y = wallBottomSide + ball.radius;
 
                 // update the vertical ball bounds
-                ballBottomSide = b.y + b.radius;
-                ballTopSide = b.y - b.radius;
+                ballBottomSide = ball.y + ball.radius;
+                ballTopSide = ball.y - ball.radius;
             }
         }
     }
 }
 
-function testCollisionPickupWithFloor(p, index) {
-    if ((p.y + p.radius) > game.canvas.h) {
+function testCollisionPickupWithFloor(pickup, index) {
+    if ((pickup.y + pickup.radius) > game.canvas.h) {
         despawnPickup(index);
     }
 }
 
-function testCollisionPickupWithPlayer(p, index) {
-    if(circRectsOverlap(game.player.x, game.player.y, game.player.width, game.player.height, p.x, p.y, p.radius)) {
-        let pickupRightSide = p.x + p.radius;
-        let pickupLeftSide = p.x - p.radius;
+function testCollisionPickupWithPlayer(pickup, index) {
+    if(circRectsOverlap(game.player.x, game.player.y, game.player.width, game.player.height, pickup.x, pickup.y, pickup.radius)) {
+        let pickupRightSide = pickup.x + pickup.radius;
+        let pickupLeftSide = pickup.x - pickup.radius;
         let playerRightSide = game.player.x + game.player.width;
         let playerLeftSide = game.player.x;
 
-        let pickupTopSide = p.y - p.radius;
-        let pickupBottomSide = p.y + p.radius;
+        let pickupTopSide = pickup.y - pickup.radius;
+        let pickupBottomSide = pickup.y + pickup.radius;
         let playerTopSide = game.player.y;
         let playerBottomSide = game.player.y + game.player.height;
 
         if (((pickupRightSide > playerLeftSide || pickupLeftSide < playerRightSide) &&
-            (p.y > playerTopSide && p.y < playerBottomSide)) ||
+            (pickup.y > playerTopSide && pickup.y < playerBottomSide)) ||
             ((pickupBottomSide > playerTopSide || pickupTopSide < playerBottomSide) &&
-            (p.x > playerLeftSide && p.x < playerRightSide))) {
+            (pickup.x > playerLeftSide && pickup.x < playerRightSide))) {
             
             let growth = 'growth';
             let health = 'health';
             let laser = 'laser';
             let points = 'points';
             
-            if (p.type === growth) {
+            if (pickup.type === growth) {
                 growPlayer();
-            } else if (p.type === health) {
+            } else if (pickup.type === health) {
                 increasePlayerHealth();
-            } else if (p.type === laser) {
+            } else if (pickup.type === laser) {
                 equipLaser(laser);
-            } else if (p.type === points) {
+            } else if (pickup.type === points) {
                 game.gameState.currentScore += 10;
             }
             
@@ -407,22 +407,21 @@ function testCollisionPickupWithPlayer(p, index) {
     }
 }
 
-function testCollisionProjectileWithBlocks(p) {
+function testCollisionProjectileWithBlocks(projectile) {
     game.blocks.forEach(function(block, index) {
-        if (rectsOverlap(block.x, block.y, block.width, block.height,
-            p.x, p.y, p.width, p.height)) {
-                clearBlock(block, index);
-                despawnProjectile(p);
-                incrementScore(block);
-                playSound(game.audio.laserProjectileExplosionSound);
-            }
-        });
+        if (rectsOverlap(block.x, block.y, block.width, block.height, projectile.x, projectile.y, projectile.width, projectile.height)) {
+            clearBlock(block, index);
+            despawnProjectile(projectile);
+            incrementScore(block);
+            playSound(game.audio.laserProjectileExplosionSound);
+        }
+    });
 }
 
-function testCollisionProjectileWithWalls(p) {
-    let projectileTop = p.y;
+function testCollisionProjectileWithWalls(projectile) {
+    let projectileTop = projectile.y;
     let topBoundary = 0;
     if (projectileTop < topBoundary) {
-        despawnProjectile(p);
+        despawnProjectile(projectile);
     }
 }

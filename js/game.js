@@ -408,26 +408,26 @@ var Game = function() {
         canvas.ctx.fillText(`LEVEL ${gameState.currentLevel}`, titleX, titleY);
     }
 
-    function moveBall(b) {
-        b.move();    
-        testCollisionBallWithWalls(b);
-        testCollisionBallWithPlayer(b);
-        testCollisionBallWithBlocks(b);
+    function moveBall(ball) {
+        ball.move();    
+        testCollisionBallWithWalls(ball);
+        testCollisionBallWithPlayer(ball);
+        testCollisionBallWithBlocks(ball);
         if (gameState.hasWall === true) {
-            testCollisionBallWithInnerWalls(b);
+            testCollisionBallWithInnerWalls(ball);
         }
     }
 
-    function movePickup(p, index) {
-        p.move();
-        testCollisionPickupWithFloor(p, index);
-        testCollisionPickupWithPlayer(p, index);
+    function movePickup(pickup, index) {
+        pickup.move();
+        testCollisionPickupWithFloor(pickup, index);
+        testCollisionPickupWithPlayer(pickup, index);
     }
 
-    function moveProjectile(p) {
-        p.move();
-        testCollisionProjectileWithBlocks(p);
-        testCollisionProjectileWithWalls(p);
+    function moveProjectile(projectile) {
+        projectile.move();
+        testCollisionProjectileWithBlocks(projectile);
+        testCollisionProjectileWithWalls(projectile);
     }
 
     function checkLevelCleared() {
