@@ -89,14 +89,14 @@ function processClick(evt) {
     const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
                               y > (game.button.sfxToggleBtn.y)
 
-    if (isInsideSFXButton) {
+    if (isInsideSFXButton && game.gameState.loaded) {
         game.toggleSFX();
 
         if (game.audio.isSFX) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
         else                  { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
         game.button.sfxToggleBtn.draw(game.canvas.ctx);
     
-    } else if (game.ball.isAttached) {
+    } else if (game.ball.isAttached && game.gameState.loaded) {
         game.ball.isAttached = false;
 
     } else if (game.player.armed) {
@@ -108,7 +108,7 @@ function processKeyDown(evt) {
     if (evt.key === "b" && !game.gameState.paused) {
         game.blocks.splice(0, game.blocks.length);
     }
-    if (evt.key === "Escape" && game.gameState.pauseable) {
+    if (evt.key === "Escape" && game.gameState.loaded) {
         if (game.gameState.paused === false) {
             game.gameState.paused = true;
             game.htmlElements.pauseDiv.classList.remove("hidden");

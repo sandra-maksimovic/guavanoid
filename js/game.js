@@ -66,7 +66,7 @@ var Game = function() {
         displayTitleTimer: 1500, //ms
         displayTitleTimerStartTime: 0,
         hasWall: false,
-        pauseable: false,
+        loaded: false,
         paused: false,
         pickupGrowthTimer: 10000, //ms
         pickupGrowthTimerStartTime: 0,
@@ -215,7 +215,7 @@ var Game = function() {
         if (now - gameState.displayTitleTimerStartTime > gameState.displayTitleTimer) {
             gameState.displayTitle = false;
             
-            if (!gameState.pauseable) { gameState.pauseable = true; }
+            if (!gameState.loaded) { gameState.loaded = true; }
 
             // main gameplay loop
             if (!gameState.paused) {
@@ -369,7 +369,7 @@ var Game = function() {
         const resultTextColor = color;
         const resultTextFont = 'bold 100px sans-serif';
 
-        gameState.pauseable = false;
+        gameState.loaded = false;
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
 
@@ -404,7 +404,7 @@ var Game = function() {
         const titleX = canvas.w / 2;
         const titleY = canvas.h / 2;
 
-        gameState.pauseable = false;
+        gameState.loaded = false;
 
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
         canvas.ctx.font = "bold 100px sans-serif";
