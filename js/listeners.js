@@ -55,30 +55,42 @@ function buttonHover(evt, button) {
     }
 }
 
+function changeToggleButtonColor(button, color) {
+    button.color = color;
+    button.draw(game.canvas.ctx);
+}
+
+function checkToggleBtnHover(button, isInsideButton) {
+    if (isInsideButton && !button.isHovering) {
+        changeToggleButtonColor(button, game.iconInit.hoverColor);
+        button.isHovering = true;
+    } else if (!isInsideButton && button.isHovering) {
+        changeToggleButtonColor(button, game.iconInit.color);
+        button.isHovering = false;
+    }
+}
+
 function getMousePos(evt) {
     let rect = gameCanvas.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-
-    const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
-                              y > (game.button.sfxToggleBtn.y)
     
-    if (isInsideSFXButton && !game.button.isHovering) {
-        game.button.sfxToggleBtn.color = 'lightgray';
-        game.button.sfxToggleBtn.draw(game.canvas.ctx);
-        game.button.isHovering = true;
-    } else if (!isInsideSFXButton && game.button.isHovering) {
-        game.button.sfxToggleBtn.color = 'gray';
-        game.button.sfxToggleBtn.draw(game.canvas.ctx);
-        game.button.isHovering = false;
-    }
-
     // we can return the mouse coords as a simple object in JS
-    return { x: evt.clientX - rect.left }
+    return { 
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    }
 }
 
 function mouseMoved(evt) {
     game.inputState.mousePos = getMousePos(evt);
+
+    const isInsideSFXButton = game.inputState.mousePos.x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
+                              game.inputState.mousePos.y > (game.button.sfxToggleBtn.y);
+    
+    const isInsideLegendButton = game.inputState.mousePos.x > (game.button.legendToggleBtn.x) &&
+                                 game.inputState.mousePos.y > (game.button.legendToggleBtn.y);
+ 
+    checkToggleBtnHover(game.button.sfxToggleBtn, isInsideSFXButton);
+    checkToggleBtnHover(game.button.legendToggleBtn, isInsideLegendButton);
 }
 
 function processClick(evt) {
@@ -87,15 +99,23 @@ function processClick(evt) {
     const y = evt.clientY - rect.top;
 
     const isInsideSFXButton = x < (game.button.sfxToggleBtn.x + game.button.sfxToggleBtn.width) &&
-                              y > (game.button.sfxToggleBtn.y)
+                              y > (game.button.sfxToggleBtn.y);
+    
+    const isInsideLegendButton = x > (game.button.legendToggleBtn.x) &&
+                                 y > (game.button.legendToggleBtn.y);
 
     if (isInsideSFXButton && game.gameState.loaded) {
         game.toggleSFX();
 
-        if (game.audio.isSFX) { game.button.sfxToggleBtn.img = game.icon.sfxOn; }
-        else                  { game.button.sfxToggleBtn.img = game.icon.sfxOff; }
+        if (game.audio.isSFX) {
+            game.button.sfxToggleBtn.img = game.icon.sfxOn;
+        } else {
+            game.button.sfxToggleBtn.img = game.icon.sfxOff;
+        }
         game.button.sfxToggleBtn.draw(game.canvas.ctx);
-    
+
+    } else if (isInsideLegendButton && game.gameState.loaded) {
+        // toggle legend pop-up
     } else if (game.ball.isAttached && game.gameState.loaded) {
         game.ball.isAttached = false;
 

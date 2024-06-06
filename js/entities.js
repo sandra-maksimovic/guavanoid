@@ -210,6 +210,7 @@ class ResultText {
 
 class ToggleButton extends Entity {
     img;
+    isHovering = false;
 
     constructor(x, y, width, height, color, img) {
         super(x, y, width, height, color);

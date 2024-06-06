@@ -55,7 +55,8 @@ var Game = function() {
     };
 
     let button = {
-        isHovering: false,
+        //isHovering: false,
+        legendToggleBtn: undefined,
         sfxToggleBtn: undefined
     };
 
@@ -85,12 +86,23 @@ var Game = function() {
     };
 
     let icon = {
+        legend: undefined,
         sfxOff: undefined,
         sfxOn: undefined
     };
 
-    // i.e. mousePos.x
-    let inputState = {};
+    let iconInit = {
+        color: 'gray',
+        hoverColor: 'lightgray',
+        size: 24
+    };
+
+    let inputState = {
+        mousePos: {
+            x: undefined,
+            y: undefined
+        }
+    };
 
     let pickupInit = {
         numPickups: 3,
@@ -155,6 +167,9 @@ var Game = function() {
             src: ['data:audio/wav;base64,UklGRpMGAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YW8GAACko6Ojo6KioqGhoaGgoKCgn5+fn56eVVZWVldXV1hYWFlZWVpaWltbW1tcXFxdXV1dXl5eXl9fX19gYGBgYY6pqamoqKinp6empqalpaWlpKSko6N/WltbW1xcXFxdXV1eXl5eX19fX2BgYGBhYWFhYmJiYmNjY2NjZGRkba2trKyrq6uqqqqpqamoqKinp6empqZdXV5eXl9fX19gYGBgYWFhYWJiYmJiY2NjY2RkZGRlZWVlZWZmZmZmlK+urq6tra2srKyrq6qqqqmpqaioqINfX2BgYGBhYWFhYmJiYmNjY2NjZGRkZGVlZWVlZmZmZmZnZ2dnZ2hxsLCvr6+urq6tra2srKurq6qqqqmpqWBgYWFhYWFiYmJiY2NjY2RkZGRkZWVlZWZmZmZmZ2dnZ2doaGhoaGiWsbCwsK+vr66ura2trKysq6urqqqqhWFhYWJiYmJiY2NjY2RkZGRkZWVlZWZmZmZmZ2dnZ2doaGhoaGhpaXKysbGwsLCvr66urq2traysq6urqqqqYWFiYmJiYmNjY2NkZGRkZGVlZWVmZmZmZmdnZ2dnaGhoaGhoaWlpaZeysbGwsLCvr66urq2traysrKurq6qGYWJiYmJjY2NjY2RkZGRlZWVlZWZmZmZmZ2dnZ2doaGhoaGlpaWlpc7KysbGwsLCvr66urq2traysrKurqqphYmJiYmNjY2NkZGRkZGVlZWVlZmZmZmZnZ2dnZ2hoaGhoaWlpaWlpl7KxsbGwsLCvr66urq2traysq6urqoZiYmJiY2NjY2NkZGRkZWVlZWVmZmZmZmdnZ2dnaGhoaGhpaWlpaWlzsrKxsbGwsK+vr66ura2trKysq6urqmJiYmJjY2NjY2RkZGRlZWVlZWZmZmZmZ2dnZ2doaGhoaGlpaWlpaWqXsrKxsbCwsK+vrq6ura2trKysq6urhmJiYmJjY2NjZGRkZGRlZWVlZmZmZmZnZ2dnZ2hoaGhoaGlpaWlpanOysrGxsbCwr6+vrq6ura2srKyrq6uqYmJiYmNjY2NjZGRkZGVlZWVlZmZmZmZnZ2dnZ2hoaGhoaWlpaWlpapeysrGxsLCwr6+urq6tra2srKyrq6uGYmJiYmNjY2NkZGRkZGVlZWVmZmZmZmdnZ2dnaGhoaGhoaWlpaWlqc7KysbGxsLCvr6+urq6traysrKurq6piYmJiY2NjY2NkZGRkZWVlZWVmZmZmZmdnZ2dnaGhoaGhpaWlpaWlql7KysbGwsLCvr6+urq2traysrKurq4ZiYmJiY2NjY2RkZGRkZWVlZWZmZmZmZ2dnZ2doaGhoaGhpaWlpaWpzsrKxsbGwsK+vr66urq2trKysq6urqmJiYmJjY2NjZGRkZGRlZWVlZWZmZmZmZ2dnZ2doaGhoaGlpaWlpaWqXsrKxsbCwsK+vr66ura2trKysq6urhmJiYmJjY2NjZGRkZGRlZWVlZmZmZmZnZ2dnZ2hoaGhoaGlpaWlpanOysrGxsbCwr6+vrq6ura2srKyrq6uqYmJiYmNjY2NkZGRkZGVlZWVlZmZmZmZnZ2dnZ2hoaGhoaWlpaWlpapeysrGxsLCwr6+vrq6tra2srKyrq6uGYmJiYmNjY2NkZGRkZGVlZWVmZmZmZmdnZ2dnaGhoaGhoaWlpaWlqc7KysbGxsLCvr6+urq6traysrKurq6piYmJiY2NjY2RkZGRkZWVlZWVmZmZmZmdnZ2dnaGhoaGhpaWlpaWlql7KysbGwsLCvr6+urq2traysrKurq4ZiYmJjY2NkZGRlZWVlZmZmZ2dnZ2hoaGlpaWlqampqa2tra2xsbGx0rKurqqqpqaiop6empqalpaSko6OiomhoaGhpaWlpampqa2tra2xsbGxsbW1tbW5ubm5ub29vb3BwcHBwcXGPoaGhoKCfn56enp2dnZycm5ubmpqag25ubm5vb29vb3BwcHBxcXFxcXJycnJycnNzc3NzdHR0dHR0dXV1dXmXl5eWlpaVlZWUlJSTk5OTkpKSkZGRdHR0dHR0dXV1dXV2dnZ2dnZ3d3d3d3d3eHh4eHh4eHl5eXl5eXl5eoaNjYyMjIyLi4uLioqKioqJiYmJiIiBenp6enp6ent7e3t7e3t7fHx8fHx8fHx8fX19fX19fX19fX5+fn5+f4ODg4KCgoKCgYGBgYGBgYCAgICAgIA=']
         });
 
+        icon.legend = new Image();
+        icon.legend.src = "images/legend.png";
+
         icon.sfxOff = new Image();
         icon.sfxOff.src = "images/sfx_off.png";
 
@@ -202,8 +217,20 @@ var Game = function() {
             gameState.displayTitle = true;
             gameState.displayTitleTimerStartTime = performance.now();
 
-            if (audio.isSFX) { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOn); }
-            else             { button.sfxToggleBtn = new ToggleButton(3, (canvas.h-27), 24, 24, 'gray', icon.sfxOff); }
+            let toggleBtnGap = 3;
+            let toggleBtnArea = iconInit.size + toggleBtnGap;
+            let legendToggleBtnX = canvas.w - toggleBtnArea;
+            let legendToggleBtnY = canvas.h - toggleBtnArea;
+            let sfxToggleBtnX = toggleBtnGap;
+            let sfxToggleBtnY = canvas.h - toggleBtnArea;
+
+            button.legendToggleBtn = new ToggleButton(legendToggleBtnX, legendToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.legend);
+
+            if (audio.isSFX) {
+                button.sfxToggleBtn = new ToggleButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOn);
+            } else {
+                button.sfxToggleBtn = new ToggleButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOff);
+            }
 
             // start the game
             mainLoop();
@@ -228,6 +255,7 @@ var Game = function() {
                 // clear the canvas
                 canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
 
+                button.legendToggleBtn.draw(canvas.ctx);
                 button.sfxToggleBtn.draw(canvas.ctx);
                 
                 // revert player width if growth pickup timer has elapsed
@@ -519,6 +547,7 @@ var Game = function() {
         handler: handler,
         htmlElements: htmlElements,
         icon: icon,
+        iconInit: iconInit,
         inputState: inputState,
         pickupInit: pickupInit,
         playerInit: playerInit,
