@@ -104,6 +104,16 @@ var Game = function() {
         }
     };
 
+    let overlay;
+
+    let overlayInit = {
+        color: 'rgba(255, 255, 255, 0.5)', // white at 50% opacity
+        height: 200,
+        width: 300,
+        x: canvas.w / 2,
+        y: canvas.h / 2,
+    };
+
     let pickupInit = {
         numPickups: 3,
         pickupTypeArray: [
@@ -209,6 +219,8 @@ var Game = function() {
         // create blocks
         blocks = createBlocks();
 
+        overlay = new Overlay(overlayInit.x, overlayInit.y, overlayInit.width, overlayInit.height, overlayInit.color);
+
         addListeners();
 
         // load assets, then when this is done, start the mainLoop
@@ -224,8 +236,8 @@ var Game = function() {
             let sfxToggleBtnX = toggleBtnGap;
             let sfxToggleBtnY = canvas.h - toggleBtnArea;
 
+            // create legend & sfx toggle buttons once button image assets have loaded
             button.legendToggleBtn = new ToggleButton(legendToggleBtnX, legendToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.legend);
-
             if (audio.isSFX) {
                 button.sfxToggleBtn = new ToggleButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOn);
             } else {
@@ -308,9 +320,13 @@ var Game = function() {
 
                 displayHUD();
 
+                if (overlay.isVisible) {
+                    overlay.draw(canvas.ctx);
+                }
+
                 // make the player follow the mouse
                 // test if the mouse is positioned over the canvas first
-                if(inputState.mousePos !== undefined) {
+                if (inputState.mousePos !== undefined) {
                     player.move(inputState.mousePos.x, canvas.w);
                     if (ball.isAttached) {
                         ball.followPlayer(inputState.mousePos.x, player, canvas.w);
@@ -479,7 +495,7 @@ var Game = function() {
             saveHighScore();
             return true;
         }
-    }
+    };
 
     var checkWinCondition = function() {
         if (blocks.length === 0 && 
@@ -488,7 +504,7 @@ var Game = function() {
                 saveHighScore();
                 return true;
         }
-    }
+    };
 
     var displayStartScreen = function() {    
         const midX = canvas.w / 2;
@@ -513,19 +529,13 @@ var Game = function() {
         startButton.draw(canvas.ctx);
         
         addButtonListeners(startButton);
-    }
+    };
 
     var playerFail = function() {
         player.lives -= 1;
         ball.isAttached = true;
         ball.x = ballInit.ballStartPosX;
         ball.y = ballInit.ballStartPosY;
-    }
-
-    var toggleSFX = function() {
-        if (audio.isSFX === true) { audio.isSFX = false; }
-        else                      { audio.isSFX = true; }
-        isGlobalSFX = audio.isSFX;
     };
 
     // game framework API
@@ -534,6 +544,7 @@ var Game = function() {
         // they update after initial game object return
         get ball() { return ball },
         get blocks() { return blocks },
+        get overlay() { return overlay },
         get player() { return player },
         get wall() { return wall },
         // since these objects contain other objects,
@@ -559,8 +570,7 @@ var Game = function() {
         checkWinCondition: checkWinCondition,
         displayStartScreen: displayStartScreen,
         playerFail: playerFail,
-        start: start,
-        toggleSFX: toggleSFX
+        start: start
     };
 };
 

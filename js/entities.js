@@ -113,6 +113,14 @@ class Button extends Entity {
     }
 }
 
+class Overlay extends Entity {
+    isVisible = false;
+    
+    constructor(x, y, width, height, color) {
+        super(x, y, width, height, color);
+    }
+}
+
 class Pickup extends Ball {
     type;
 

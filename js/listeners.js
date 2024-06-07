@@ -105,20 +105,11 @@ function processClick(evt) {
                                  y > (game.button.legendToggleBtn.y);
 
     if (isInsideSFXButton && game.gameState.loaded) {
-        game.toggleSFX();
-
-        if (game.audio.isSFX) {
-            game.button.sfxToggleBtn.img = game.icon.sfxOn;
-        } else {
-            game.button.sfxToggleBtn.img = game.icon.sfxOff;
-        }
-        game.button.sfxToggleBtn.draw(game.canvas.ctx);
-
+        toggleSFX();
     } else if (isInsideLegendButton && game.gameState.loaded) {
-        // toggle legend pop-up
+        toggleOverlay();
     } else if (game.ball.isAttached && game.gameState.loaded) {
-        game.ball.isAttached = false;
-
+        detachBall();
     } else if (game.player.armed) {
         spawnProjectile();
     }

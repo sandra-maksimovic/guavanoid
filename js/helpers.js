@@ -18,15 +18,19 @@ function despawnProjectile(projectile) {
     game.spawn.activeProjectileArray.splice(index, 1);
 }
 
+function detachBall() {
+    game.ball.isAttached = false;
+}
+
 function equipLaser(laser) {
     // get the associated pickup type color from the pickup type array of objects
     let index = game.pickupInit.pickupTypeArray.findIndex(obj => obj.type === laser);
     game.player.color = game.pickupInit.pickupTypeArray[index].color;
-
-    // give the player more projectiles
     game.player.numProjectiles = game.projectileInit.numProjectiles;
 
-    if (game.player.armed === false) { game.player.armed = true; }
+    if (game.player.armed === false) {
+        game.player.armed = true;
+    }
 }
 
 function growPlayer() {
@@ -136,4 +140,24 @@ function spawnProjectile() {
     game.spawn.activeProjectileArray[newIndex].y = game.player.y - game.spawn.activeProjectileArray[newIndex].height;
     playSound(game.audio.laserProjectileSound);
     game.player.numProjectiles--;
+}
+
+function toggleOverlay() {
+    if (game.overlay.isVisible) {
+        game.overlay.isVisible = false;
+    } else {
+        game.overlay.isVisible = true;
+    }
+}
+
+function toggleSFX() {
+    if (game.audio.isSFX) {
+        game.audio.isSFX = false;
+        game.button.sfxToggleBtn.img = game.icon.sfxOn;
+    } else {
+        game.audio.isSFX = true;
+        game.button.sfxToggleBtn.img = game.icon.sfxOff;
+    }
+    game.button.sfxToggleBtn.draw(game.canvas.ctx);
+    isGlobalSFX = game.audio.isSFX;
 }
