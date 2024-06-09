@@ -145,18 +145,21 @@ function spawnProjectile() {
 function toggleOverlay() {
     if (game.overlay.isVisible) {
         game.overlay.isVisible = false;
+        game.button.legendToggleBtn.img = game.icon.legendOff;
     } else {
         game.overlay.isVisible = true;
+        game.button.legendToggleBtn.img = game.icon.legendOn;
     }
+    game.button.sfxToggleBtn.draw(game.canvas.ctx);
 }
 
 function toggleSFX() {
     if (game.audio.isSFX) {
         game.audio.isSFX = false;
-        game.button.sfxToggleBtn.img = game.icon.sfxOn;
+        game.button.sfxToggleBtn.img = game.icon.sfxOff;
     } else {
         game.audio.isSFX = true;
-        game.button.sfxToggleBtn.img = game.icon.sfxOff;
+        game.button.sfxToggleBtn.img = game.icon.sfxOn;
     }
     game.button.sfxToggleBtn.draw(game.canvas.ctx);
     isGlobalSFX = game.audio.isSFX;
