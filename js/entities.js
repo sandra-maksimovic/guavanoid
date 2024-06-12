@@ -121,10 +121,13 @@ class Overlay extends Entity {
 }
 
 class Pickup extends Ball {
+    speedY;
+    color;
     type;
 
-    constructor(x, y, radius, color, speedX, speedY) {
-        super(x, y, radius, color, speedX, speedY);
+    constructor(x, y, radius, speedY) {
+        super(x, y, radius);
+        this.speedY = speedY;
     }
 
     move() {

@@ -120,12 +120,7 @@ function saveHighScore() {
 function spawnPickup(block) {
     let pickupX = block.x + (block.width / 2);
     let pickupY = block.y + (block.height / 2);
-    let pickupRadius = block.height / 2;
-    let pickupColor = 'black'; // for init only bc Pickup extends Ball, this gets overridden below by pickup type
-    let pickupSpeedX = 200; // px/s - for init only bc Pickup extends Ball, speedX not used for pickups since they only fall
-    let pickupSpeedY = 200; // px/s
-
-    let pickup = new Pickup(pickupX, pickupY, pickupRadius, pickupColor, pickupSpeedX, pickupSpeedY);
+    let pickup = new Pickup(pickupX, pickupY, game.pickupInit.radius, game.pickupInit.speedY);
     let randomInt = getRandomInt(0, game.pickupInit.pickupTypeArray.length-1);
     pickup.type = game.pickupInit.pickupTypeArray[randomInt].type;
     pickup.color = game.pickupInit.pickupTypeArray[randomInt].color;

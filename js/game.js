@@ -122,7 +122,9 @@ var Game = function() {
             { type: 'health', color: 'green' },
             { type: 'laser', color: 'red' },
             { type: 'points', color: 'yellow' }
-        ]
+        ],
+        radius: blockInit.blockHeight / 2,
+        speedY: 200, // px/s
     };
 
     let player;
