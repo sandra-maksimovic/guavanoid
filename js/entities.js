@@ -18,10 +18,12 @@ class Ball extends Entity {
     draw(ctx) {
         ctx.save();
         ctx.translate(this.x, this.y);
+
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(0, 0, this.radius, 0, 2*Math.PI);
         ctx.fill();
+
         ctx.restore();    
     }
 
@@ -55,60 +57,57 @@ class Ball extends Entity {
 }
 
 class Block extends Entity {
-    health;
-    hasPickup = false;
     isBreakable = false;
+    hasPickup = false;
+    health = 1;
+    _strokeStyle = 'white';
     
     constructor(x, y, width, height, color, isBreakable) {
         super(x, y, width, height, color);
         this.isBreakable = isBreakable;
         
-        if (this.isBreakable) { this.health = 3; }
-        else { this.health = 1; }
+        if (this.isBreakable) {
+            this.health = 3;
+        } else { 
+            this.health = 1;
+        }
     }
 
     draw(ctx) {
         ctx.save();
         ctx.translate(this.x, this.y);
+
         ctx.fillStyle = this.color;
         ctx.fillRect(0, 0, this.width, this.height);
+
         if (this.isBreakable) {
             ctx.lineWidth = 1;
-            ctx.strokeStyle = 'white';
+            ctx.strokeStyle = this._strokeStyle;
             ctx.strokeRect(1, 1, this.width-1, this.height-1);
         }
+
         ctx.restore();
     }
 }
 
-class Button extends Entity {
-    text;
-    textColor;
+class ImageButton extends Entity {
+    img;
+    isHovering = false;
 
-    constructor(x, y, width, height, color, text, textColor) {
+    constructor(x, y, width, height, color, img) {
         super(x, y, width, height, color);
-        this.text = text;
-        this.textColor = textColor;
+        this.img = img;
     }
 
     draw(ctx) {
-        const textX = this.width / 2;
-        const textY = this.height / 2;
-
         ctx.save();
         ctx.translate(this.x, this.y);
-        
-        // button
+
         ctx.fillStyle = this.color;
         ctx.fillRect(0, 0, this.width, this.height);
-        
-        // button text
-        ctx.font = "bold 20px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = this.textColor;
-        ctx.fillText(this.text, textX, textY);
-        
+
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+
         ctx.restore();
     }
 }
@@ -134,10 +133,10 @@ class Pickup extends Ball {
 }
 
 class Player extends Entity {
-    armed = false;
-    growthActive = false;
     lives;
     numProjectiles = 0;
+    armed = false;
+    growthActive = false;
 
     constructor(x, y, width, height, color, lives, numProjectiles) {
         super(x, y, width, height, color);
@@ -193,8 +192,8 @@ class ResultText {
     color;
     font;
     text;
-    textAlign = "center";
-    textBaseline = "middle";
+    _textAlign = "center";
+    _textBaseline = "middle";
 
     constructor(x, y, color, font, text) {
         this.x = x;
@@ -206,31 +205,48 @@ class ResultText {
 
     draw(ctx) {
         ctx.save();
-        // we don't want to translate the coordinate system for the result
+        // NOTE: we don't want to translate the coordinate system for the 
+        // result since we are already working in the canvas region
+
         ctx.font = this.font;
         ctx.fillStyle = this.color;
-        ctx.textAlign = this.textAlign;
-        ctx.textBaseline = this.textBaseline;
+        ctx.textAlign = this._textAlign;
+        ctx.textBaseline = this._textBaseline;
         ctx.fillText(this.text, this.x, this.y);
+
         ctx.restore();
     }
 }
 
-class ToggleButton extends Entity {
-    img;
-    isHovering = false;
+class TextButton extends Entity {
+    text;
+    textColor;
+    _font = "bold 20px sans-serif";
+    _textAlign = "center";
+    _textBaseline = "middle";
 
-    constructor(x, y, width, height, color, img) {
+    constructor(x, y, width, height, color, text, textColor) {
         super(x, y, width, height, color);
-        this.img = img;
+        this.text = text;
+        this.textColor = textColor;
     }
 
     draw(ctx) {
+        const textX = this.width / 2;
+        const textY = this.height / 2;
+
         ctx.save();
         ctx.translate(this.x, this.y);
+        
         ctx.fillStyle = this.color;
         ctx.fillRect(0, 0, this.width, this.height);
-        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+        
+        ctx.font = this._font;
+        ctx.textAlign = this._textAlign;
+        ctx.textBaseline = this._textBaseline;
+        ctx.fillStyle = this.textColor;
+        ctx.fillText(this.text, textX, textY);
+        
         ctx.restore();
     }
 }
@@ -246,11 +262,14 @@ class Wall extends Entity {
     draw(ctx) {
         ctx.save();
         ctx.translate(this.x, this.y);
+
         ctx.fillStyle = this.color;
         ctx.fillRect(0, 0, this.width, this.height);
+
         ctx.lineWidth = 1;
         ctx.strokeStyle = this.strokeColor;
         ctx.strokeRect(1, 1, this.width-1, this.height-1);
+
         ctx.restore();
     }
 }

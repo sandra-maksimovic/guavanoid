@@ -241,12 +241,12 @@ var Game = function() {
             let sfxToggleBtnY = canvas.h - toggleBtnArea;
 
             // create legend & sfx toggle buttons once button image assets have loaded
-            button.legendToggleBtn = new ToggleButton(legendToggleBtnX, legendToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.legendOff);
+            button.legendToggleBtn = new ImageButton(legendToggleBtnX, legendToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.legendOff);
 
             if (audio.isSFX) {
-                button.sfxToggleBtn = new ToggleButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOn);
+                button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOn);
             } else {
-                button.sfxToggleBtn = new ToggleButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOff);
+                button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOff);
             }
 
             // start the game
@@ -433,7 +433,7 @@ var Game = function() {
         const buttonX = midX - (buttonWidth / 2);
         const buttonY = midY + (canvas.h-midY) / 2;
         
-        let restartButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        let restartButton = new TextButton(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         restartButton.draw(canvas.ctx);
 
         addButtonListeners(restartButton);
@@ -530,7 +530,7 @@ var Game = function() {
         canvas.ctx.textBaseline = "middle";
         canvas.ctx.fillText("GUAVANOID", midX, midY);
     
-        let startButton = new Button(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        let startButton = new TextButton(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         startButton.draw(canvas.ctx);
         
         addButtonListeners(startButton);
