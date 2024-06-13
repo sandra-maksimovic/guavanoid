@@ -147,10 +147,10 @@ class Overlay extends Entity {
         ctx.fillStyle = this.textColor;
         lines.forEach((line, index) => {
             ctx.fillText(line, this.margin, this.margin + index * this.lineHeight);
-            // check whether line text contains a reference to a pickup type
+            // check whether this line contains a reference to a pickup type
             for (let i=0; i < game.pickupInit.pickupTypeArray.length; i++) {
                 if (line.indexOf(game.pickupInit.pickupTypeArray[i].type) !== -1) {
-                    // draw the corresponding pickup icon on the matching overlay line
+                    // draw the corresponding pickup icon on the matching line
                     this.drawCircle(ctx, this.margin + (this.radius/2) + 1, this.margin + (this.radius/2) + 2 + index * this.lineHeight, game.pickupInit.pickupTypeArray[i].color);
                 }
             }
