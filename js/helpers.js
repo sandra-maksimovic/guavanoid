@@ -108,11 +108,13 @@ function playSound(sound) {
     }
 }
 
-function randomlyAssignPickupsToBlocks() {
+function randomlyAssignPickupsToBlocks(array) {
     for (let i = 0; i < game.pickupInit.numPickups; i++) {
-        let randomInt = getRandomInt(0, game.blockInit.blockArray.length-1);
-        game.blockInit.blockArray[randomInt].hasPickup = true;
+        let randomInt = getRandomInt(0, array.length-1);
+        array[randomInt].hasPickup = true;
     }
+
+    return array;
 }
 
 function saveHighScore() {

@@ -1,4 +1,6 @@
 function createLevel1Layout() {
+    let bArray = [];
+
     let rows = 6;
     let cols = 10;
     
@@ -18,16 +20,18 @@ function createLevel1Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks();
-    
-    return game.blockInit.blockArray;
+    bArray = randomlyAssignPickupsToBlocks(bArray);
+
+    return bArray;
 }
 
 function createLevel2Layout() {
+    let bArray = [];
+
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
@@ -58,7 +62,7 @@ function createLevel2Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
 
         // grow the num of cols while under max
@@ -73,12 +77,14 @@ function createLevel2Layout() {
         }
     }
     
-    randomlyAssignPickupsToBlocks();
+    bArray = randomlyAssignPickupsToBlocks(bArray);
 
-    return game.blockInit.blockArray;
+    return bArray;
 }
 
 function createLevel3Layout() {
+    let bArray = [];
+
     let rows = 8;
     let cols = 4;
 
@@ -102,7 +108,7 @@ function createLevel3Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
@@ -118,16 +124,18 @@ function createLevel3Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks();
+    bArray = randomlyAssignPickupsToBlocks(bArray);
 
-    return game.blockInit.blockArray;
+    return bArray;
 }
 
 function createLevel4Layout() {
+    let bArray = [];
+
     let rows = 9;
     let cols = 1;
     let colsMax = 9;
@@ -150,7 +158,7 @@ function createLevel4Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
 
         // increment max columns per row to create triangle shape
@@ -179,16 +187,18 @@ function createLevel4Layout() {
                                 game.blockInit.breakableBlockColor[game.blockInit.breakableBlockColor.length-1], 
                                 true);
             }
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks();
+    bArray = randomlyAssignPickupsToBlocks(bArray);
 
-    return game.blockInit.blockArray;
+    return bArray;
 }
 
 function createLevel5Layout() {
+    let bArray = [];
+
     let rows = 8;
     let cols = 4;
 
@@ -216,7 +226,7 @@ function createLevel5Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
@@ -235,7 +245,7 @@ function createLevel5Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.breakableBlockColor[game.blockInit.breakableBlockColor.length-1], 
                             true);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
@@ -252,7 +262,7 @@ function createLevel5Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.blockColor[r], 
                             false);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
@@ -271,11 +281,11 @@ function createLevel5Layout() {
                             game.blockInit.blockHeight, 
                             game.blockInit.breakableBlockColor[game.blockInit.breakableBlockColor.length-1], 
                             true);
-            game.blockInit.blockArray.push(block);
+            bArray.push(block);
         }
     }
 
-    randomlyAssignPickupsToBlocks();
+    bArray = randomlyAssignPickupsToBlocks(bArray);
 
-    return game.blockInit.blockArray;
+    return bArray;
 }

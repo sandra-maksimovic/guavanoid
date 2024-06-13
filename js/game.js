@@ -34,7 +34,6 @@ var Game = function() {
     let blocks = [];
 
     let blockInit = {
-        blockArray: [],
         blockColor: [
             'red',
             'orange',
@@ -312,25 +311,27 @@ var Game = function() {
     }
 
     function createBlocks(currentLevel) {
+        let blockArray = [];
+
         switch(currentLevel) {
             case 1:
-                blockInit.blockArray = createLevel1Layout();
+                blockArray = createLevel1Layout();
                 break;
             case 2:
-                blockInit.blockArray = createLevel2Layout();
+                blockArray = createLevel2Layout();
                 break;
             case 3:
-                blockInit.blockArray = createLevel3Layout();
+                blockArray = createLevel3Layout();
                 break;
             case 4:
-                blockInit.blockArray = createLevel4Layout();
+                blockArray = createLevel4Layout();
                 break;
             case 5:
-                blockInit.blockArray = createLevel5Layout();
+                blockArray = createLevel5Layout();
                 break;
         }
 
-        return blockInit.blockArray;
+        return blockArray;
     }
 
     function drawAllBlocks(blocks) {
