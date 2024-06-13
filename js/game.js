@@ -112,8 +112,8 @@ var Game = function() {
 Move paddle left and right with the mouse.\n\
 Collect pickups to gain advantages.\n\
 O - Extra life\n\
-O - Double size for up to 10 seconds\n\
-O - Up to 3x laser shots (click to shoot)\n\
+O - Double size for 10 seconds max\n\
+O - 3x laser shots max (click to shoot)\n\
 O - 10 points\n\
 ESC - Toggle pause",
         textAlign: 'left',
