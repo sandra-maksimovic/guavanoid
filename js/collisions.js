@@ -385,15 +385,15 @@ function testCollisionPickupWithPlayer(pickup, index) {
             ((pickupBottomSide > playerTopSide || pickupTopSide < playerBottomSide) &&
             (pickup.x > playerLeftSide && pickup.x < playerRightSide))) {
             
-            let growth = 'growth';
-            let health = 'health';
+            let size = 'size';
+            let life = 'life';
             let laser = 'laser';
             let points = 'points';
             
-            if (pickup.type === growth) {
+            if (pickup.type === size) {
                 growPlayer();
-            } else if (pickup.type === health) {
-                increasePlayerHealth();
+            } else if (pickup.type === life) {
+                increasePlayerLives();
             } else if (pickup.type === laser) {
                 equipLaser(laser);
             } else if (pickup.type === points) {

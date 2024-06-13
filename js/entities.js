@@ -113,10 +113,62 @@ class ImageButton extends Entity {
 }
 
 class Overlay extends Entity {
+    font;
+    lineHeight;
+    margin;
+    radius;
+    text;
+    textAlign;
+    textColor;
     isVisible = false;
     
-    constructor(x, y, width, height, color) {
+    constructor(x, y, width, height, color, font, lineHeight, margin, radius, text, textAlign, textColor) {
         super(x, y, width, height, color);
+        this.font = font;
+        this.lineHeight = lineHeight;
+        this.margin = margin;
+        this.radius = radius;
+        this.text = text;
+        this.textAlign = textAlign;
+        this.textColor = textColor;
+    }
+
+    draw(ctx) {
+        const lines = this.text.split("\n");
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        ctx.font = this.font;
+        ctx.textAlign = this.textAlign;
+        ctx.fillStyle = this.textColor;
+        lines.forEach((line, index) => {
+            ctx.fillText(line, this.margin, this.margin + index * this.lineHeight);
+            // check whether line text contains a reference to a pickup type
+            for (let i=0; i < game.pickupInit.pickupTypeArray.length; i++) {
+                if (line.indexOf(game.pickupInit.pickupTypeArray[i].type) !== -1) {
+                    // draw the corresponding pickup icon on the matching overlay line
+                    this.drawCircle(ctx, this.margin + (this.radius/2) + 1, this.margin + (this.radius/2) + 2 + index * this.lineHeight, game.pickupInit.pickupTypeArray[i].color);
+                }
+            }
+        });
+        ctx.fillText(this.text, this.x, this.y);
+
+        ctx.restore();
+    }
+    
+    drawCircle(ctx, x, y, color) {
+        ctx.save();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, this.radius, 0, 2*Math.PI);
+        ctx.fill();
+
+        ctx.restore();
     }
 }
 
@@ -139,7 +191,7 @@ class Player extends Entity {
     lives;
     numProjectiles = 0;
     armed = false;
-    growthActive = false;
+    sizeActive = false;
 
     constructor(x, y, width, height, color, lives, numProjectiles) {
         super(x, y, width, height, color);

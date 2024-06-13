@@ -102,17 +102,31 @@ var Game = function() {
 
     let overlayInit = {
         color: 'rgba(255, 255, 255, 0.5)', // white at 50% opacity
-        height: 200,
-        width: 300,
+        font: "14px sans-serif",
+        lineHeight: 18,
+        margin: 6,
+        pickupIconRadius: 8,
+        height: 150,
+        width: 290,
+        text: "Click once to launch the ball.\n\
+Move paddle left and right with the mouse.\n\
+Collect pickups to gain advantages.\n\
+O - Extra life\n\
+O - Double size for 10 seconds\n\
+O - 3x laser shots (click to shoot)\n\
+O - 10 points\n\
+ESC - Toggle pause",
+        textAlign: 'left',
+        textColor: 'black',
         x: canvas.w / 2,
-        y: canvas.h / 2
+        y: (canvas.h / 2) + (canvas.h / 8)
     };
 
     let pickupInit = {
         numPickups: 3,
         pickupTypeArray: [
-            { type: 'growth', color: 'blue' },
-            { type: 'health', color: 'green' },
+            { type: 'size', color: 'blue' },
+            { type: 'life', color: 'green' },
             { type: 'laser', color: 'red' },
             { type: 'points', color: 'yellow' }
         ],
@@ -161,14 +175,36 @@ var Game = function() {
         wall = undefined;
 
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
-        player = new Player(playerInit.playerStartPosX, playerInit.playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor, playerInit.playerLives, playerInit.playerProjectiles);
+        player = new Player(playerInit.playerStartPosX, 
+                            playerInit.playerStartPosY, 
+                            playerInit.playerWidth, 
+                            playerInit.playerHeight, 
+                            playerInit.playerColor, 
+                            playerInit.playerLives, 
+                            playerInit.playerProjectiles);
 
         ballInit.ballStartPosY = playerInit.playerStartPosY - ballInit.ballRadius;
-        ball = new Ball(ballInit.ballStartPosX, ballInit.ballStartPosY, ballInit.ballRadius, ballInit.ballColor, ballInit.ballStartSpeedX, ballInit.ballStartSpeedY);
+        ball = new Ball(ballInit.ballStartPosX, 
+                        ballInit.ballStartPosY, 
+                        ballInit.ballRadius, 
+                        ballInit.ballColor, 
+                        ballInit.ballStartSpeedX, 
+                        ballInit.ballStartSpeedY);
 
         blocks = createBlocks(gameState.currentLevel);
 
-        overlay = new Overlay(overlayInit.x, overlayInit.y, overlayInit.width, overlayInit.height, overlayInit.color);
+        overlay = new Overlay(overlayInit.x, 
+                              overlayInit.y, 
+                              overlayInit.width, 
+                              overlayInit.height, 
+                              overlayInit.color, 
+                              overlayInit.font, 
+                              overlayInit.lineHeight, 
+                              overlayInit.margin, 
+                              overlayInit.pickupIconRadius, 
+                              overlayInit.text, 
+                              overlayInit.textAlign, 
+                              overlayInit.textColor);
 
         addListeners();
 
@@ -185,12 +221,27 @@ var Game = function() {
             let sfxToggleBtnX = toggleBtnGap;
             let sfxToggleBtnY = canvas.h - toggleBtnArea;
 
-            button.legendToggleBtn = new ImageButton(legendToggleBtnX, legendToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.legendOff);
+            button.legendToggleBtn = new ImageButton(legendToggleBtnX, 
+                                                     legendToggleBtnY, 
+                                                     iconInit.size, 
+                                                     iconInit.size, 
+                                                     iconInit.color, 
+                                                     icon.legendOff);
 
             if (audio.isSFX) {
-                button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOn);
+                button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, 
+                                                      sfxToggleBtnY, 
+                                                      iconInit.size, 
+                                                      iconInit.size, 
+                                                      iconInit.color, 
+                                                      icon.sfxOn);
             } else {
-                button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOff);
+                button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, 
+                                                      sfxToggleBtnY, 
+                                                      iconInit.size, 
+                                                      iconInit.size, 
+                                                      iconInit.color, 
+                                                      icon.sfxOff);
             }
 
             mainLoop();
@@ -218,11 +269,11 @@ var Game = function() {
                 button.legendToggleBtn.draw(canvas.ctx);
                 button.sfxToggleBtn.draw(canvas.ctx);
                 
-                // revert player width if growth pickup timer has elapsed
-                if ((player.growthActive === true) && 
+                // revert player width if size pickup timer has elapsed
+                if ((player.sizeActive === true) && 
                     (now - gameState.pickupGrowthTimerStartTime > gameState.pickupGrowthTimer)) {
                         player.width = playerInit.playerWidth;
-                        player.growthActive = false;
+                        player.sizeActive = false;
                 }
 
                 // move projectiles if any

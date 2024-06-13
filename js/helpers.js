@@ -39,14 +39,14 @@ function equipLaser(laser) {
 }
 
 function growPlayer() {
-    game.player.growthActive = true;
+    game.player.sizeActive = true;
     if (game.player.width !== game.playerInit.playerWidth*2) {
         game.player.width = game.player.width*2;
     }
     game.gameState.pickupGrowthTimerStartTime = performance.now();
 }
 
-function increasePlayerHealth() {
+function increasePlayerLives() {
     game.player.lives++;
 }
 
