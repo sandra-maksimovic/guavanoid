@@ -23,7 +23,7 @@ var Game = function() {
     let ball;
 
     let ballInit = {
-        ballColor: 'lime',
+        ballColor: 'rgb(130, 199, 51)',
         ballRadius: 5,
         ballStartPosX: canvas.w / 2,
         ballStartPosY: undefined, // set later in start(), requires ballInit.ballRadius value for init
@@ -341,11 +341,11 @@ ESC - Toggle pause",
 
             } else if (checkWinCondition()) {
                 removeListeners();
-                displayResultScreen('green', 'YOU WIN');
+                displayResultScreen('rgb(130, 199, 51)', 'YOU WIN');
 
             } else if (checkLoseCondition()) {
                 removeListeners();
-                displayResultScreen('red', 'YOU LOSE');
+                displayResultScreen('white', 'YOU LOSE');
 
             } else {
                 // copy the current time to the old time
@@ -513,7 +513,7 @@ ESC - Toggle pause",
         }
     };
 
-    var displayStartScreen = function() {    
+    var displayStartScreen = function(img) {
         const midX = canvas.w / 2;
         const midY = canvas.h / 2;
         
@@ -531,6 +531,8 @@ ESC - Toggle pause",
         canvas.ctx.textAlign = "center";
         canvas.ctx.textBaseline = "middle";
         canvas.ctx.fillText("GUAVANOID", midX, midY);
+
+        canvas.ctx.drawImage(img, 439, 170, img.naturalWidth, img.naturalHeight);
     
         let startButton = new TextButton(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
         startButton.draw(canvas.ctx);
@@ -586,6 +588,12 @@ ESC - Toggle pause",
 
 window.onload = function init() {
     gameCanvas = document.querySelector("#gameCanvas");
-    game = new Game();
-    game.displayStartScreen();
+    
+    const logoImg = new Image();
+    logoImg.src = "images/guava.png";
+
+    logoImg.onload = function() {
+        game = new Game();
+        game.displayStartScreen(logoImg);
+    };
 };
