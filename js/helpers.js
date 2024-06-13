@@ -5,6 +5,11 @@ function clearBlock(block, index) {
     game.blocks.splice(index, 1);
 }
 
+function createWall() {
+    game.wallInit.wallX = (game.canvas.w / 2) - (game.wallInit.wallWidth / 2);
+    game.wall = new Wall(game.wallInit.wallX, game.wallInit.wallY, game.wallInit.wallWidth, game.wallInit.wallHeight, game.wallInit.wallColor, game.wallInit.wallStrokeColor);
+}
+
 function decreaseBlockHealth(block) {
     block.health -= 1;
 }

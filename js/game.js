@@ -66,7 +66,6 @@ var Game = function() {
         displayTitle: true,
         displayTitleTimer: 1500, //ms
         displayTitleTimerStartTime: 0,
-        hasWall: false,
         loaded: false,
         paused: false,
         pickupGrowthTimer: 10000, //ms
@@ -98,12 +97,7 @@ var Game = function() {
         size: 24
     };
 
-    let inputState = {
-        mousePos: {
-            x: undefined,
-            y: undefined
-        }
-    };
+    let inputState = {};
 
     let overlay;
 
@@ -163,29 +157,17 @@ var Game = function() {
         // reset game state
         audio.isSFX = isGlobalSFX;
         gameState.currentScore = 0;
-        gameState.hasWall = false;
         spawn.activePickupArray = [];
         spawn.activeProjectileArray = [];
+        wall = undefined;
 
-        // create player
         playerInit.playerStartPosX = (canvas.w / 2) - (playerInit.playerWidth / 2);
         player = new Player(playerInit.playerStartPosX, playerInit.playerStartPosY, playerInit.playerWidth, playerInit.playerHeight, playerInit.playerColor, playerInit.playerLives, playerInit.playerProjectiles);
 
-        // create ball
         ballInit.ballStartPosY = playerInit.playerStartPosY - ballInit.ballRadius;
         ball = new Ball(ballInit.ballStartPosX, ballInit.ballStartPosY, ballInit.ballRadius, ballInit.ballColor, ballInit.ballStartSpeedX, ballInit.ballStartSpeedY);
 
-        // flag which levels have walls
-        if (gameState.currentLevel === 3 || gameState.currentLevel === 5) { gameState.hasWall = true; }
-
-        // create vertical wall
-        if (gameState.hasWall === true) {
-            wallInit.wallX = (canvas.w / 2) - (wallInit.wallWidth / 2);
-            wall = new Wall(wallInit.wallX, wallInit.wallY, wallInit.wallWidth, wallInit.wallHeight, wallInit.wallColor, wallInit.wallStrokeColor);
-        }
-
-        // create blocks
-        blocks = createBlocks();
+        blocks = createBlocks(gameState.currentLevel);
 
         overlay = new Overlay(overlayInit.x, overlayInit.y, overlayInit.width, overlayInit.height, overlayInit.color);
 
@@ -204,7 +186,6 @@ var Game = function() {
             let sfxToggleBtnX = toggleBtnGap;
             let sfxToggleBtnY = canvas.h - toggleBtnArea;
 
-            // create legend & sfx toggle buttons once button image assets have loaded
             button.legendToggleBtn = new ImageButton(legendToggleBtnX, legendToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.legendOff);
 
             if (audio.isSFX) {
@@ -213,7 +194,6 @@ var Game = function() {
                 button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, sfxToggleBtnY, iconInit.size, iconInit.size, iconInit.color, icon.sfxOff);
             }
 
-            // start the game
             mainLoop();
         });
     };
@@ -272,7 +252,7 @@ var Game = function() {
                     moveBall(ball);
                 }
 
-                if (gameState.hasWall === true) {
+                if (wall !== undefined) {
                     wall.draw(canvas.ctx);
                 }
 
@@ -331,17 +311,23 @@ var Game = function() {
         }
     }
 
-    function createBlocks() {
-        if (gameState.currentLevel === 1) {
-            blockInit.blockArray = createLevel1Layout();
-        } else if (gameState.currentLevel === 2) {
-            blockInit.blockArray = createLevel2Layout();
-        } else if (gameState.currentLevel === 3) {
-            blockInit.blockArray = createLevel3Layout();
-        } else if (gameState.currentLevel === 4) {
-            blockInit.blockArray = createLevel4Layout();
-        } else if (gameState.currentLevel === 5) {
-            blockInit.blockArray = createLevel5Layout();
+    function createBlocks(currentLevel) {
+        switch(currentLevel) {
+            case 1:
+                blockInit.blockArray = createLevel1Layout();
+                break;
+            case 2:
+                blockInit.blockArray = createLevel2Layout();
+                break;
+            case 3:
+                blockInit.blockArray = createLevel3Layout();
+                break;
+            case 4:
+                blockInit.blockArray = createLevel4Layout();
+                break;
+            case 5:
+                blockInit.blockArray = createLevel5Layout();
+                break;
         }
 
         return blockInit.blockArray;
@@ -432,7 +418,7 @@ var Game = function() {
         testCollisionBallWithWalls(ball);
         testCollisionBallWithPlayer(ball);
         testCollisionBallWithBlocks(ball);
-        if (gameState.hasWall === true) {
+        if (wall !== undefined) {
             testCollisionBallWithInnerWalls(ball);
         }
     }
@@ -516,6 +502,8 @@ var Game = function() {
         get overlay() { return overlay },
         get player() { return player },
         get wall() { return wall },
+        // for setting objects from outside of the GF
+        set wall(newWall) { wall = newWall; },
         // since these objects contain other objects,
         // only the ref to top-level obj is needed
         audio: audio,
@@ -533,6 +521,7 @@ var Game = function() {
         playerInit: playerInit,
         projectileInit: projectileInit,
         spawn: spawn,
+        wallInit: wallInit,
         // returned function expressions will be
         // evaluated at call time
         checkLoseCondition: checkLoseCondition,

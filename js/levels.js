@@ -23,6 +23,7 @@ function createLevel1Layout() {
     }
 
     randomlyAssignPickupsToBlocks();
+    
     return game.blockInit.blockArray;
 }
 
@@ -73,6 +74,7 @@ function createLevel2Layout() {
     }
     
     randomlyAssignPickupsToBlocks();
+
     return game.blockInit.blockArray;
 }
 
@@ -82,6 +84,8 @@ function createLevel3Layout() {
 
     let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
     let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
+
+    createWall();
 
     let leftGapX = (game.wall.x - blockXSpacing*cols) / 2;
     let topGapY = 75;
@@ -101,6 +105,7 @@ function createLevel3Layout() {
             game.blockInit.blockArray.push(block);
         }
     }
+
     // populate blocks right of wall
     for (let r=0; r < rows; r++) {
         let blockY = topGapY + r*blockYSpacing;
@@ -118,6 +123,7 @@ function createLevel3Layout() {
     }
 
     randomlyAssignPickupsToBlocks();
+
     return game.blockInit.blockArray;
 }
 
@@ -178,6 +184,7 @@ function createLevel4Layout() {
     }
 
     randomlyAssignPickupsToBlocks();
+
     return game.blockInit.blockArray;
 }
 
@@ -190,6 +197,8 @@ function createLevel5Layout() {
 
     let blockYSpacing = game.blockInit.blockHeight + game.blockInit.blockGap;
     let topGapY = 50;
+
+    createWall();
 
     let blockXSpacing = game.blockInit.blockWidth + game.blockInit.blockGap;
     let leftGapX = (game.wall.x - blockXSpacing*cols) / 2;
@@ -267,5 +276,6 @@ function createLevel5Layout() {
     }
 
     randomlyAssignPickupsToBlocks();
+
     return game.blockInit.blockArray;
 }
