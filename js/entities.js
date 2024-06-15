@@ -274,16 +274,23 @@ class ResultText {
 }
 
 class TextButton extends Entity {
+    colorHover;
+    font;
     text;
     textColor;
-    _font = "bold 20px sans-serif";
-    _textAlign = "center";
-    _textBaseline = "middle";
+    textColorHover;
+    textAlign;
+    textBaseline;
 
-    constructor(x, y, width, height, color, text, textColor) {
+    constructor(x, y, width, height, color, colorHover, font, text, textColor, textColorHover, textAlign, textBaseline) {
         super(x, y, width, height, color);
+        this.colorHover = colorHover;
+        this.font = font;
         this.text = text;
         this.textColor = textColor;
+        this.textColorHover = textColorHover;
+        this.textAlign = textAlign;
+        this.textBaseline = textBaseline;
     }
 
     draw(ctx) {
@@ -296,9 +303,9 @@ class TextButton extends Entity {
         ctx.fillStyle = this.color;
         ctx.fillRect(0, 0, this.width, this.height);
         
-        ctx.font = this._font;
-        ctx.textAlign = this._textAlign;
-        ctx.textBaseline = this._textBaseline;
+        ctx.font = this.font;
+        ctx.textAlign = this.textAlign;
+        ctx.textBaseline = this.textBaseline;
         ctx.fillStyle = this.textColor;
         ctx.fillText(this.text, textX, textY);
         

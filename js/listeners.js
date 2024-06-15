@@ -41,14 +41,14 @@ function buttonHover(evt, button) {
     // hover state changes should only occur once 
     // when entering and leaving the button area
     if (isInsideButton && !game.handler.buttonIsHovering) {
-        button.color = 'rgb(130, 199, 51)';
-        button.textColor = 'white';
+        button.color = game.textButtonInit.colorHover;
+        button.textColor = game.textButtonInit.textColorHover;
         button.draw(game.canvas.ctx);
         game.handler.buttonIsHovering = true;
 
     } else if (!isInsideButton && game.handler.buttonIsHovering) {
-        button.color = 'white';
-        button.textColor = 'black';
+        button.color = game.textButtonInit.color;
+        button.textColor = game.textButtonInit.textColor;
         button.draw(game.canvas.ctx);
         game.handler.buttonIsHovering = false;
 

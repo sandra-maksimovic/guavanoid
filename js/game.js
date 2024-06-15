@@ -155,6 +155,20 @@ ESC - Toggle pause",
         activeProjectileArray: []
     };
 
+    const textButtonInit = {
+        color: 'white',
+        colorHover: 'rgb(130, 199, 51)',
+        font: "bold 20px sans-serif",
+        height: 50,
+        textAlign: "center",
+        textBaseline: "middle",
+        textColor: 'black',
+        textColorHover: 'white',
+        width: 100,
+        get x() { return (canvas.w/2) - (this.width/2) },
+        get y() { return (canvas.h/2) + (canvas.h/4) - (this.height/2) }
+    };
+
     let wall;
 
     let wallInit = {
@@ -427,15 +441,22 @@ ESC - Toggle pause",
         let result = new ResultText(midX, midY, resultTextColor, resultTextFont, resultText);
         result.draw(canvas.ctx);
         
-        const buttonColor = 'white';
-        const buttonHeight = 50;
-        const buttonWidth = 100;
         const buttonText = 'RESTART';
-        const buttonTextColor = 'black';
-        const buttonX = midX - (buttonWidth / 2);
         const buttonY = midY + (canvas.h-midY) / 2;
         
-        let restartButton = new TextButton(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        //let restartButton = new TextButton(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        let restartButton = new TextButton(textButtonInit.x, 
+                                           textButtonInit.y, 
+                                           textButtonInit.width, 
+                                           textButtonInit.height, 
+                                           textButtonInit.color, 
+                                           textButtonInit.colorHover, 
+                                           textButtonInit.font,
+                                           buttonText, 
+                                           textButtonInit.textColor, 
+                                           textButtonInit.textColorHover, 
+                                           textButtonInit.textAlign, 
+                                           textButtonInit.textBaseline);
         restartButton.draw(canvas.ctx);
 
         addButtonListeners(restartButton);
@@ -517,13 +538,7 @@ ESC - Toggle pause",
         const midX = canvas.w / 2;
         const midY = canvas.h / 2;
         
-        const buttonColor = 'white';
-        const buttonTextColor = 'black';
-        const buttonHeight = 50;
-        const buttonWidth = 100;
         const buttonText = 'START';
-        const buttonX = midX - (buttonWidth / 2);
-        const buttonY = midY + 100;
     
         canvas.ctx.clearRect(0, 0, canvas.w, canvas.h);
         canvas.ctx.font = "bold 100px sans-serif";
@@ -534,7 +549,18 @@ ESC - Toggle pause",
 
         canvas.ctx.drawImage(img, 439, 170, img.naturalWidth, img.naturalHeight);
     
-        let startButton = new TextButton(buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, buttonText, buttonTextColor);
+        let startButton = new TextButton(textButtonInit.x, 
+                                         textButtonInit.y, 
+                                         textButtonInit.width, 
+                                         textButtonInit.height, 
+                                         textButtonInit.color, 
+                                         textButtonInit.colorHover, 
+                                         textButtonInit.font,
+                                         buttonText, 
+                                         textButtonInit.textColor, 
+                                         textButtonInit.textColorHover, 
+                                         textButtonInit.textAlign, 
+                                         textButtonInit.textBaseline);
         startButton.draw(canvas.ctx);
         
         addButtonListeners(startButton);
@@ -575,6 +601,7 @@ ESC - Toggle pause",
         playerInit: playerInit,
         projectileInit: projectileInit,
         spawn: spawn,
+        textButtonInit: textButtonInit,
         wallInit: wallInit,
         // returned function expressions will be
         // evaluated at call time
