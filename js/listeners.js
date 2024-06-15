@@ -55,21 +55,6 @@ function buttonHover(evt, button) {
     }
 }
 
-function changeToggleButtonColor(button, color) {
-    button.color = color;
-    button.draw(game.canvas.ctx);
-}
-
-function checkToggleBtnHover(button, isInsideButton) {
-    if (isInsideButton && !button.isHovering) {
-        changeToggleButtonColor(button, game.iconInit.hoverColor);
-        button.isHovering = true;
-    } else if (!isInsideButton && button.isHovering) {
-        changeToggleButtonColor(button, game.iconInit.color);
-        button.isHovering = false;
-    }
-}
-
 function getMousePos(evt) {
     let rect = gameCanvas.getBoundingClientRect();
     
@@ -89,8 +74,8 @@ function mouseMoved(evt) {
     const isInsideLegendButton = game.inputState.mousePos.x > (game.button.legendToggleBtn.x) &&
                                  game.inputState.mousePos.y > (game.button.legendToggleBtn.y);
  
-    checkToggleBtnHover(game.button.sfxToggleBtn, isInsideSFXButton);
-    checkToggleBtnHover(game.button.legendToggleBtn, isInsideLegendButton);
+    toggleBtnHover(game.button.sfxToggleBtn, isInsideSFXButton);
+    toggleBtnHover(game.button.legendToggleBtn, isInsideLegendButton);
 }
 
 function processClick(evt) {
@@ -117,16 +102,10 @@ function processClick(evt) {
 
 function processKeyDown(evt) {
     if (evt.key === "b" && !game.gameState.paused) {
-        game.blocks.splice(0, game.blocks.length);
+        clearAllBlocks(); // for testing only -- to be removed
     }
     if (evt.key === "Escape" && game.gameState.loaded) {
-        if (game.gameState.paused === false) {
-            game.gameState.paused = true;
-            game.htmlElements.pauseDiv.classList.remove("hidden");
-        } else {
-            game.gameState.paused = false;
-            game.htmlElements.pauseDiv.classList.add("hidden");
-        }
+        togglePause();
     }
 }
 

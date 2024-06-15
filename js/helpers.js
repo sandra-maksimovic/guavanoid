@@ -1,3 +1,7 @@
+function clearAllBlocks() {
+    game.blocks.splice(0, game.blocks.length);
+}
+
 function clearBlock(block, index) {
     if (block.hasPickup === true) {
         spawnPickup(block);
@@ -144,6 +148,21 @@ function spawnProjectile() {
     game.player.numProjectiles--;
 }
 
+function toggleBtnColor(button, color) {
+    button.color = color;
+    button.draw(game.canvas.ctx);
+}
+
+function toggleBtnHover(button, isInsideButton) {
+    if (isInsideButton && !button.isHovering) {
+        toggleBtnColor(button, game.iconInit.hoverColor);
+        button.isHovering = true;
+    } else if (!isInsideButton && button.isHovering) {
+        toggleBtnColor(button, game.iconInit.color);
+        button.isHovering = false;
+    }
+}
+
 function toggleOverlay() {
     if (game.overlay.isVisible) {
         game.overlay.isVisible = false;
@@ -153,6 +172,16 @@ function toggleOverlay() {
         game.button.legendToggleBtn.img = game.icon.legendOn;
     }
     game.button.sfxToggleBtn.draw(game.canvas.ctx);
+}
+
+function togglePause() {
+    if (game.gameState.paused === false) {
+        game.gameState.paused = true;
+        game.htmlElements.pauseDiv.classList.remove("hidden");
+    } else {
+        game.gameState.paused = false;
+        game.htmlElements.pauseDiv.classList.add("hidden");
+    }
 }
 
 function toggleSFX() {
