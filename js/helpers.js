@@ -1,3 +1,18 @@
+function checkBtnHover(btn, isInsideBtn, initObj) {
+    // hover state changes should only occur once 
+    // when entering and leaving the button area
+    if (isInsideBtn && !btn.isHovering) {
+        if (btn.text) { btn.textColor = initObj.textColorHover; }
+        btn.color = initObj.colorHover;
+        btn.isHovering = true;
+    } else if (!isInsideBtn && btn.isHovering) {
+        if (btn.text) { btn.textColor = initObj.textColor; }
+        btn.color = initObj.color;
+        btn.isHovering = false;
+    }
+    btn.draw(game.canvas.ctx);
+}
+
 function clearAllBlocks() {
     game.blocks.splice(0, game.blocks.length);
 }
@@ -146,21 +161,6 @@ function spawnProjectile() {
     game.spawn.activeProjectileArray[newIndex].y = game.player.y - game.spawn.activeProjectileArray[newIndex].height;
     playSound(game.audio.laserProjectileSound);
     game.player.numProjectiles--;
-}
-
-function toggleBtnColor(button, color) {
-    button.color = color;
-    button.draw(game.canvas.ctx);
-}
-
-function toggleBtnHover(button, isInsideButton) {
-    if (isInsideButton && !button.isHovering) {
-        toggleBtnColor(button, game.iconInit.hoverColor);
-        button.isHovering = true;
-    } else if (!isInsideButton && button.isHovering) {
-        toggleBtnColor(button, game.iconInit.color);
-        button.isHovering = false;
-    }
 }
 
 function toggleOverlay() {

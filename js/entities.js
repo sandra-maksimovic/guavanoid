@@ -91,11 +91,13 @@ class Block extends Entity {
 }
 
 class ImageButton extends Entity {
+    colorHover;
     img;
     isHovering = false;
 
-    constructor(x, y, width, height, color, img) {
+    constructor(x, y, width, height, color, colorHover, img) {
         super(x, y, width, height, color);
+        this.colorHover = colorHover;
         this.img = img;
     }
 
@@ -276,6 +278,7 @@ class ResultText {
 class TextButton extends Entity {
     colorHover;
     font;
+    isHovering = false;
     text;
     textColor;
     textColorHover;

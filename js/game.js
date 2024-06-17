@@ -74,9 +74,8 @@ var Game = function() {
     };
 
     let handler = {
-        buttonClickHandler: undefined,
-        buttonHoverHandler: undefined,
-        buttonIsHovering: false,
+        textButtonClick: undefined,
+        textButtonHover: undefined
     };
 
     let htmlElements = {
@@ -90,9 +89,9 @@ var Game = function() {
         sfxOn: undefined
     };
 
-    let iconInit = {
+    const iconInit = {
         color: 'gray',
-        hoverColor: 'lightgray',
+        colorHover: 'lightgray',
         size: 24
     };
 
@@ -240,6 +239,7 @@ ESC - Toggle pause",
                                                      iconInit.size, 
                                                      iconInit.size, 
                                                      iconInit.color, 
+                                                     iconInit.colorHover, 
                                                      icon.legendOff);
 
             if (audio.isSFX) {
@@ -248,6 +248,7 @@ ESC - Toggle pause",
                                                       iconInit.size, 
                                                       iconInit.size, 
                                                       iconInit.color, 
+                                                      iconInit.colorHover, 
                                                       icon.sfxOn);
             } else {
                 button.sfxToggleBtn = new ImageButton(sfxToggleBtnX, 
@@ -255,6 +256,7 @@ ESC - Toggle pause",
                                                       iconInit.size, 
                                                       iconInit.size, 
                                                       iconInit.color, 
+                                                      iconInit.colorHover, 
                                                       icon.sfxOff);
             }
 
@@ -459,7 +461,7 @@ ESC - Toggle pause",
                                            textButtonInit.textBaseline);
         restartButton.draw(canvas.ctx);
 
-        addButtonListeners(restartButton);
+        addTextButtonListeners(restartButton);
 
         if (localStorage.highScore) {
             const highScoreY = midY + (buttonY - midY) / 2;
@@ -563,7 +565,7 @@ ESC - Toggle pause",
                                          textButtonInit.textBaseline);
         startButton.draw(canvas.ctx);
         
-        addButtonListeners(startButton);
+        addTextButtonListeners(startButton);
     };
 
     var playerFail = function() {

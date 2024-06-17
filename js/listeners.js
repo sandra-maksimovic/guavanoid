@@ -5,32 +5,32 @@ function addListeners() {
     gameCanvas.addEventListener('mousemove', mouseMoved);
 }
 
-function addButtonListeners(button) {
+function addTextButtonListeners(button) {
     // arrow function ensures the callback is not triggered upon assignment
-    game.handler.buttonClickHandler = (evt) => buttonClick(evt, button);
-    gameCanvas.addEventListener('click', game.handler.buttonClickHandler);
+    game.handler.textButtonClick = (evt) => textButtonClick(evt, button);
+    gameCanvas.addEventListener('click', game.handler.textButtonClick);
 
     // the handler gives us a ref to the parameterised callback which is required for 
     // listener removal since identical inline parameterised callbacks give different refs
-    game.handler.buttonHoverHandler = (evt) => buttonHover(evt, button);
-    gameCanvas.addEventListener('mousemove', game.handler.buttonHoverHandler);
+    game.handler.textButtonHover = (evt) => textButtonHover(evt, button);
+    gameCanvas.addEventListener('mousemove', game.handler.textButtonHover);
 }
 
 // LISTENER BEHAVIOURS
-function buttonClick(evt, button) {
+function textButtonClick(evt, button) {
     let rect = gameCanvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
     if (x >= button.x && x <= (button.x + button.width) && 
         y >= button.y && y <= (button.y + button.height)) {
-            removeButtonListeners();
+            removeTextButtonListeners();
             game = new Game();
             game.start();
     }
 }
 
-function buttonHover(evt, button) {
+function textButtonHover(evt, button) {
     let rect = gameCanvas.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
@@ -38,21 +38,7 @@ function buttonHover(evt, button) {
     const isInsideButton = x >= button.x && x <= (button.x + button.width) && 
                            y >= button.y && y <= (button.y + button.height);
     
-    // hover state changes should only occur once 
-    // when entering and leaving the button area
-    if (isInsideButton && !game.handler.buttonIsHovering) {
-        button.color = game.textButtonInit.colorHover;
-        button.textColor = game.textButtonInit.textColorHover;
-        button.draw(game.canvas.ctx);
-        game.handler.buttonIsHovering = true;
-
-    } else if (!isInsideButton && game.handler.buttonIsHovering) {
-        button.color = game.textButtonInit.color;
-        button.textColor = game.textButtonInit.textColor;
-        button.draw(game.canvas.ctx);
-        game.handler.buttonIsHovering = false;
-
-    }
+    checkBtnHover(button, isInsideButton, game.textButtonInit);
 }
 
 function getMousePos(evt) {
@@ -74,8 +60,8 @@ function mouseMoved(evt) {
     const isInsideLegendButton = game.inputState.mousePos.x > (game.button.legendToggleBtn.x) &&
                                  game.inputState.mousePos.y > (game.button.legendToggleBtn.y);
  
-    toggleBtnHover(game.button.sfxToggleBtn, isInsideSFXButton);
-    toggleBtnHover(game.button.legendToggleBtn, isInsideLegendButton);
+    checkBtnHover(game.button.sfxToggleBtn, isInsideSFXButton, game.iconInit);
+    checkBtnHover(game.button.legendToggleBtn, isInsideLegendButton, game.iconInit);
 }
 
 function processClick(evt) {
@@ -116,7 +102,7 @@ function removeListeners() {
     gameCanvas.removeEventListener('mousemove', mouseMoved);
 }
 
-function removeButtonListeners() {
-    gameCanvas.removeEventListener('click', game.handler.buttonClickHandler);
-    gameCanvas.removeEventListener('mousemove', game.handler.buttonHoverHandler);
+function removeTextButtonListeners() {
+    gameCanvas.removeEventListener('click', game.handler.textButtonClick);
+    gameCanvas.removeEventListener('mousemove', game.handler.textButtonHover);
 }
